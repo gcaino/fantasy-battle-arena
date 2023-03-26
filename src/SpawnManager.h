@@ -1,39 +1,31 @@
-#ifndef SPAWN_MANAGER_H
-#define SPAWN_MANAGER_H
+#pragma once
 // -----------------------------------------
-#include <SFML\Graphics.hpp>
+#include "pch.h"
 // -----------------------------------------
 namespace lpa
-// -----------------------------------------
 {
-// -----------------------------------------
-typedef unsigned int uint;
-// -----------------------------------------
-class Wave;
-// -----------------------------------------
-class SpawnManager
-{
-private:
-	const uint				SPAWN_POINTS_MAX;
-	const sf::Vector2f		SPAWN_POINT_UNO;
-	const sf::Vector2f		SPAWN_POINT_DOS;
-	const sf::Time			SPAWN_TIME;
+	class Wave;
+	// -----------------------------------------
+	class SpawnManager
+	{
+	public:
+		SpawnManager(Wave* wave);
 
-	sf::Vector2f			_spawnPoints[2];
-	sf::Time				_spawnTime;
-	sf::Time				_timeSinceLastSpawn;
-	Wave*					_wave;
+		void update(sf::Time elapsedTime);
 
-	void spawnEnemies();
+	private:
+		static constexpr uint k_MaxSpawnPoints { 2 };
+		
+		sf::Vector2f  m_spawnPointOne;
+		sf::Vector2f  m_spawnPointTwo;
+		sf::Vector2f  m_spawnPoints[k_MaxSpawnPoints];
+		
+		sf::Time	  m_spawnTime;
+		sf::Time	  m_timeSinceLastSpawn;
+		Wave*		  m_wave;
 
-public:
-	SpawnManager(Wave* wave);
-	~SpawnManager();
-
-	void update(sf::Time elapsedTime);
-};
-// -----------------------------------------
+		void spawnEnemies();
+	};
 }
-// -----------------------------------------
-#endif // SPAWN_MANAGER_H
+
 

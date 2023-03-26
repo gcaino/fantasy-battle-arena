@@ -1,33 +1,27 @@
-#ifndef INPUT_MANAGER_H
-#define INPUT_MANAGER_H
+#pragma once
 // -----------------------------------------
 namespace lpa
-// -----------------------------------------
 {
-// -----------------------------------------
-class InputManager
-{
-protected:
-	bool _upPressed;
-	bool _downPressed;
-	bool _leftPressed;
-	bool _rightPressed;
+	class InputManager
+	{
+	public:
+		InputManager();
 
-public:
-	InputManager();
-	~InputManager();
+		void moveUp()		{ m_upPressed    = true; }
+		void moveDown()		{ m_downPressed  = true; }
+		void moveLeft()		{ m_leftPressed  = true; }
+		void moveRigth()	{ m_rightPressed = true; }
 
-	void moveUp() { _upPressed = true; }
-	void moveDown() { _downPressed = true; }
-	void moveLeft() { _leftPressed = true; }
-	void moveRigth() { _rightPressed = true; }
+		void stopUp()		{ m_upPressed    = false; }
+		void stopDown()		{ m_downPressed  = false; }
+		void stopLeft()		{ m_leftPressed  = false; }
+		void stopRigth()	{ m_rightPressed = false; }
 
-	void stopUp() { _upPressed = false; }
-	void stopDown() { _downPressed = false; }
-	void stopLeft() { _leftPressed = false; }
-	void stopRigth() { _rightPressed = false; }
-};
-// -----------------------------------------
+	protected:
+		bool m_upPressed;
+		bool m_downPressed;
+		bool m_leftPressed;
+		bool m_rightPressed;
+	};
 }
-// -----------------------------------------
-#endif // !INPUT_MANAGER_H
+

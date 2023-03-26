@@ -1,39 +1,30 @@
+#include "pch.h"
 #include "Wave.h"
 // -----------------------------------------
 #include "Player.h"
-#include <iostream>
 // -----------------------------------------
 namespace lpa
-// -----------------------------------------
 {
-// -----------------------------------------
-Wave::Wave()
-	: _maxEnemies(ENEMY_MAX)
-	, _remainingEnemies(ENEMY_MAX)
-	, _indexCurrentEnemy(0)
-{
-}
-Wave::~Wave()
-{
-	//std::cout << "Destroy Wave" << std::endl;
-}
-void Wave::update(sf::Time elapsedTime, Player* pPlayer)
-{
-	for (uint i = 0; i < ENEMY_MAX; i++)
+	Wave::Wave()
+		: m_enemies {}
+		, m_remainingEnemies { k_MaxEnemies }
+		, m_indexCurrentEnemy { 0 }
 	{
-		if (_enemies[i].isAlive())
+	}
+	void Wave::update(sf::Time elapsedTime, Player* pPlayer)
+	{
+		for (auto& enemy : m_enemies)
 		{
-			_enemies[i].update(elapsedTime, pPlayer);
+			if (enemy.isAlive())
+				enemy.update(elapsedTime, pPlayer);
 		}
 	}
-}
-void Wave::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{
-	for (uint i = 0; i < ENEMY_MAX; i++)
+	void Wave::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
-		if (_enemies[i].isAlive())
-			_enemies[i].draw(target, states);
+		for (const auto& enemy : m_enemies)
+		{
+			if (enemy.isAlive())
+				enemy.draw(target, states);
+		}
 	}
-}
-// -----------------------------------------
 }

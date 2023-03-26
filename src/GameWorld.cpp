@@ -1,410 +1,372 @@
+#include "pch.h"
 #include "GameWorld.h"
 // -----------------------------------------
 #include "AnimatedSprite.h"
-#include "Constants.h"
 #include "CollisionManager.h"
 #include "GameObject.h"
 #include "ScreenManager.h"
 #include "TitleScreen.h"
 #include "CreditsScreen.h"
-#include <iostream>
-#include <list>
-#include <iterator>
-#include <cmath>
 // -----------------------------------------
 namespace lpa
-// -----------------------------------------
 {
-bool compareAxisY(const AnimatedSprite& first, const AnimatedSprite& second)
-{
-	return (first.getPosition().y < second.getPosition().y);
-}
-// -----------------------------------------
-GameWorld::GameWorld(ScreenManager* screenManager)
-	: Screen(screenManager)
-	, _indexCurrentWave(0)
-	, _victory(false)
-	, _spawnManager(&_waves[0])
-	, _score(0)
-	, _highScore(0)
-	, _waitTime(sf::seconds(10.f))
-	, _victoryTime(sf::seconds(8.f))
-	, _elapsedWaitTime(sf::Time::Zero)
-	, _elapsedVictoryTime(sf::Time::Zero)
-{
-	initSounds();
-	initTexts();
-
-	_healthStatusBarTexture.loadFromFile(Constants::textureHealthStatusBar);
-	_healthStatusBar.setTexture(_healthStatusBarTexture);
-	_healthStatusBar.setPosition(sf::Vector2f(10.f, 15.f));
-	_currentHealthTexture.loadFromFile(Constants::textureCurrentHealth);
-	_currentHealth.setTexture(_currentHealthTexture);
-	_currentHealth.setPosition(sf::Vector2f(76.f, 50.f));
-	_orcsKilledBarTexture.loadFromFile(Constants::textureOrcsKilledBar);
-	_orcsKilledBar.setTexture(_orcsKilledBarTexture);
-	_orcsKilledBar.setPosition(sf::Vector2f(330.f, 15.f));
-}
-GameWorld::~GameWorld()
-{
-}
-
-void GameWorld::initSounds()
-{
-	_orcCampMusic.openFromFile(Constants::orcCampMusic);
-	_orcCampMusic.setLoop(true);
-	_orcCampMusic.play();
-}
-
-void GameWorld::initTexts()
-{
-	_orcHordeFont.loadFromFile(Constants::ortHordeFont);
-	_waveText.text.setFont(_orcHordeFont);
-	_waveText.text.setFillColor(sf::Color::Color(255, 175, 5));
-	_waveText.text.setCharacterSize(60);
-	_waveText.text.setStyle(sf::Text::Bold);
-	_waveText.text.setString("ORCS ARE COMING...");
-	_waveText.text.setPosition(Constants::WINDOW_WIDTH_MAX / 2 - _waveText.text.getGlobalBounds().width / 2, Constants::WINDOW_HEIGHT_MAX * 0.2f);
-	_waveText.visible = true;
-
-	_objectiveText.text.setFont(_orcHordeFont);
-	_objectiveText.text.setFillColor(sf::Color::Black);
-	_objectiveText.text.setCharacterSize(23);
-	//_objectiveText.text.setStyle(sf::Text::Bold);
-	_objectiveText.text.setString("[OBJECTIVE: Kill " + std::to_string(_waves->getMaxEnemies()) + " Orcs]");
-	_objectiveText.text.setPosition(sf::Vector2f(Constants::WINDOW_WIDTH_MAX * 0.67f, 50.f));
-	_objectiveText.visible = true;
-
-	_scoreText.text.setFont(_orcHordeFont);
-	_scoreText.text.setFillColor(sf::Color::Yellow);
-	_scoreText.text.setCharacterSize(23);
-	_scoreText.visible = true;
-
-	_victoryText.text.setFont(_orcHordeFont);
-	_victoryText.text.setFillColor(sf::Color::Green);
-	_victoryText.text.setCharacterSize(120);
-	_victoryText.text.setStyle(sf::Text::Bold);
-	_victoryText.text.setString("VICTORY!!!");
-	_victoryText.text.setPosition(Constants::WINDOW_WIDTH_MAX / 2 - _victoryText.text.getGlobalBounds().width / 2, Constants::WINDOW_HEIGHT_MAX * 0.2f);
-	_victoryText.visible = false;
-
-	_defeatText.text.setFont(_orcHordeFont);
-	_defeatText.text.setFillColor(sf::Color::Red);
-	_defeatText.text.setCharacterSize(120);
-	_defeatText.text.setStyle(sf::Text::Bold);
-	_defeatText.text.setString("DEFEAT!!!");
-	_defeatText.text.setPosition(Constants::WINDOW_WIDTH_MAX / 2 - _defeatText.text.getGlobalBounds().width / 2, Constants::WINDOW_HEIGHT_MAX * 0.2f);
-	_defeatText.visible = false;
-
-	addTextsToDraw();
-}
-
-void GameWorld::addTextsToDraw()
-{
-	_texts.push_back(&_waveText);
-	_texts.push_back(&_scoreText);
-	_texts.push_back(&_victoryText);
-	_texts.push_back(&_defeatText);
-	_texts.push_back(&_objectiveText);
-}
-
-void GameWorld::updateTexts()
-{
-	_scoreText.text.setString("ORCS KILLED: " + std::to_string(_player.getEnemiesKilled()));
-	_scoreText.text.setPosition(_orcsKilledBar.getPosition().x + 78.f, _orcsKilledBar.getPosition().y + 34.f);
-}
-
-void GameWorld::updateHealthBar(const Player& player)
-{
-	_currentHealth.setScale(static_cast<float>(player.getHealth() / player.getMaxHealth()), 1.f);
-}
-
-void GameWorld::showStartText(sf::Time elapsedTime)
-{
-	_elapsedWaitTime += elapsedTime;
-	if (_elapsedWaitTime > _waitTime)
+	bool compareAxisY(const AnimatedSprite& first, const AnimatedSprite& second)
 	{
-		_waveText.visible = false;
+		return (first.getPosition().y < second.getPosition().y);
 	}
-}
-
-void GameWorld::handleEvent(sf::Event event)
-{
-	if (event.type == sf::Event::KeyPressed)
+	// -----------------------------------------
+	GameWorld::GameWorld(ScreenManager* screenManager)
+		: Screen(screenManager)
+		, m_indexCurrentWave(0)
+		, m_victory(false)
+		, m_spawnManager(&m_waves[0])
+		, m_score(0)
+		, m_highScore(0)
+		, m_waitTime(sf::seconds(10.f))
+		, m_victoryTime(sf::seconds(8.f))
+		, m_elapsedWaitTime(sf::Time::Zero)
+		, m_elapsedVictoryTime(sf::Time::Zero)
 	{
-		if (event.key.code == sf::Keyboard::Escape)
-			m_screenManager->changeScreen(new TitleScreen(m_screenManager));
+		initSounds();
+		initTexts();
+
+		m_healthStatusBarTexture.loadFromFile(Constants::textureHealthStatusBar);
+		m_healthStatusBar.setTexture(m_healthStatusBarTexture);
+		m_healthStatusBar.setPosition(sf::Vector2f(10.f, 15.f));
+		m_currentHealthTexture.loadFromFile(Constants::textureCurrentHealth);
+		m_currentHealth.setTexture(m_currentHealthTexture);
+		m_currentHealth.setPosition(sf::Vector2f(76.f, 50.f));
+		m_orcsKilledBarTexture.loadFromFile(Constants::textureOrcsKilledBar);
+		m_orcsKilledBar.setTexture(m_orcsKilledBarTexture);
+		m_orcsKilledBar.setPosition(sf::Vector2f(330.f, 15.f));
 	}
-}
-
-void GameWorld::handleInput()
-{
-	if (!_player.isAlive())
-		return;
-
-	_player.handlerInputs();
-	_player.handlerInputsAttack(_waves, m_screenManager->getRenderWindow());
-}
-void GameWorld::update(sf::Time elapsedTime)
-{
-	if (_player.isAlive())
+	void GameWorld::initSounds()
 	{
-		_player.update(elapsedTime);
-		_waves[_indexCurrentWave].update(elapsedTime, &_player);
-
-		collisionDetectionPlayerLimitsArena();
-		collisionDetectionEnemiesLimitsArena(elapsedTime);
-		collisionDetectionPlayerEnemies();
-		collisionDetectionEnemiesPlayer();
-		collisionDetectionEnemyEmemies(elapsedTime);
-		checkAttackRangePlayer();
-		checkAttackRangeEnemies();
-
-		updateHealthBar(_player);
-		showStartText(elapsedTime);
-		updateTexts();
-		_spawnManager.update(elapsedTime);
-
-		checkVictoryCondition(elapsedTime);
+		m_orcCampMusic.openFromFile(Constants::orcCampMusic);
+		m_orcCampMusic.setLoop(true);
+		m_orcCampMusic.play();
 	}
-	else
+
+	void GameWorld::initTexts()
 	{
-		checkLossCondition(elapsedTime);
+		m_orcHordeFont.loadFromFile(Constants::ortHordeFont);
+		m_waveText.text.setFont(m_orcHordeFont);
+		m_waveText.text.setFillColor(sf::Color::Color(255, 175, 5));
+		m_waveText.text.setCharacterSize(60);
+		m_waveText.text.setStyle(sf::Text::Bold);
+		m_waveText.text.setString("ORCS ARE COMING...");
+		m_waveText.text.setPosition((Constants::k_WindowWidth * 0.5f) - (m_waveText.text.getGlobalBounds().width * 0.5f), Constants::k_WindowHeight * 0.2f);
+		m_waveText.visible = true;
+
+		m_objectiveText.text.setFont(m_orcHordeFont);
+		m_objectiveText.text.setFillColor(sf::Color::Black);
+		m_objectiveText.text.setCharacterSize(23);
+		m_objectiveText.text.setString("[OBJECTIVE: Kill " + std::to_string(m_waves[m_indexCurrentWave].getMaxEnemies()) + " Orcs]");
+		m_objectiveText.text.setPosition(sf::Vector2f(Constants::k_WindowWidth * 0.67f, 50.f));
+		m_objectiveText.visible = true;
+
+		m_scoreText.text.setFont(m_orcHordeFont);
+		m_scoreText.text.setFillColor(sf::Color::Yellow);
+		m_scoreText.text.setCharacterSize(23);
+		m_scoreText.visible = true;
+
+		m_victoryText.text.setFont(m_orcHordeFont);
+		m_victoryText.text.setFillColor(sf::Color::Green);
+		m_victoryText.text.setCharacterSize(120);
+		m_victoryText.text.setStyle(sf::Text::Bold);
+		m_victoryText.text.setString("VICTORY!!!");
+		m_victoryText.text.setPosition((Constants::k_WindowWidth * 0.5f) - (m_victoryText.text.getGlobalBounds().width * 0.5f), Constants::k_WindowHeight * 0.2f);
+		m_victoryText.visible = false;
+
+		m_defeatText.text.setFont(m_orcHordeFont);
+		m_defeatText.text.setFillColor(sf::Color::Red);
+		m_defeatText.text.setCharacterSize(120);
+		m_defeatText.text.setStyle(sf::Text::Bold);
+		m_defeatText.text.setString("DEFEAT!!!");
+		m_defeatText.text.setPosition((Constants::k_WindowWidth * 0.5f) - (m_defeatText.text.getGlobalBounds().width * 0.5f), Constants::k_WindowHeight * 0.2f);
+		m_defeatText.visible = false;
+
+		addTextsToDraw();
 	}
-}
 
-void GameWorld::checkVictoryCondition(sf::Time elapsedTime)
-{
-	if (_waves->getMaxEnemies() == _player.getEnemiesKilled())
+	void GameWorld::addTextsToDraw()
 	{
-		_victory = true;
-		_victoryText.visible = true;
+		m_texts.push_back(&m_waveText);
+		m_texts.push_back(&m_scoreText);
+		m_texts.push_back(&m_victoryText);
+		m_texts.push_back(&m_defeatText);
+		m_texts.push_back(&m_objectiveText);
+	}
 
-		_elapsedVictoryTime += elapsedTime;
-		if (_elapsedVictoryTime >= _victoryTime)
+	void GameWorld::updateTexts()
+	{
+		m_scoreText.text.setString("ORCS KILLED: " + std::to_string(m_player.getEnemiesKilled()));
+		m_scoreText.text.setPosition(m_orcsKilledBar.getPosition().x + 78.f, m_orcsKilledBar.getPosition().y + 34.f);
+	}
+
+	void GameWorld::updateHealthBar(const Player& player)
+	{
+		m_currentHealth.setScale(static_cast<float>(player.getHealth() / player.getMaxHealth()), 1.f);
+	}
+
+	void GameWorld::showStartText(sf::Time elapsedTime)
+	{
+		m_elapsedWaitTime += elapsedTime;
+		if (m_elapsedWaitTime > m_waitTime)
 		{
-			m_screenManager->changeScreen(new CreditScreen(m_screenManager));
+			m_waveText.visible = false;
 		}
 	}
-}
 
-void GameWorld::checkLossCondition(sf::Time elapsedTime)
-{
-	if (_player.getHealth() <= 0)
+	void GameWorld::handleEvent(sf::Event event)
 	{
-		_victory = false;
-		_defeatText.visible = true;
-
-		_elapsedVictoryTime += elapsedTime;
-		if (_elapsedVictoryTime >= _victoryTime)
+		if (event.type == sf::Event::KeyPressed)
 		{
-			m_screenManager->changeScreen(new CreditScreen(m_screenManager));
+			if (event.key.code == sf::Keyboard::Escape)
+				m_screenManager->changeScreen(new TitleScreen(m_screenManager));
 		}
 	}
-}
 
-void GameWorld::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{
-}
-void GameWorld::draw(sf::RenderTarget& target, sf::RenderStates states)
-{
-	target.draw(_arena.getSprite(), sf::RenderStates::Default);
+	void GameWorld::handleInput()
+	{
+		if (!m_player.isAlive())
+			return;
+
+		m_player.handlerInputs();
+		m_player.handlerInputsAttack(&m_waves[m_indexCurrentWave], m_screenManager->getRenderWindow());
+	}
+	void GameWorld::update(sf::Time elapsedTime)
+	{
+		if (m_player.isAlive())
+		{
+			m_player.update(elapsedTime);
+			m_waves[m_indexCurrentWave].update(elapsedTime, &m_player);
+
+			collisionDetectionPlayerLimitsArena();
+			collisionDetectionEnemiesLimitsArena(elapsedTime);
+			collisionDetectionPlayerEnemies();
+			collisionDetectionEnemiesPlayer();
+			collisionDetectionEnemyEmemies(elapsedTime);
+			checkAttackRangePlayer();
+			checkAttackRangeEnemies();
+
+			updateHealthBar(m_player);
+			showStartText(elapsedTime);
+			updateTexts();
+			m_spawnManager.update(elapsedTime);
+
+			checkVictoryCondition(elapsedTime);
+		}
+		else
+		{
+			checkLossCondition(elapsedTime);
+		}
+	}
+
+	void GameWorld::checkVictoryCondition(sf::Time elapsedTime)
+	{
+		if (m_waves[m_indexCurrentWave].getMaxEnemies() == m_player.getEnemiesKilled())
+		{
+			m_victory = true;
+			m_victoryText.visible = true;
+
+			m_elapsedVictoryTime += elapsedTime;
+			if (m_elapsedVictoryTime >= m_victoryTime)
+			{
+				m_screenManager->changeScreen(new CreditScreen(m_screenManager));
+			}
+		}
+	}
+
+	void GameWorld::checkLossCondition(sf::Time elapsedTime)
+	{
+		if (m_player.getHealth() <= 0)
+		{
+			m_victory = false;
+			m_defeatText.visible = true;
+
+			m_elapsedVictoryTime += elapsedTime;
+			if (m_elapsedVictoryTime >= m_victoryTime)
+			{
+				m_screenManager->changeScreen(new CreditScreen(m_screenManager));
+			}
+		}
+	}
+
+	void GameWorld::draw(sf::RenderTarget& target, sf::RenderStates states) const
+	{
+	}
+	void GameWorld::draw(sf::RenderTarget& target, sf::RenderStates states)
+	{
+		target.draw(m_arena.getSprite(), sf::RenderStates::Default);
 	
-	std::list<AnimatedSprite> sprites;
-	sprites.push_back(_player.getAnimatedSprite());
+		std::list<AnimatedSprite> sprites;
+		sprites.push_back(m_player.getAnimatedSprite());
 
-	if (_player.canDrawBlood())
-	{
-		sprites.push_back(_player.getAnimatedSpriteBlood());
-	}
-
-	uint maxWaveEnemies = _waves[_indexCurrentWave].getMaxEnemies();
-	Enemy* pEnemy = nullptr;
-	for (uint i = 0; i < maxWaveEnemies; i++)
-	{
-		pEnemy = &_waves[_indexCurrentWave].getEnemyRefByIndex(i);
-		if (pEnemy->isAlive())
+		if (m_player.canDrawBlood())
 		{
-			sprites.push_back(pEnemy->getAnimatedSprite());
-			if (pEnemy->canDrawBlood())
-			{
-				sprites.push_back(pEnemy->getAnimatedSpriteBlood());
-			}
+			sprites.push_back(m_player.getAnimatedSpriteBlood());
 		}
-	}
 
-	sprites.sort(compareAxisY);
-	
-	std::list<AnimatedSprite>::iterator it;
-	for (it = sprites.begin(); it != sprites.end(); ++it)
-	{
-		// Escalar Texturas (Comentado, no me termina de gustar el gameplay que genera y el pixelado)
-		/*if (it != sprites.begin())
+		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() };
+		Enemy* pEnemy = nullptr;
+		for (uint i { 0 }; i < maxWaveEnemies; i++)
 		{
-			float targetSizeY	= static_cast<float>(target.getSize().y / 2);
-			float spritePosY	= (*it).getPosition().y;
-			float diffAbs		= abs(targetSizeY - spritePosY);
-			float diffRel		= diffAbs / targetSizeY;
-
-			if (diffRel > 0.25f)	diffRel = 0.25f;
-
-			if (spritePosY < targetSizeY)
+			pEnemy = &m_waves[m_indexCurrentWave].getEnemyRefByIndex(i);
+			if (pEnemy->isAlive())
 			{
-				(*it).setScale(1 - diffRel, 1 - diffRel);
-			}
-			else if (spritePosY > targetSizeY)
-			{
-				(*it).setScale(1 + diffRel, 1 + diffRel);
-			}
-			else
-			{
-				(*it).setScale(1, 1);
-			}
-		}*/
-		// Dibujar
-		target.draw(*it, sf::RenderStates::Default);
-	}
-	// HUD
-	target.draw(_healthStatusBar);
-	target.draw(_currentHealth);
-	target.draw(_orcsKilledBar);
-	// Texts
-	for (size_t i = 0; i < _texts.size(); i++)
-	{
-		if (_texts.at(i)->visible)
-			target.draw(_texts.at(i)->text);
-	}
-}
-void GameWorld::collisionDetectionPlayerLimitsArena()
-{
-	sf::Image imageArenaCollision = _arena.getImageCollision();
-	
-	if (CollisionManager::pixelTest(_player.getAnimatedSprite(), imageArenaCollision))
-	{
-		//std::cout << "Player Pixel Collision" << std::endl;
-		_player.movePreviousPosition();
-	}
-}
-void GameWorld::collisionDetectionEnemiesLimitsArena(sf::Time elapsedTime)
-{
-	sf::Image imageArenaCollision = _arena.getImageCollision();
-	uint maxWaveEnemies = _waves[_indexCurrentWave].getMaxEnemies();
-	for (uint i = 0; i < maxWaveEnemies; i++)
-	{
-		Enemy* enemy = &_waves[_indexCurrentWave].getEnemyRefByIndex(i);
-		if (enemy->isActive())
-		{
-			if (CollisionManager::pixelTest(enemy->getAnimatedSprite(), imageArenaCollision))
-			{
-				//enemy->movePreviousPosition();
-				if (enemy->getPrevPosition().y > enemy->getPosition().y)
-					enemy->setPosition(enemy->getPosition().x, enemy->getPosition().y + (enemy->getVelocity() * elapsedTime.asSeconds()));
-				else
-					enemy->setPosition(enemy->getPosition().x, enemy->getPosition().y - (enemy->getVelocity() * elapsedTime.asSeconds()));
-			}
-		}
-	}
-}
-void GameWorld::collisionDetectionPlayerEnemies()
-{
-	uint maxWaveEnemies = _waves[_indexCurrentWave].getMaxEnemies();
-	for (uint i = 0; i < maxWaveEnemies; i++)
-	{
-		Enemy* pEnemy = &_waves[_indexCurrentWave].getEnemyRefByIndex(i);
-		if (pEnemy->isActive())
-		{
-			if (CollisionManager::boundingBoxTest(_player.getAnimatedSprite(), pEnemy->getAnimatedSprite(), 0.5f))
-			{
-				std::cout << "Collision" << std::endl;
-				_player.movePreviousPosition();
-			}
-		}
-	}
-}
-
-void GameWorld::collisionDetectionEnemiesPlayer()
-{
-	uint maxWaveEnemies = _waves[_indexCurrentWave].getMaxEnemies();
-	for (uint i = 0; i < maxWaveEnemies; i++)
-	{
-		Enemy* pEnemy = &_waves[_indexCurrentWave].getEnemyRefByIndex(i);
-		if (pEnemy->isActive())
-		{
-			if (CollisionManager::boundingBoxTest(pEnemy->getAnimatedSprite(), _player.getAnimatedSprite(), 0.5f))
-			{
-				pEnemy->movePreviousPosition();
-			}
-		}
-	}
-}
-
-void GameWorld::checkAttackRangeEnemies()
-{
-	uint maxWaveEnemies = _waves[_indexCurrentWave].getMaxEnemies();
-	for (uint i = 0; i < maxWaveEnemies; i++)
-	{
-		Enemy* pEnemy = &_waves[_indexCurrentWave].getEnemyRefByIndex(i);
-		if (pEnemy->isActive())
-		{
-			if (CollisionManager::boundingBoxRangeAttack(pEnemy->getAnimatedSprite(), _player.getAnimatedSprite(), 0.3f))
-			{
-				pEnemy->addAttackablePlayer(&_player);
-			}
-			else
-			{
-				pEnemy->removeAttackablePlayer(&_player);
-			}
-		}
-	}
-}
-
-void GameWorld::checkAttackRangePlayer()
-{
-	uint maxWaveEnemies = _waves[_indexCurrentWave].getMaxEnemies();
-	for (uint i = 0; i < maxWaveEnemies; i++)
-	{
-		Enemy* pEnemy = &_waves[_indexCurrentWave].getEnemyRefByIndex(i);
-		if (pEnemy->isActive())
-		{
-			if (CollisionManager::boundingBoxRangeAttack(_player.getAnimatedSprite(), pEnemy->getAnimatedSprite(), 0.3f))
-			{
-				_player.addAttackableEnemy(pEnemy);
-			}
-			else
-			{
-				_player.removeAttackableEnemy(pEnemy);
-			}
-		}
-	}
-}
-
-void GameWorld::collisionDetectionEnemyEmemies(sf::Time elapsedTime)
-{
-	uint maxWaveEnemies = _waves[_indexCurrentWave].getMaxEnemies();
-	for (uint i = 0; i < maxWaveEnemies - 1; i++)
-	{
-		Enemy* enemy = &_waves[_indexCurrentWave].getEnemyRefByIndex(i);
-		if (enemy->isActive())
-		{
-			for (uint j = 0; j < maxWaveEnemies; j++)
-			{
-				Enemy* enemy2 = &_waves[_indexCurrentWave].getEnemyRefByIndex(j);
-				if (enemy2->isActive() && (enemy != enemy2))
+				sprites.push_back(pEnemy->getAnimatedSprite());
+				if (pEnemy->canDrawBlood())
 				{
-					if (CollisionManager::boundingBoxTest(enemy->getAnimatedSprite(), enemy2->getAnimatedSprite(), 0.7f))
+					sprites.push_back(pEnemy->getAnimatedSpriteBlood());
+				}
+			}
+		}
+
+		sprites.sort(compareAxisY);
+	
+		std::list<AnimatedSprite>::iterator it;
+		for (it = sprites.begin(); it != sprites.end(); ++it)
+		{
+			// Dibujar
+			target.draw(*it, sf::RenderStates::Default);
+		}
+		// HUD
+		target.draw(m_healthStatusBar);
+		target.draw(m_currentHealth);
+		target.draw(m_orcsKilledBar);
+		// Texts
+		for (size_t i = 0; i < m_texts.size(); i++)
+		{
+			if (m_texts.at(i)->visible)
+				target.draw(m_texts.at(i)->text);
+		}
+	}
+	void GameWorld::collisionDetectionPlayerLimitsArena()
+	{
+		sf::Image imageArenaCollision = m_arena.getImageCollision();
+	
+		if (CollisionManager::pixelTest(m_player.getAnimatedSprite(), imageArenaCollision))
+		{
+			m_player.movePreviousPosition();
+		}
+	}
+	void GameWorld::collisionDetectionEnemiesLimitsArena(sf::Time elapsedTime)
+	{
+		const sf::Image& imageArenaCollision { m_arena.getImageCollision() };
+		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() };
+		for (uint i { 0 }; i < maxWaveEnemies; i++)
+		{
+			Enemy& enemy = m_waves.at(m_indexCurrentWave).getEnemyRefByIndex(i);
+			if (enemy.isActive())
+			{
+				if (CollisionManager::pixelTest(enemy.getAnimatedSprite(), imageArenaCollision))
+				{
+					if (enemy.getPrevPosition().y > enemy.getPosition().y)
+						enemy.setPosition(enemy.getPosition().x, enemy.getPosition().y + (enemy.getVelocity() * elapsedTime.asSeconds()));
+					else
+						enemy.setPosition(enemy.getPosition().x, enemy.getPosition().y - (enemy.getVelocity() * elapsedTime.asSeconds()));
+				}
+			}
+		}
+	}
+	void GameWorld::collisionDetectionPlayerEnemies()
+	{
+		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() };
+		for (uint i { 0 }; i < maxWaveEnemies; i++)
+		{
+			Enemy* pEnemy = &m_waves[m_indexCurrentWave].getEnemyRefByIndex(i);
+			if (pEnemy->isActive())
+			{
+				if (CollisionManager::boundingBoxTest(m_player.getAnimatedSprite(), pEnemy->getAnimatedSprite(), 0.5f))
+				{
+					m_player.movePreviousPosition();
+				}
+			}
+		}
+	}
+
+	void GameWorld::collisionDetectionEnemiesPlayer()
+	{
+		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() } ;
+		for (uint i { 0 }; i < maxWaveEnemies; i++)
+		{
+			Enemy* pEnemy = &m_waves[m_indexCurrentWave].getEnemyRefByIndex(i);
+			if (pEnemy->isActive())
+			{
+				if (CollisionManager::boundingBoxTest(pEnemy->getAnimatedSprite(), m_player.getAnimatedSprite(), 0.5f))
+				{
+					pEnemy->movePreviousPosition();
+				}
+			}
+		}
+	}
+
+	void GameWorld::checkAttackRangeEnemies()
+	{
+		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() };
+		for (uint i { 0 }; i < maxWaveEnemies; i++)
+		{
+			Enemy* pEnemy = &m_waves[m_indexCurrentWave].getEnemyRefByIndex(i);
+			if (pEnemy->isActive())
+			{
+				if (CollisionManager::boundingBoxRangeAttack(pEnemy->getAnimatedSprite(), m_player.getAnimatedSprite(), 0.3f))
+				{
+					pEnemy->addAttackablePlayer(&m_player);
+				}
+				else
+				{
+					pEnemy->removeAttackablePlayer(&m_player);
+				}
+			}
+		}
+	}
+
+	void GameWorld::checkAttackRangePlayer()
+	{
+		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() };
+		for (uint i = 0; i < maxWaveEnemies; i++)
+		{
+			Enemy* pEnemy = &m_waves[m_indexCurrentWave].getEnemyRefByIndex(i);
+			if (pEnemy->isActive())
+			{
+				if (CollisionManager::boundingBoxRangeAttack(m_player.getAnimatedSprite(), pEnemy->getAnimatedSprite(), 0.3f))
+				{
+					m_player.addAttackableEnemy(pEnemy);
+				}
+				else
+				{
+					m_player.removeAttackableEnemy(pEnemy);
+				}
+			}
+		}
+	}
+
+	void GameWorld::collisionDetectionEnemyEmemies(sf::Time elapsedTime)
+	{
+		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() } ;
+		for (uint i { 0 }; i < maxWaveEnemies - 1; i++)
+		{
+			Enemy* enemy = &m_waves[m_indexCurrentWave].getEnemyRefByIndex(i);
+			if (enemy->isActive())
+			{
+				for (uint j = 0; j < maxWaveEnemies; j++)
+				{
+					Enemy* enemy2 = &m_waves[m_indexCurrentWave].getEnemyRefByIndex(j);
+					if (enemy2->isActive() && (enemy != enemy2))
 					{
-						enemy->movePreviousPosition();
-						if ((enemy->getPosition().y + (enemy->getVelocity() * elapsedTime.asSeconds())) < Constants::WINDOW_HEIGHT_MAX - 30.f)
+						if (CollisionManager::boundingBoxTest(enemy->getAnimatedSprite(), enemy2->getAnimatedSprite(), 0.7f))
 						{
-							enemy->setPosition(enemy->getPosition().x, enemy->getPosition().y + (enemy->getVelocity() * elapsedTime.asSeconds()));
+							enemy->movePreviousPosition();
+							if ((enemy->getPosition().y + (enemy->getVelocity() * elapsedTime.asSeconds())) < Constants::k_WindowHeight - 30.f)
+							{
+								enemy->setPosition(enemy->getPosition().x, enemy->getPosition().y + (enemy->getVelocity() * elapsedTime.asSeconds()));
+							}
+							return;
 						}
-						return;
 					}
 				}
 			}
 		}
 	}
-}
-
-// -----------------------------------------
 }

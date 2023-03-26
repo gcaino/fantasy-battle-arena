@@ -20,10 +20,11 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 ////////////////////////////////////////////////////////////
-
+#include "pch.h"
 #include "Animation.h"
 
-Animation::Animation() : m_texture(NULL)
+Animation::Animation()
+	: m_texture(nullptr)
 {
 
 }

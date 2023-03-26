@@ -1,38 +1,35 @@
-#ifndef TITLE_SCREEN_H
-#define TITLE_SCREEN_H
+#pragma once
 // ----------------------------------------------------------------------------
+#include "pch.h"
 #include "Screen.h"
-#include <SFML\Audio.hpp>
 // ----------------------------------------------------------------------------
 namespace lpa
 {
-// ----------------------------------------------------------------------------
-struct Button
-{
-	bool			_visible;
-	sf::FloatRect	_rect;
-	sf::Texture		_texture;
-	sf::Sprite		_sprite;
-};
-const int MAX_BUTTONS = 2;
-// ----------------------------------------------------------------------------
-class TitleScreen : public Screen
-{
-private:
-	Button				_buttons[2];
-	sf::SoundBuffer		_soundBufferButtonClick;
-	sf::Sound			_soundButtonClick;
+	struct Button
+	{
+		bool		  visible {};
+		sf::FloatRect rect	  {};
+		sf::Texture	  texture {};
+		sf::Sprite	  sprite  {};
+	};
+	// ----------------------------------------------------------------------------
+	class TitleScreen : public Screen
+	{
+	public:
+		TitleScreen(ScreenManager* screenManager);
 
-public:
-	TitleScreen(ScreenManager* screenManager);
-	~TitleScreen();
+		virtual void handleEvent(sf::Event event);
+		virtual void update(sf::Time elapsedTime);
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states);
 
-	virtual void handleEvent(sf::Event event);
-	virtual void update(sf::Time elapsedTime);
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states);
-};
-// ----------------------------------------------------------------------------
+	private:
+		static constexpr uint k_MaxButtons { 2 };
+
+		Button			m_buttons[k_MaxButtons];
+		sf::SoundBuffer	m_soundBufferButtonClick;
+		sf::Sound		m_soundButtonClick;
+	};
 }
-#endif // TITLE_SCREEN_H
+
 
 

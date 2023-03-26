@@ -1,44 +1,36 @@
-#ifndef GAMELOOP_H
-#define GAMELOOP_H
+#pragma once
 // -----------------------------------------
-#include <SFML\Graphics.hpp>
+#include "pch.h"
 // -----------------------------------------
 namespace lpa
-// -----------------------------------------
 {
-// -----------------------------------------
-class ScreenManager;
-// -----------------------------------------
-class GameLoop
-{
-private:
-	const unsigned int	FPS;
+	class ScreenManager;
+	// -----------------------------------------
+	class GameLoop
+	{
+	public:
+		GameLoop();
+		~GameLoop();
 
-	sf::RenderWindow	_window;
-	sf::Event			_event;
-	ScreenManager*		_screenManager;
-	bool				_paused;
-	sf::Clock			_clock;
-	sf::Time			_elapsedTime;
-	//GameWorld*			_gameWorld;
+		void run();
 
-	sf::Texture			_textureMousePointer;
-	sf::Sprite			_spriteMousePointer;
+	private:
+		void pause();
+		void setMousePointer();
+		void updateMousePointer();
 
-	void pause();
-	void setMousePointer();
-	void updateMousePointer();
+		void update(sf::Time elapsedTime);
+		void draw();
 
-	void update(sf::Time elapsedTime);
-	void draw();
-
-public:
-	GameLoop();
-	~GameLoop();
-
-	void run();
-};
-// -----------------------------------------
+		static constexpr unsigned int k_Fps { 60 };
+	
+		sf::RenderWindow	m_window;
+		ScreenManager*		m_screenManager;
+		bool				m_paused;
+		sf::Clock			m_clock;
+		sf::Time			m_elapsedTime;
+						
+		sf::Texture			m_textureMousePointer;
+		sf::Sprite			m_spriteMousePointer;
+	};
 }
-// -----------------------------------------
-#endif // GAMELOOP_H

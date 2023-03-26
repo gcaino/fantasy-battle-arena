@@ -1,27 +1,23 @@
-#ifndef CREDIT_SCREEN_H
-#define CREDIT_SCREEN_H
+#pragma once
 // ----------------------------------------------------------------------------
+#include "pch.h"
 #include "Screen.h"
-#include <SFML\Graphics.hpp>
 // ----------------------------------------------------------------------------
 namespace lpa
 {
-// ----------------------------------------------------------------------------
-class CreditScreen : public Screen
-{
-private:
-	sf::Font	m_font;
-	sf::Text	m_text;
+	class CreditScreen : public Screen
+	{
+	public:
+		CreditScreen(ScreenManager* screenManager);
 
-public:
-	CreditScreen(ScreenManager* screenManager);
-	~CreditScreen();
+		virtual void handleEvent(sf::Event event);
+		virtual void update(sf::Time elapsedTime);
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states);
 
-	virtual void handleEvent(sf::Event event);
-	virtual void update(sf::Time elapsedTime);
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states);
-};
-// ----------------------------------------------------------------------------
+	private:
+		sf::Font	m_font;
+		sf::Text	m_text;
+	};
 }
-#endif // GAMEOVER_SCREEN_H
+

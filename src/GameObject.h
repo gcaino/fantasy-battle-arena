@@ -1,25 +1,19 @@
-#ifndef GAME_OBJECT_H
-#define GAME_OBJECT_H
+#pragma once
 // -----------------------------------
-#include <SFML\Graphics.hpp>
+#include "pch.h"
 // -----------------------------------
 namespace lpa
-// -----------------------------------
 {
-// -----------------------------------
-class GameObject : public sf::Drawable
-{
-protected:
-	sf::Sprite      _sprite;
+	class GameObject : public sf::Drawable
+	{
+	public:
+		GameObject() = default;
 
-public:
-	GameObject();
-	~GameObject();
+		sf::Sprite	getSprite() const { return m_sprite; }
 
-	sf::Sprite		getSprite() const { return _sprite; }
-	
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-};
-// -----------------------------------
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+	protected:
+		sf::Sprite m_sprite;
+	};
 }
-#endif GAME_OBJECT_H

@@ -1,72 +1,62 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#pragma once
 // -----------------------------------------
+#include "pch.h"
 #include "Character.h"
 #include "GameObject.h"
 #include "InputManager.h"
-#include <SFML\Audio.hpp>
-#include <list>
 // -----------------------------------------
 namespace lpa
-// -----------------------------------------
 {
-// -----------------------------------------
-class Enemy;
-class Wave;
-// -----------------------------------------
-class Player : public Character, public InputManager
-{
-private:
-	const sf::Time		PLAYER_SPEED_ATTACK;
-	const float			PLAYER_START_HEALTH;
+	class Enemy;
+	class Wave;
+	// -----------------------------------------
+	class Player : public Character, public InputManager
+	{
+	public:
+		Player();
 
-	sf::Time			_speedAttack;
-	sf::Time			_timeSinceLastAttack;
-	sf::Clock			_clockAttack;
-	bool				_attacking;
-	bool				_moving;
-	float				_rangeAttack;
-	uint				_enemiesKilled;
+		bool isAttacking() const { return m_attacking; }
+		void setAttacking(bool attacking) { m_attacking = attacking; }
+		bool isMoving() const { return m_moving; }
+		void setMoving(bool moving) { m_moving = moving; }
+		uint getEnemiesKilled() const { return m_enemiesKilled; }
+		void addEnemyKilled() { ++m_enemiesKilled; }
 
-	std::list<Enemy*>	_attackablesEnemies;
-	std::list<Enemy*>::iterator it;
+		void addAttackableEnemy(Enemy* enemy);
+		void removeAttackableEnemy(Enemy* enemy);
+		bool isItemAttackablesEnemiesList(const Enemy* enemy);
 
-	sf::SoundBuffer		_axeSoundBuffer;
-	sf::Sound			_axeSound;
+		void setupAnimations();
 
-	void move(sf::Time elapsedTime);
-    void resetPosition();
-	uint calculateDamage();
-	void verifyDeath(sf::Time elapsedTime);
-	void setAttributesAnimations();
+		void handlerInputs();
+		void handlerInputsAttack(Wave* pWave, const sf::RenderWindow& window);
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+		void update(sf::Time elapsedTime);
+		void movePreviousPosition();
+		void attack(Enemy* enemy);
+		void takeDamage(uint damage);
 
-public:
-	Player();
-	~Player();
+	private:
+		void move(sf::Time elapsedTime);
+		void resetPosition();
+		uint calculateDamage();
+		void verifyDeath(sf::Time elapsedTime);
+		void setAttributesAnimations();
 
-	bool isAttacking() const			{ return _attacking; }
-	void setAttacking(bool attacking)	{ _attacking = attacking; }
-	bool isMoving() const				{ return _moving; }
-	void setMoving(bool moving)			{ _moving = moving; }
-	uint getEnemiesKilled() const		{ return _enemiesKilled; }
-	void addEnemyKilled()				{ ++_enemiesKilled; }
+		sf::Time			m_speedAttack;
+		sf::Time			m_timeSinceLastAttack;
+		sf::Clock			m_clockAttack;
+		bool				m_attacking;
+		bool				m_moving;
+		float				m_rangeAttack;
+		uint				m_enemiesKilled;
 
-	void addAttackableEnemy(Enemy* enemy);
-	void removeAttackableEnemy(Enemy* enemy);
-	bool isItemAttackablesEnemiesList(const Enemy* enemy);
+		std::list<Enemy*>	m_attackablesEnemies;
+		std::list<Enemy*>::iterator it;
 
-	void setupAnimations();
-
-	void handlerInputs();
-	void handlerInputsAttack(Wave* pWave, const sf::RenderWindow& window);
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-	void update(sf::Time elapsedTime);
-	void movePreviousPosition();
-	void attack(Enemy* enemy);
-	void takeDamage(uint damage);
-};
-// -----------------------------------------
+		sf::SoundBuffer		m_axeSoundBuffer;
+		sf::Sound			m_axeSound;
+	};
 }
-// -----------------------------------------
-#endif // !PLAYER_H
+
 

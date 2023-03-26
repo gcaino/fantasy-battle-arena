@@ -1,85 +1,80 @@
+#include "pch.h"
 #include "GameLoop.h"
 // -----------------------------------------
-#include "Constants.h"
 #include "GameWorld.h"
 #include "ScreenManager.h"
 #include "TitleScreen.h"
-#include <SFML\Graphics.hpp>
-#include <iostream>
 // -----------------------------------------
 namespace lpa
-// -----------------------------------------
 {
-// -----------------------------------------
-GameLoop::GameLoop()
-	: _paused(false)
-	, FPS(60)
-{
-	_window.create(sf::VideoMode(Constants::WINDOW_WIDTH_MAX,
-								 Constants::WINDOW_HEIGHT_MAX), "Final Project LPA");
-	_window.setFramerateLimit(FPS);
-	setMousePointer();
-
-	_screenManager = new ScreenManager(&_window);
-	_screenManager->addScreen(new TitleScreen(_screenManager));
-}
-GameLoop::~GameLoop()
-{
-	_screenManager->removeScreen();
-	delete _screenManager;
-}
-void GameLoop::run()
-{
-	while (_window.isOpen())
+	GameLoop::GameLoop()
+		: m_paused(false)
 	{
-		while (_window.pollEvent(_event))
+		m_window.create(sf::VideoMode(Constants::k_WindowWidth,
+									  Constants::k_WindowHeight), Constants::k_WindowTitle.data());
+		m_window.setFramerateLimit(k_Fps);
+		setMousePointer();
+	
+		m_screenManager = new ScreenManager(&m_window);
+		m_screenManager->addScreen(new TitleScreen(m_screenManager));
+	}	
+	GameLoop::~GameLoop()
+	{	
+		m_screenManager->removeScreen();
+		delete m_screenManager;
+	}	
+	void GameLoop::run()
+	{	
+		while (m_window.isOpen())
 		{
-			if (_event.type == sf::Event::Closed)
-				_window.close();
-
-			_screenManager->getScreen()->handleEvent(_event);
+			sf::Event event;
+			while (m_window.pollEvent(event))
+			{
+				if (event.type == sf::Event::Closed)
+					m_window.close();
+	
+				m_screenManager->getScreen()->handleEvent(event);
+			}
+			m_screenManager->getScreen()->handleInput();
+	
+			m_elapsedTime = m_clock.restart();
+			update(m_elapsedTime);
+	
+			draw();
 		}
-		_screenManager->getScreen()->handleInput();
-
-		_elapsedTime = _clock.restart();
-		update(_elapsedTime);
-
-		draw();
+	}	
+	void GameLoop::update(sf::Time elapsedTime)
+	{	
+		updateMousePointer();
+	
+		if (!m_paused)
+			m_screenManager->getScreen()->update(m_elapsedTime);
+	}	
+	void GameLoop::draw()
+	{	
+		m_window.clear();
+		m_screenManager->getScreen()->draw(m_window, sf::RenderStates::Default);
+		m_window.draw(m_spriteMousePointer, sf::RenderStates::Default);
+		m_window.display();
+	}	
+	void GameLoop::pause()
+	{	
+		(m_paused) ? m_paused = false : m_paused = true;
+	}	
+	void GameLoop::setMousePointer()
+	{	
+		m_window.setMouseCursorVisible(false);
+		m_textureMousePointer.loadFromFile(Constants::texturesPathMousePointerAxe);
+		m_spriteMousePointer.setTexture(m_textureMousePointer);
+	
+		sf::Vector2f mousePointerOrigin;
+		mousePointerOrigin.x = m_spriteMousePointer.getGlobalBounds().width / 2;
+		mousePointerOrigin.y = m_spriteMousePointer.getLocalBounds().height / 2;
+		m_spriteMousePointer.setOrigin(mousePointerOrigin);
+	}	
+	void GameLoop::updateMousePointer()
+	{	
+		sf::Vector2i mousePosition = static_cast<sf::Vector2i>(sf::Mouse::getPosition(m_window));
+		m_spriteMousePointer.setPosition(static_cast<sf::Vector2f>(mousePosition));
 	}
-}
-void GameLoop::update(sf::Time elapsedTime)
-{
-	updateMousePointer();
-
-	if (!_paused)
-		_screenManager->getScreen()->update(_elapsedTime);
-}
-void GameLoop::draw()
-{
-	_window.clear();
-	_screenManager->getScreen()->draw(_window, sf::RenderStates::Default);
-	_window.draw(_spriteMousePointer, sf::RenderStates::Default);
-	_window.display();
-}
-void GameLoop::pause()
-{
-	(_paused) ? _paused = false : _paused = true;
-}
-void GameLoop::setMousePointer()
-{
-	_window.setMouseCursorVisible(false);
-	_textureMousePointer.loadFromFile(Constants::texturesPathMousePointerAxe);
-	_spriteMousePointer.setTexture(_textureMousePointer);
-
-	sf::Vector2f mousePointerOrigin;
-	mousePointerOrigin.x = _spriteMousePointer.getGlobalBounds().width / 2;
-	mousePointerOrigin.y = _spriteMousePointer.getLocalBounds().height / 2;
-	_spriteMousePointer.setOrigin(mousePointerOrigin);
-}
-void GameLoop::updateMousePointer()
-{
-	sf::Vector2i mousePosition = static_cast<sf::Vector2i>(sf::Mouse::getPosition(_window));
-	_spriteMousePointer.setPosition(static_cast<sf::Vector2f>(mousePosition));
-}
-// -----------------------------------------
 }

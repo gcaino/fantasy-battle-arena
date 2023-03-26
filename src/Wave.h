@@ -1,41 +1,36 @@
-#ifndef WAVE_H
-#define WAVE_H
+#pragma once
 // -----------------------------------------
+#include "pch.h"
 #include "Enemy.h"
 // -----------------------------------------
 namespace lpa
-// -----------------------------------------
 {
-// -----------------------------------------
-typedef	unsigned int uint;
-const uint ENEMY_MAX = 9;
-// -----------------------------------------
-class Player;
-// -----------------------------------------
-class Wave : public sf::Drawable
-{
-private:
-    Enemy			_enemies[ENEMY_MAX];
-	uint			_maxEnemies;
-	uint			_indexCurrentEnemy;
-	uint			_remainingEnemies;
+	// -----------------------------------------
+	class Player;
+	// -----------------------------------------
+	class Wave : public sf::Drawable
+	{
+	public:
+		Wave();
 
-public:
-    Wave();
-    ~Wave();
+		uint	getRemainingEnemies() const		{ return m_remainingEnemies; }
+		Enemy&  getEnemyRefByIndex(uint index)	{ return m_enemies[index]; }
+		uint	getIndexCurrentEnemy() const	{ return m_indexCurrentEnemy; }
+		uint	getMaxEnemies() const { return static_cast<uint>(m_enemies.size()); }
 
-	uint	getRemainingEnemies() const						{ return _remainingEnemies; }
-	Enemy&	getEnemyRefByIndex(uint index) 					{ return _enemies[index]; }
-	uint	getIndexCurrentEnemy() const					{ return _indexCurrentEnemy; }
-	uint	getMaxEnemies() const							{ return _maxEnemies; }
+		void	increaseIndexCurrentEnemy() { ++m_indexCurrentEnemy; }
+		void	decreaseRemainingEnemies()	{ if (m_remainingEnemies == 0) return; --m_remainingEnemies; }
 
-	void	increaseIndexCurrentEnemy()		{ ++_indexCurrentEnemy; }
-	void	decreaseRemainingEnemies()		{ if (_remainingEnemies == 0) return; --_remainingEnemies; }
+		void update(sf::Time elapsedTime, Player* pPlayer);
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-	void update(sf::Time elapsedTime, Player* pPlayer);
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-};
-// -----------------------------------------
+	private:
+		static constexpr uint k_MaxEnemies{ 9 };
+		using  Enemies = std::array<Enemy, k_MaxEnemies>;
+
+		Enemies m_enemies;
+		uint	m_indexCurrentEnemy;
+		uint	m_remainingEnemies;
+	};
 }
-// -----------------------------------------
-#endif // WAVE_H
+

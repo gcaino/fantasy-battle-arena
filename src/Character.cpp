@@ -1,48 +1,42 @@
+#include "pch.h"
 #include "Character.h"
 // -----------------------------------------
-#include "Constants.h"
-// -----------------------------------------
 namespace lpa
-// -----------------------------------------
 {
-// -----------------------------------------
-Character::Character()
-	: _position(0.f, 0.f)
-	, _velocity(100.f)
-	, _health(50.f)
-	, _maxHealth(_health)
-	, _strength(5)
-	, _evasion(0)
-	, _level(1)
-	, _alive(false)
-	, _texture()
-	, _animatedSprite(sf::seconds(0.1f), true, false)
-	, _animatedSpriteBlood(sf::seconds(0.1f), true, false)
-	, _drawBlood(false)
-	, _active(false)
-{
-	_direction._axisX = RIGHT;
-	_prevDirection._axisX = RIGHT;
-}
-Character::~Character()
-{
-}
-void Character::calculateDirection()
-{
-	_prevDirection = _direction;
-
-	if (_position.x > _prevPosition.x)		_direction._axisX = RIGHT;
-	else if (_position.x < _prevPosition.x)	_direction._axisX = LEFT;
-
-	if (_position.y > _prevPosition.y)		_direction._axisY = DOWN;
-	else if (_position.y < _prevPosition.y)	_direction._axisY = UP;
-}
-void Character::rotateSprite()
-{
-	if (_prevDirection._axisX != _direction._axisX)
+	Character::Character()
+		: m_position(0.f, 0.f)
+		, m_velocity(100.f)
+		, m_health(50.f)
+		, m_maxHealth(m_health)
+		, m_strength(5)
+		, m_evasion(0)
+		, m_level(1)
+		, m_alive(false)
+		, m_texture()
+		, m_animatedSprite(sf::seconds(0.1f), true, false)
+		, m_currentAnimation{}
+		, m_animatedSpriteBlood(sf::seconds(0.1f), true, false)
+		, m_drawBlood(false)
+		, m_active(false)
 	{
-		_animatedSprite.scale(-1, 1);
-	}	
-}
-// -----------------------------------------
+		m_direction.axisX = DirectionAxis::Right;
+		m_prevDirection.axisX = DirectionAxis::Right;
+	}
+	void Character::calculateDirection()
+	{
+		m_prevDirection = m_direction;
+
+		if		(m_position.x > m_prevPosition.x)	m_direction.axisX = DirectionAxis::Right;
+		else if (m_position.x < m_prevPosition.x)	m_direction.axisX = DirectionAxis::Left;
+
+		if		(m_position.y > m_prevPosition.y)	m_direction.axisY = DirectionAxis::Down;
+		else if (m_position.y < m_prevPosition.y)	m_direction.axisY = DirectionAxis::Up;
+	}
+	void Character::rotateSprite()
+	{
+		if (m_prevDirection.axisX != m_direction.axisX)
+		{
+			m_animatedSprite.scale(-1, 1);
+		}	
+	}
 }

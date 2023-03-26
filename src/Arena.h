@@ -1,31 +1,24 @@
-#ifndef ARENA_H
-#define ARENA_H
+#pragma once
 // -----------------------------------
+#include "pch.h"
 #include "GameObject.h"
-#include <SFML\Graphics.hpp>
 // -----------------------------------
 namespace lpa
-// -----------------------------------
 {
-// -----------------------------------
-class Arena : public GameObject
-{
-private:
-	sf::Sprite		_spriteCollision;
-    sf::Texture     _texture;
-	sf::Texture		_textureCollision;
-	sf::Image		_imageCollision;
+	class Arena : public GameObject
+	{
+	public:
+		Arena();
 
-public:
-    Arena();
-    ~Arena();
+		const sf::Sprite& getSpriteCollision() const { return m_spriteCollision; }
+		const sf::Image& getImageCollision() const   { return m_imageCollision; }
 
-	sf::Sprite getSpriteCollision() const	{ return _spriteCollision; }
-	sf::Image getImageCollision() const		{ return _imageCollision; }
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-};
-// -----------------------------------
+	private:			
+		sf::Sprite		m_spriteCollision;
+		sf::Texture     m_texture;
+		sf::Texture		m_textureCollision;
+		sf::Image		m_imageCollision;
+	};
 }
-// -----------------------------------
-#endif // ARENA_H

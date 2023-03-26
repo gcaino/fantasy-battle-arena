@@ -21,12 +21,8 @@
 //
 ////////////////////////////////////////////////////////////
 
-#ifndef ANIMATION_INCLUDE
-#define ANIMATION_INCLUDE
-
-#include <vector>
-#include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/Texture.hpp>
+#pragma once
+#include "pch.h"
 
 class Animation
 {
@@ -44,4 +40,3 @@ private:
 	const sf::Texture* m_texture;
 };
 
-#endif // ANIMATION_INCLUDE
