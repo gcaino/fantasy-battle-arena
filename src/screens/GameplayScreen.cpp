@@ -28,7 +28,10 @@ namespace lpa
 		, m_victoryTime	{ sf::seconds(8.f) }
 		, m_elapsedWaitTime		{ sf::Time::Zero }
 		, m_elapsedVictoryTime	{ sf::Time::Zero }
+		, m_textureMousePointer{}
+		, m_spriteMousePointer{}
 	{
+		setMousePointer();
 		initSounds();
 		initTexts();
 
@@ -148,6 +151,8 @@ namespace lpa
 	{
 		if (isPaused()) return;
 
+		updateMousePointer();
+
 		if (m_player.isAlive())
 		{
 			m_player.update(elapsedTime);
@@ -254,6 +259,27 @@ namespace lpa
 			if (text.get().visible)
 				target.draw(text.get().text);
 		}
+		// Mouse Pointer
+		target.draw(m_spriteMousePointer, sf::RenderStates::Default);
+	}
+	void GameplayScreen::setMousePointer()
+	{
+		auto& window{ m_screenManager.get().getRenderWindow() };
+		window.setMouseCursorVisible(false);
+
+		m_textureMousePointer.loadFromFile(Constants::texturesPathMousePointerAxe);
+		m_spriteMousePointer.setTexture(m_textureMousePointer);
+
+		sf::Vector2f mousePointerOrigin;
+		mousePointerOrigin.x = m_spriteMousePointer.getGlobalBounds().width / 2;
+		mousePointerOrigin.y = m_spriteMousePointer.getLocalBounds().height / 2;
+		m_spriteMousePointer.setOrigin(mousePointerOrigin);
+	}
+	void GameplayScreen::updateMousePointer()
+	{
+		auto& window{ m_screenManager.get().getRenderWindow() };
+		sf::Vector2i mousePosition = static_cast<sf::Vector2i>(sf::Mouse::getPosition(window));
+		m_spriteMousePointer.setPosition(static_cast<sf::Vector2f>(mousePosition));
 	}
 	void GameplayScreen::collisionDetectionPlayerLimitsArena()
 	{

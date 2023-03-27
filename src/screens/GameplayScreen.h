@@ -50,6 +50,9 @@ namespace lpa
 		void checkAttackRangeEnemies();
 		void checkAttackRangePlayer();
 
+		void setMousePointer();
+		void updateMousePointer();
+
 		Texts				m_texts;
 		uint				m_score;
 		uint				m_highScore;
@@ -61,7 +64,10 @@ namespace lpa
 		bool				m_paused;
 
 		sf::Music			m_orcCampMusic;
-							
+				
+		sf::Texture			m_textureMousePointer;
+		sf::Sprite			m_spriteMousePointer;
+
 		sf::Font			m_orcHordeFont;
 		Text				m_EnemyManagerText;
 		Text				m_scoreText;
