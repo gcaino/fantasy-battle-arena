@@ -29,7 +29,10 @@ namespace lpa
 
 	private:
 		using Texts = std::vector<Ref<Text>>;
-
+		
+		void pause();
+		constexpr bool isPaused() const noexcept { return m_paused; }
+		
 		void initTexts();
 		void addTextsToDraw();
 		void updateTexts();
@@ -55,7 +58,8 @@ namespace lpa
 		Arena				m_arena;
 		EnemyManager		m_enemyManager;
 		SpawnManager		m_spawnManager;
-							
+		bool				m_paused;
+
 		sf::Music			m_orcCampMusic;
 							
 		sf::Font			m_orcHordeFont;

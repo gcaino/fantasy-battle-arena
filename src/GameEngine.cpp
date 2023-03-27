@@ -8,9 +8,8 @@ namespace lpa
 	GameEngine::GameEngine()
 		: m_window{}
 		, m_screenManager{ m_window }
-		, m_paused{ false }
-		, m_textureMousePointer{}
-		, m_spriteMousePointer{}
+		, m_textureMousePointer	{}
+		, m_spriteMousePointer	{}
 	{
 		m_window.create(sf::VideoMode(Constants::k_WindowWidth,
 									  Constants::k_WindowHeight), Constants::k_WindowTitle.data());
@@ -52,9 +51,7 @@ namespace lpa
 	{	
 		updateMousePointer();
 		m_screenManager.getScreen().handleInput();
-
-		if (!m_paused)
-			m_screenManager.getScreen().update(elapsedTime);
+		m_screenManager.getScreen().update(elapsedTime);
 	}	
 	void GameEngine::draw()
 	{	
@@ -62,11 +59,7 @@ namespace lpa
 		m_screenManager.getScreen().draw(m_window, sf::RenderStates::Default);
 		m_window.draw(m_spriteMousePointer, sf::RenderStates::Default);
 		m_window.display();
-	}	
-	void GameEngine::pause()
-	{	
-		(m_paused) ? m_paused = false : m_paused = true;
-	}	
+	}		
 	void GameEngine::setMousePointer()
 	{	
 		m_window.setMouseCursorVisible(false);

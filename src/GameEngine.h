@@ -13,7 +13,7 @@ namespace lpa
 		void run();
 
 	private:
-		void pause();
+		
 		void setMousePointer();
 		void updateMousePointer();
 
@@ -26,8 +26,7 @@ namespace lpa
 	
 		sf::RenderWindow	m_window;
 		ScreenManager		m_screenManager;
-		bool				m_paused;
-			
+	
 		sf::Texture			m_textureMousePointer;
 		sf::Sprite			m_spriteMousePointer;
 	};

@@ -19,7 +19,9 @@ namespace lpa
 		: Screen(screenManager)
 		, m_texts {}
 		, m_victory	{false}
-		, m_spawnManager{ m_enemyManager }
+		, m_enemyManager	{}
+		, m_spawnManager	{ m_enemyManager }
+		, m_paused	{ false }
 		, m_score		{}
 		, m_highScore	{}
 		, m_waitTime	{ sf::seconds(10.f) }
@@ -122,13 +124,20 @@ namespace lpa
 	{
 		if (event.type == sf::Event::KeyPressed)
 		{
-			if (event.key.code == sf::Keyboard::Escape)
+			if		(event.key.code == sf::Keyboard::Escape)
+			{
 				m_screenManager.get().changeScreen(std::make_unique<TitleScreen>(m_screenManager));
+			}
+			else if (event.key.code == sf::Keyboard::F1)
+			{
+				pause();
+			}
 		}
 	}
-
 	void GameplayScreen::handleInput()
 	{
+		if (isPaused()) return;
+
 		if (!m_player.isAlive())
 			return;
 
@@ -137,6 +146,8 @@ namespace lpa
 	}
 	void GameplayScreen::update(sf::Time elapsedTime)
 	{
+		if (isPaused()) return;
+
 		if (m_player.isAlive())
 		{
 			m_player.update(elapsedTime);
@@ -162,7 +173,11 @@ namespace lpa
 			checkLossCondition(elapsedTime);
 		}
 	}
-
+	void GameplayScreen::pause()
+	{
+		(m_paused) ? m_paused = false : m_paused = true;
+		std::cout << "Pause: " << m_paused << std::endl;
+	}
 	void GameplayScreen::checkVictoryCondition(sf::Time elapsedTime)
 	{
 		if (m_enemyManager.getMaxEnemies() == m_player.getEnemiesKilled())
