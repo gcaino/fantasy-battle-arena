@@ -47,6 +47,8 @@ namespace lpa
 		void rotateSprite();
 
 	protected:
+		std::optional<Ref<Animation>>	m_currentAnimation;
+
 		AnimatedSprite	m_animatedSprite;
 
 		Animation		m_walkingAnimation;
@@ -54,7 +56,7 @@ namespace lpa
 		Animation		m_hurtAnimation;
 		Animation		m_dieAnimation;
 		Animation		m_idleAnimation;
-		Animation*		m_currentAnimation;
+		
 
 		sf::Texture		m_texture;
 		sf::Texture		m_textureIdle;

@@ -1,16 +1,14 @@
 #pragma once
 // -----------------------------------------
 #include "pch.h"
+#include "ScreenManager.h"
 // -----------------------------------------
 namespace lpa
 {
-	class ScreenManager;
-	// -----------------------------------------
-	class GameLoop
+	class GameEngine
 	{
 	public:
-		GameLoop();
-		~GameLoop();
+		GameEngine();
 
 		void run();
 
@@ -25,11 +23,11 @@ namespace lpa
 		static constexpr unsigned int k_Fps { 60 };
 	
 		sf::RenderWindow	m_window;
-		ScreenManager*		m_screenManager;
-		bool				m_paused;
+		ScreenManager		m_screenManager;
 		sf::Clock			m_clock;
 		sf::Time			m_elapsedTime;
-						
+		bool				m_paused;
+			
 		sf::Texture			m_textureMousePointer;
 		sf::Sprite			m_spriteMousePointer;
 	};

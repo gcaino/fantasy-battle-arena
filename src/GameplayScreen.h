@@ -16,10 +16,10 @@ namespace lpa
 	};
 	class ScreenManager;
 	// -----------------------------------------
-	class GameWorld : public Screen
+	class GameplayScreen : public Screen
 	{
 	public:
-		GameWorld(ScreenManager* screenManager);
+		GameplayScreen(ScreenManager& screenManager);
 
 		virtual void handleInput();
 		virtual void handleEvent(sf::Event event);
@@ -30,6 +30,7 @@ namespace lpa
 	private:
 		static constexpr uint k_MaxWave{ 5 };
 		using Waves = std::array<Wave, k_MaxWave>;
+		using Texts = std::vector<Ref<Text>>;
 
 		void initTexts();
 		void addTextsToDraw();
@@ -48,6 +49,7 @@ namespace lpa
 		void checkAttackRangeEnemies();
 		void checkAttackRangePlayer();
 
+		Texts				m_texts;
 		uint				m_score;
 		uint				m_highScore;
 		bool				m_victory;
@@ -74,8 +76,7 @@ namespace lpa
 		sf::Time			m_elapsedWaitTime;
 		sf::Time			m_waitTime;
 		sf::Time			m_victoryTime;
-		sf::Time			m_elapsedVictoryTime;
-		std::vector<Text*>	m_texts;
+		sf::Time			m_elapsedVictoryTime;	
 	};
 }
 

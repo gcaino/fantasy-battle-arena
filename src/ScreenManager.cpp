@@ -5,28 +5,33 @@
 // ----------------------------------------------------------------------------
 namespace lpa
 {
-	ScreenManager::ScreenManager(sf::RenderWindow* window)
-		: m_window(window)
+	ScreenManager::ScreenManager(sf::RenderWindow& window)
+		: m_screens{}
+		, m_window { window }
 	{
 	}
-	void ScreenManager::addScreen(Screen* screen)
+	void ScreenManager::addScreen(UPtr<Screen> screen)
 	{
-		m_screens.push(screen);
+		m_screens.emplace(std::move(screen));
 	}
 	void ScreenManager::removeScreen()
 	{
-		delete m_screens.top();
 		m_screens.pop();
 	}
-	Screen* ScreenManager::getScreen()
+	const Screen& ScreenManager::getScreen() const
 	{
-		if (m_screens.empty()) return nullptr;
-		return m_screens.top();
+		assert(!m_screens.empty() && "Screen container is empty");
+
+		return *m_screens.top().get();
 	}
-	void ScreenManager::changeScreen(Screen* screen)
+	Screen& ScreenManager::getScreen()
+	{
+		return const_cast<Screen&>(std::as_const(*this).getScreen());
+	}
+	void ScreenManager::changeScreen(UPtr<Screen> screen)
 	{
 		if (!m_screens.empty())
 			removeScreen();
-		addScreen(screen);
+		addScreen(std::move(screen));
 	}
 }

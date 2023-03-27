@@ -9,7 +9,7 @@ namespace lpa
 	class SpawnManager
 	{
 	public:
-		SpawnManager(Wave* wave);
+		SpawnManager(Wave& wave);
 
 		void update(sf::Time elapsedTime);
 
@@ -22,7 +22,7 @@ namespace lpa
 		
 		sf::Time	  m_spawnTime;
 		sf::Time	  m_timeSinceLastSpawn;
-		Wave*		  m_wave;
+		Ref<Wave>	  m_wave;
 
 		void spawnEnemies();
 	};

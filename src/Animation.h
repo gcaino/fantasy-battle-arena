@@ -22,8 +22,9 @@
 ////////////////////////////////////////////////////////////
 
 #pragma once
+// -------------------------------------------------
 #include "pch.h"
-
+// -------------------------------------------------
 class Animation
 {
 public:
@@ -36,7 +37,7 @@ public:
 	const sf::IntRect& getFrame(std::size_t n) const;
 
 private:
-	std::vector<sf::IntRect> m_frames;
-	const sf::Texture* m_texture;
+	std::vector<sf::IntRect>	m_frames;
+	const sf::Texture*			m_texture;
 };
 

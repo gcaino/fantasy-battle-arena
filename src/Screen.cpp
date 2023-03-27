@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------
 namespace lpa
 {
-	Screen::Screen(ScreenManager* screenManager)
+	Screen::Screen(ScreenManager& screenManager)
 		: m_screenManager(screenManager)
 	{
 	}

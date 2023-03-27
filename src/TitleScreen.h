@@ -16,7 +16,7 @@ namespace lpa
 	class TitleScreen : public Screen
 	{
 	public:
-		TitleScreen(ScreenManager* screenManager);
+		TitleScreen(ScreenManager& screenManager);
 
 		virtual void handleEvent(sf::Event event);
 		virtual void update(sf::Time elapsedTime);

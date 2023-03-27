@@ -21,7 +21,7 @@ namespace lpa
 		void	increaseIndexCurrentEnemy() { ++m_indexCurrentEnemy; }
 		void	decreaseRemainingEnemies()	{ if (m_remainingEnemies == 0) return; --m_remainingEnemies; }
 
-		void update(sf::Time elapsedTime, Player* pPlayer);
+		void update(sf::Time elapsedTime, Player& player);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	private:

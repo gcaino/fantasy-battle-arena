@@ -11,12 +11,12 @@ namespace lpa
 		, m_indexCurrentEnemy { 0 }
 	{
 	}
-	void Wave::update(sf::Time elapsedTime, Player* pPlayer)
+	void Wave::update(sf::Time elapsedTime, Player& player)
 	{
 		for (auto& enemy : m_enemies)
 		{
 			if (enemy.isAlive())
-				enemy.update(elapsedTime, pPlayer);
+				enemy.update(elapsedTime, player);
 		}
 	}
 	void Wave::draw(sf::RenderTarget& target, sf::RenderStates states) const

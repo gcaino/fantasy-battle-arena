@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------------------
 namespace lpa
 {
-	CreditScreen::CreditScreen(ScreenManager* screenManager)
+	CreditScreen::CreditScreen(ScreenManager& screenManager)
 		: Screen(screenManager)
 	{
 		m_texture.loadFromFile(Constants::pathCreditsScreenImage);
@@ -31,7 +31,7 @@ namespace lpa
 	void CreditScreen::handleEvent(sf::Event event)
 	{
 		if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Escape)
-			m_screenManager->changeScreen(new TitleScreen(m_screenManager));
+			m_screenManager.get().changeScreen(std::make_unique<TitleScreen>(m_screenManager));
 	}
 
 	void CreditScreen::update(sf::Time elapsedTime)

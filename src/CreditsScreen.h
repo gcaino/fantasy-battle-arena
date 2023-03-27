@@ -8,7 +8,7 @@ namespace lpa
 	class CreditScreen : public Screen
 	{
 	public:
-		CreditScreen(ScreenManager* screenManager);
+		CreditScreen(ScreenManager& screenManager);
 
 		virtual void handleEvent(sf::Event event);
 		virtual void update(sf::Time elapsedTime);

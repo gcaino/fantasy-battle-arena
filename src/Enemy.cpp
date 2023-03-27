@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Enemy.h"
 // -----------------------------------------
-#include "Constants.h"
 #include "AnimatedSprite.h"
 #include "Player.h"
 // -----------------------------------------
@@ -23,8 +22,8 @@ namespace lpa
 		, m_elapsedWaitTime(sf::Time::Zero)
 	{
 		setupAnimations();
-		m_animatedSprite.setOrigin(m_animatedSprite.getGlobalBounds().width / 2, m_animatedSprite.getGlobalBounds().height);
-		m_animatedSpriteBlood.setOrigin(m_animatedSprite.getGlobalBounds().width / 2, m_animatedSprite.getGlobalBounds().height);
+		m_animatedSprite.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
+		m_animatedSpriteBlood.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
 
 		m_timeSinceLastAttack = m_clockAttack.restart();
 		m_deadTime = sf::seconds(10.f);
@@ -135,7 +134,7 @@ namespace lpa
 		m_dieAnimation.addFrame(sf::IntRect(2640, 0, 220, 155));
 		m_dieAnimation.addFrame(sf::IntRect(2860, 0, 220, 155));
 
-		m_currentAnimation = &m_idleAnimation;
+		m_currentAnimation = m_idleAnimation;
 		m_animatedSprite.setAnimation(*m_currentAnimation);
 
 		// GREEN BLOOD
@@ -152,19 +151,18 @@ namespace lpa
 
 		m_animatedSpriteBlood.setAnimation(m_bloodAnimation);
 	}
-	void Enemy::update(sf::Time elapsedTime, Player* pPlayer)
+	void Enemy::update(sf::Time elapsedTime, Player& player)
 	{
-		if (!pPlayer->isAlive()) return;
+		if (!player.isAlive()) return;
 
 		if (m_active)
 		{
-			move(elapsedTime, pPlayer);
+			move(elapsedTime, player);
 			calculateDirection();
 			rotateSprite();
-			iteratePlayersAttackables(pPlayer);
 			waiting(elapsedTime);
 		}
-		verifyDeath(elapsedTime, *pPlayer);
+		verifyDeath(elapsedTime, player);
 
 		setAttributesAnimations();
 		m_animatedSprite.update(elapsedTime);
@@ -174,21 +172,22 @@ namespace lpa
 	{
 		target.draw(m_animatedSprite);
 	}
-	void Enemy::move(sf::Time elapsedTime, Player* pPlayer)
+	void Enemy::move(sf::Time elapsedTime, const Player& player)
 	{
-		if (pPlayer->isAlive())
+		if (player.isAlive())
 		{
 			if (!m_waiting)
 			{
-				if ((m_currentAnimation == &m_hurtAnimation) && m_animatedSprite.isPlaying()) 
+				auto& currentAnimation{ m_currentAnimation.value().get() };
+				if ((&currentAnimation == &m_hurtAnimation) && m_animatedSprite.isPlaying()) 
 					return;
 
-				if ((m_currentAnimation == &m_idleAnimation) && m_animatedSprite.isPlaying()) 
+				if ((&currentAnimation == &m_idleAnimation) && m_animatedSprite.isPlaying()) 
 					m_animatedSprite.stop();
 
 				m_prevPosition = m_position;
 
-				sf::Vector2f posPlayer = pPlayer->getPosition();
+				sf::Vector2f posPlayer = player.getPosition();
 				if (posPlayer.x > m_position.x)
 					m_position.x += m_velocity * elapsedTime.asSeconds();
 				if (posPlayer.x < m_position.x)
@@ -203,7 +202,7 @@ namespace lpa
 
 				if (!m_animatedSprite.isPlaying())
 				{
-					m_currentAnimation = &m_walkingAnimation;
+					m_currentAnimation = m_walkingAnimation;
 					m_animatedSprite.play(*m_currentAnimation);
 				}
 			}
@@ -211,7 +210,7 @@ namespace lpa
 			{
 				if (!m_animatedSprite.isPlaying())
 				{
-					m_currentAnimation = &m_idleAnimation;
+					m_currentAnimation = m_idleAnimation;
 					m_animatedSprite.play(*m_currentAnimation);
 				}
 			}
@@ -253,16 +252,16 @@ namespace lpa
 		}
 	}
 
-	void Enemy::attack(Player* pPlayer)
+	void Enemy::attack(Player& player)
 	{
 		m_timeSinceLastAttack = m_clockAttack.getElapsedTime();
 		if (m_timeSinceLastAttack > m_speedAttack)
 		{
 			//std::cout << "Enemy Attack" << std::endl;
-			pPlayer->takeDamage(calculateDamage());
+			player.takeDamage(calculateDamage());
 
 			m_orcAttackSound.play();
-			m_currentAnimation = &m_attackAnimation;
+			m_currentAnimation = m_attackAnimation;
 			m_animatedSprite.play(*m_currentAnimation);
 			
 			m_waiting = true;
@@ -279,7 +278,7 @@ namespace lpa
 			return;
 		}
 
-		m_currentAnimation = &m_hurtAnimation;
+		m_currentAnimation = m_hurtAnimation;
 		m_animatedSprite.play(*m_currentAnimation);
 		m_animatedSpriteBlood.play();
 	}
@@ -291,10 +290,11 @@ namespace lpa
 	{
 		if (m_health <= 0)
 		{
-			if (m_active && m_currentAnimation != &m_dieAnimation)
+			auto& currentAnimation{ m_currentAnimation.value().get() };
+			if (m_active && (&currentAnimation != &m_dieAnimation))
 			{
 				m_animatedSprite.pause();
-				m_currentAnimation = &m_dieAnimation;
+				m_currentAnimation = m_dieAnimation;
 				m_animatedSprite.play(*m_currentAnimation);
 				m_animatedSprite.setFrame(1);
 				m_active = false;
@@ -310,34 +310,14 @@ namespace lpa
 			}
 		}
 	}
-	void Enemy::addAttackablePlayer(Player* pPlayer)
-	{
-		if (isItemAttackablesPlayersList(pPlayer))
-			return;
-	
-		m_attackablesPlayers.push_back(pPlayer);
-	}
-	void Enemy::removeAttackablePlayer(Player* pPlayer)
-	{
-		if (isItemAttackablesPlayersList(pPlayer))
-			m_attackablesPlayers.remove(pPlayer);
-	}
-	bool Enemy::isItemAttackablesPlayersList(Player* pPlayer)
-	{
-		return (std::find(m_attackablesPlayers.begin(), m_attackablesPlayers.end(), pPlayer) != m_attackablesPlayers.end());
-	}
-	void Enemy::iteratePlayersAttackables(Player* pPlayer)
-	{
-		if (isItemAttackablesPlayersList(pPlayer))
-			attack(pPlayer);
-	}
 	void Enemy::setAttributesAnimations()
 	{
-		if (m_currentAnimation == &m_idleAnimation)
+		auto& currentAnimation{ m_currentAnimation.value().get() };
+		if (&currentAnimation == &m_idleAnimation)
 		{
 			m_animatedSprite.setFrameTime(sf::seconds(0.2f));
 		}
-		else if (m_currentAnimation == &m_attackAnimation || m_currentAnimation == &m_hurtAnimation)
+		else if (&currentAnimation == &m_attackAnimation || &currentAnimation == &m_hurtAnimation)
 		{
 			m_animatedSprite.setFrameTime(sf::seconds(0.05f));
 		}

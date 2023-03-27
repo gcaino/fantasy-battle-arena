@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "TitleScreen.h"
 // ----------------------------------------------------------------------------
-#include "GameWorld.h"
+#include "GameplayScreen.h"
 #include "CreditsScreen.h"
 #include "ScreenManager.h"
 // ----------------------------------------------------------------------------
 namespace lpa
 {
-	TitleScreen::TitleScreen(ScreenManager* screenManager)
+	TitleScreen::TitleScreen(ScreenManager& screenManager)
 		: Screen(screenManager)
 	{
 		m_texture.loadFromFile(Constants::pathTitleScreenImage);
@@ -33,7 +33,7 @@ namespace lpa
 		if (event.type == sf::Event::KeyPressed)
 		{
 			if (event.key.code == sf::Keyboard::Escape)
-				m_screenManager->getRenderWindow().close();
+				m_screenManager.get().getRenderWindow().close();
 		}
 
 		if (event.type == sf::Event::MouseMoved)
@@ -59,12 +59,12 @@ namespace lpa
 			if (m_buttons[0].visible)
 			{
 				m_soundButtonClick.play();
-				m_screenManager->changeScreen(new GameWorld(m_screenManager));
+				m_screenManager.get().changeScreen(std::make_unique<GameplayScreen>(m_screenManager));
 			}
 			else if (m_buttons[1].visible)
 			{
 				m_soundButtonClick.play();
-				m_screenManager->changeScreen(new CreditScreen(m_screenManager));
+				m_screenManager.get().changeScreen(std::make_unique<CreditScreen>(m_screenManager));
 			}
 		}
 	}

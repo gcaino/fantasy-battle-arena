@@ -20,10 +20,12 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 ////////////////////////////////////////////////////////////
-#pragma once
 
+#pragma once
+// -------------------------------------------------
 #include "pch.h"
 #include "Animation.h"
+// -------------------------------------------------
 
 class AnimatedSprite : public sf::Drawable, public sf::Transformable
 {
@@ -48,14 +50,14 @@ public:
 	void setFrame(std::size_t newFrame, bool resetTime = true);
 
 private:
-	const Animation* m_animation;
-	sf::Time m_frameTime;
-	sf::Time m_currentTime;
-	std::size_t m_currentFrame;
-	bool m_isPaused;
-	bool m_isLooped;
-	const sf::Texture* m_texture;
-	sf::Vertex m_vertices[4];
+	const Animation*	m_animation;
+	sf::Time			m_frameTime;
+	sf::Time			m_currentTime;
+	std::size_t			m_currentFrame;
+	bool				m_isPaused;
+	bool				m_isLooped;
+	const sf::Texture*	m_texture;
+	sf::Vertex			m_vertices[4];
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 

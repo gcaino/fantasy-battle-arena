@@ -8,7 +8,7 @@
 #include "vld.h"
 #endif
 // -----------------------------------------
-#include "GameLoop.h"
+#include "GameEngine.h"
 // -----------------------------------------
 int main()
 {
@@ -16,7 +16,7 @@ int main()
 
 	try
 	{
-		lpa::GameLoop game;
+		lpa::GameEngine game;
 		game.run();
 	}
 	catch (const std::exception& e)

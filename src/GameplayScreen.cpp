@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "GameWorld.h"
+#include "GameplayScreen.h"
 // -----------------------------------------
 #include "AnimatedSprite.h"
 #include "CollisionManager.h"
@@ -15,17 +15,18 @@ namespace lpa
 		return (first.getPosition().y < second.getPosition().y);
 	}
 	// -----------------------------------------
-	GameWorld::GameWorld(ScreenManager* screenManager)
+	GameplayScreen::GameplayScreen(ScreenManager& screenManager)
 		: Screen(screenManager)
-		, m_indexCurrentWave(0)
-		, m_victory(false)
-		, m_spawnManager(&m_waves[0])
-		, m_score(0)
-		, m_highScore(0)
-		, m_waitTime(sf::seconds(10.f))
-		, m_victoryTime(sf::seconds(8.f))
-		, m_elapsedWaitTime(sf::Time::Zero)
-		, m_elapsedVictoryTime(sf::Time::Zero)
+		, m_texts {}
+		, m_indexCurrentWave {}
+		, m_victory	{false}
+		, m_spawnManager{ m_waves[0] }
+		, m_score		{}
+		, m_highScore	{}
+		, m_waitTime	{ sf::seconds(10.f) }
+		, m_victoryTime	{ sf::seconds(8.f) }
+		, m_elapsedWaitTime		{ sf::Time::Zero }
+		, m_elapsedVictoryTime	{ sf::Time::Zero }
 	{
 		initSounds();
 		initTexts();
@@ -40,14 +41,14 @@ namespace lpa
 		m_orcsKilledBar.setTexture(m_orcsKilledBarTexture);
 		m_orcsKilledBar.setPosition(sf::Vector2f(330.f, 15.f));
 	}
-	void GameWorld::initSounds()
+	void GameplayScreen::initSounds()
 	{
 		m_orcCampMusic.openFromFile(Constants::orcCampMusic);
 		m_orcCampMusic.setLoop(true);
 		m_orcCampMusic.play();
 	}
 
-	void GameWorld::initTexts()
+	void GameplayScreen::initTexts()
 	{
 		m_orcHordeFont.loadFromFile(Constants::ortHordeFont);
 		m_waveText.text.setFont(m_orcHordeFont);
@@ -89,27 +90,27 @@ namespace lpa
 		addTextsToDraw();
 	}
 
-	void GameWorld::addTextsToDraw()
+	void GameplayScreen::addTextsToDraw()
 	{
-		m_texts.push_back(&m_waveText);
-		m_texts.push_back(&m_scoreText);
-		m_texts.push_back(&m_victoryText);
-		m_texts.push_back(&m_defeatText);
-		m_texts.push_back(&m_objectiveText);
+		m_texts.push_back(m_waveText);
+		m_texts.push_back(m_scoreText);
+		m_texts.push_back(m_victoryText);
+		m_texts.push_back(m_defeatText);
+		m_texts.push_back(m_objectiveText);
 	}
 
-	void GameWorld::updateTexts()
+	void GameplayScreen::updateTexts()
 	{
 		m_scoreText.text.setString("ORCS KILLED: " + std::to_string(m_player.getEnemiesKilled()));
 		m_scoreText.text.setPosition(m_orcsKilledBar.getPosition().x + 78.f, m_orcsKilledBar.getPosition().y + 34.f);
 	}
 
-	void GameWorld::updateHealthBar(const Player& player)
+	void GameplayScreen::updateHealthBar(const Player& player)
 	{
 		m_currentHealth.setScale(static_cast<float>(player.getHealth() / player.getMaxHealth()), 1.f);
 	}
 
-	void GameWorld::showStartText(sf::Time elapsedTime)
+	void GameplayScreen::showStartText(sf::Time elapsedTime)
 	{
 		m_elapsedWaitTime += elapsedTime;
 		if (m_elapsedWaitTime > m_waitTime)
@@ -118,29 +119,29 @@ namespace lpa
 		}
 	}
 
-	void GameWorld::handleEvent(sf::Event event)
+	void GameplayScreen::handleEvent(sf::Event event)
 	{
 		if (event.type == sf::Event::KeyPressed)
 		{
 			if (event.key.code == sf::Keyboard::Escape)
-				m_screenManager->changeScreen(new TitleScreen(m_screenManager));
+				m_screenManager.get().changeScreen(std::make_unique<TitleScreen>(m_screenManager));
 		}
 	}
 
-	void GameWorld::handleInput()
+	void GameplayScreen::handleInput()
 	{
 		if (!m_player.isAlive())
 			return;
 
 		m_player.handlerInputs();
-		m_player.handlerInputsAttack(&m_waves[m_indexCurrentWave], m_screenManager->getRenderWindow());
+		m_player.handlerInputsAttack(m_waves[m_indexCurrentWave], m_screenManager.get().getRenderWindow());
 	}
-	void GameWorld::update(sf::Time elapsedTime)
+	void GameplayScreen::update(sf::Time elapsedTime)
 	{
 		if (m_player.isAlive())
 		{
 			m_player.update(elapsedTime);
-			m_waves[m_indexCurrentWave].update(elapsedTime, &m_player);
+			m_waves[m_indexCurrentWave].update(elapsedTime, m_player);
 
 			collisionDetectionPlayerLimitsArena();
 			collisionDetectionEnemiesLimitsArena(elapsedTime);
@@ -163,7 +164,7 @@ namespace lpa
 		}
 	}
 
-	void GameWorld::checkVictoryCondition(sf::Time elapsedTime)
+	void GameplayScreen::checkVictoryCondition(sf::Time elapsedTime)
 	{
 		if (m_waves[m_indexCurrentWave].getMaxEnemies() == m_player.getEnemiesKilled())
 		{
@@ -173,12 +174,12 @@ namespace lpa
 			m_elapsedVictoryTime += elapsedTime;
 			if (m_elapsedVictoryTime >= m_victoryTime)
 			{
-				m_screenManager->changeScreen(new CreditScreen(m_screenManager));
+				m_screenManager.get().changeScreen(std::make_unique<CreditScreen>(m_screenManager));
 			}
 		}
 	}
 
-	void GameWorld::checkLossCondition(sf::Time elapsedTime)
+	void GameplayScreen::checkLossCondition(sf::Time elapsedTime)
 	{
 		if (m_player.getHealth() <= 0)
 		{
@@ -188,15 +189,15 @@ namespace lpa
 			m_elapsedVictoryTime += elapsedTime;
 			if (m_elapsedVictoryTime >= m_victoryTime)
 			{
-				m_screenManager->changeScreen(new CreditScreen(m_screenManager));
+				m_screenManager.get().changeScreen(std::make_unique<CreditScreen>(m_screenManager));
 			}
 		}
 	}
 
-	void GameWorld::draw(sf::RenderTarget& target, sf::RenderStates states) const
+	void GameplayScreen::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 	}
-	void GameWorld::draw(sf::RenderTarget& target, sf::RenderStates states)
+	void GameplayScreen::draw(sf::RenderTarget& target, sf::RenderStates states)
 	{
 		target.draw(m_arena.getSprite(), sf::RenderStates::Default);
 	
@@ -209,16 +210,15 @@ namespace lpa
 		}
 
 		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() };
-		Enemy* pEnemy = nullptr;
 		for (uint i { 0 }; i < maxWaveEnemies; i++)
 		{
-			pEnemy = &m_waves[m_indexCurrentWave].getEnemyRefByIndex(i);
-			if (pEnemy->isAlive())
+			const auto& enemy { m_waves[m_indexCurrentWave].getEnemyRefByIndex(i) };
+			if (enemy.isAlive())
 			{
-				sprites.push_back(pEnemy->getAnimatedSprite());
-				if (pEnemy->canDrawBlood())
+				sprites.push_back(enemy.getAnimatedSprite());
+				if (enemy.canDrawBlood())
 				{
-					sprites.push_back(pEnemy->getAnimatedSpriteBlood());
+					sprites.push_back(enemy.getAnimatedSpriteBlood());
 				}
 			}
 		}
@@ -228,7 +228,6 @@ namespace lpa
 		std::list<AnimatedSprite>::iterator it;
 		for (it = sprites.begin(); it != sprites.end(); ++it)
 		{
-			// Dibujar
 			target.draw(*it, sf::RenderStates::Default);
 		}
 		// HUD
@@ -236,13 +235,13 @@ namespace lpa
 		target.draw(m_currentHealth);
 		target.draw(m_orcsKilledBar);
 		// Texts
-		for (size_t i = 0; i < m_texts.size(); i++)
+		for (const auto& text : m_texts)
 		{
-			if (m_texts.at(i)->visible)
-				target.draw(m_texts.at(i)->text);
+			if (text.get().visible)
+				target.draw(text.get().text);
 		}
 	}
-	void GameWorld::collisionDetectionPlayerLimitsArena()
+	void GameplayScreen::collisionDetectionPlayerLimitsArena()
 	{
 		sf::Image imageArenaCollision = m_arena.getImageCollision();
 	
@@ -251,7 +250,7 @@ namespace lpa
 			m_player.movePreviousPosition();
 		}
 	}
-	void GameWorld::collisionDetectionEnemiesLimitsArena(sf::Time elapsedTime)
+	void GameplayScreen::collisionDetectionEnemiesLimitsArena(sf::Time elapsedTime)
 	{
 		const sf::Image& imageArenaCollision { m_arena.getImageCollision() };
 		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() };
@@ -270,7 +269,7 @@ namespace lpa
 			}
 		}
 	}
-	void GameWorld::collisionDetectionPlayerEnemies()
+	void GameplayScreen::collisionDetectionPlayerEnemies()
 	{
 		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() };
 		for (uint i { 0 }; i < maxWaveEnemies; i++)
@@ -286,7 +285,7 @@ namespace lpa
 		}
 	}
 
-	void GameWorld::collisionDetectionEnemiesPlayer()
+	void GameplayScreen::collisionDetectionEnemiesPlayer()
 	{
 		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() } ;
 		for (uint i { 0 }; i < maxWaveEnemies; i++)
@@ -302,7 +301,7 @@ namespace lpa
 		}
 	}
 
-	void GameWorld::checkAttackRangeEnemies()
+	void GameplayScreen::checkAttackRangeEnemies()
 	{
 		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() };
 		for (uint i { 0 }; i < maxWaveEnemies; i++)
@@ -312,37 +311,33 @@ namespace lpa
 			{
 				if (CollisionManager::boundingBoxRangeAttack(pEnemy->getAnimatedSprite(), m_player.getAnimatedSprite(), 0.3f))
 				{
-					pEnemy->addAttackablePlayer(&m_player);
-				}
-				else
-				{
-					pEnemy->removeAttackablePlayer(&m_player);
+					pEnemy->attack(m_player);
 				}
 			}
 		}
 	}
 
-	void GameWorld::checkAttackRangePlayer()
+	void GameplayScreen::checkAttackRangePlayer()
 	{
 		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() };
 		for (uint i = 0; i < maxWaveEnemies; i++)
 		{
-			Enemy* pEnemy = &m_waves[m_indexCurrentWave].getEnemyRefByIndex(i);
-			if (pEnemy->isActive())
+			auto& enemy = m_waves[m_indexCurrentWave].getEnemyRefByIndex(i);
+			if (enemy.isActive())
 			{
-				if (CollisionManager::boundingBoxRangeAttack(m_player.getAnimatedSprite(), pEnemy->getAnimatedSprite(), 0.3f))
+				if (CollisionManager::boundingBoxRangeAttack(m_player.getAnimatedSprite(), enemy.getAnimatedSprite(), 0.3f))
 				{
-					m_player.addAttackableEnemy(pEnemy);
+					m_player.addAttackableEnemy(enemy);
 				}
 				else
 				{
-					m_player.removeAttackableEnemy(pEnemy);
+					m_player.removeAttackableEnemy(enemy);
 				}
 			}
 		}
 	}
 
-	void GameWorld::collisionDetectionEnemyEmemies(sf::Time elapsedTime)
+	void GameplayScreen::collisionDetectionEnemyEmemies(sf::Time elapsedTime)
 	{
 		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() } ;
 		for (uint i { 0 }; i < maxWaveEnemies - 1; i++)

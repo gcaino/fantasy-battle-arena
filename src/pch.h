@@ -8,11 +8,13 @@
 /* C++ Standar Library */
 #include <algorithm>
 #include <array>
+#include <cassert>
 #include <iostream>
 #include <iterator>
 #include <list>
 #include <map>
 #include <memory>
+#include <optional>
 #include <stack>
 #include <string>
 #include <vector>

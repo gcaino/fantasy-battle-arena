@@ -9,7 +9,7 @@ namespace lpa
 	class Screen : public sf::Drawable
 	{
 	public:
-		Screen(ScreenManager* screenManager);
+		Screen(ScreenManager& screenManager);
 		virtual ~Screen() = default;
 
 		virtual void handleInput();
@@ -19,9 +19,9 @@ namespace lpa
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states);
 
 	protected:
-		sf::Texture		m_texture;
-		sf::Sprite		m_sprite;
-		ScreenManager*	m_screenManager;
+		sf::Texture			m_texture;
+		sf::Sprite			m_sprite;
+		Ref<ScreenManager>	m_screenManager;
 
 	};
 }

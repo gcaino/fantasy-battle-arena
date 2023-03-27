@@ -22,14 +22,17 @@ namespace lpa
 	}
 	// -----------------------------------------
 	Player::Player()
-		: m_speedAttack { sf::seconds(0.5f) }
+		: m_attackablesEnemies{}
+		, m_axeSoundBuffer{}
+		, m_axeSound{}
+		, m_speedAttack { sf::seconds(0.5f) }
 		, m_attacking { false }
 		, m_moving { false }
 		, m_rangeAttack {}
 	{
 		setupAnimations();
-		m_animatedSprite.setOrigin(m_animatedSprite.getGlobalBounds().width / 2, m_animatedSprite.getGlobalBounds().height);
-		m_animatedSpriteBlood.setOrigin(m_animatedSprite.getGlobalBounds().width / 2, m_animatedSprite.getGlobalBounds().height);
+		m_animatedSprite.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
+		m_animatedSpriteBlood.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
 		resetPosition();
 
 		m_health = 500.f;
@@ -141,7 +144,7 @@ namespace lpa
 		m_dieAnimation.addFrame(sf::IntRect(1992, 0, 166, 122));
 		m_dieAnimation.addFrame(sf::IntRect(2158, 0, 166, 122));
 		
-		m_currentAnimation = &m_idleAnimation;
+		m_currentAnimation = m_idleAnimation;
 		m_animatedSprite.setAnimation(*m_currentAnimation);
 
 		// RED BLOOD
@@ -202,7 +205,7 @@ namespace lpa
 			stopDown();
 		}
 	}
-	void Player::handlerInputsAttack(Wave* pWave, const sf::RenderWindow& window)
+	void Player::handlerInputsAttack(Wave& wave, const sf::RenderWindow& window)
 	{
 		if (!m_active) return;
 		// TODO - Para atacar con una tecla hay que tener en cuenta la dirección donde está pegando,
@@ -211,7 +214,7 @@ namespace lpa
 		{
 			m_attacking = true;
 
-			m_currentAnimation = &m_attackAnimation;
+			m_currentAnimation = m_attackAnimation;
 			m_animatedSprite.play(*m_currentAnimation);
 			m_axeSound.play();
 		}
@@ -223,21 +226,21 @@ namespace lpa
 		if (m_attacking)
 		{
 			sf::Vector2i targetCoords = sf::Mouse::getPosition(window);
-			std::size_t maxWaveEnemies = pWave->getMaxEnemies();
+			auto maxWaveEnemies { wave.getMaxEnemies() };
 
 			std::map<Enemy*, float> tempEnemyDictionary;
 			for (uint i = 0; i < maxWaveEnemies; i++)
 			{
-				Enemy* pEnemy = &pWave->getEnemyRefByIndex(i);
-				if (pEnemy->isAlive())
+				auto& enemy = wave.getEnemyRefByIndex(i);
+				if (enemy.isAlive())
 				{
-					if (pEnemy->getAnimatedSprite().getGlobalBounds().contains(static_cast<sf::Vector2f>(targetCoords)))
+					if (enemy.getAnimatedSprite().getGlobalBounds().contains(static_cast<sf::Vector2f>(targetCoords)))
 					{
 						//std::cout << "Attack with mouse, Coordinates: x: " << targetCoords.x << " - y: " << targetCoords.y << std::endl;
-						// Verifica si está en la lista de enmigos atacables (se incluyen por estar en rango de ataque)
-						if (isItemAttackablesEnemiesList(pEnemy))
+						// Verifica si está en la lista de enemigos atacables (se incluyen por estar en rango de ataque)
+						if (isItemAttackablesEnemiesList(enemy))
 						{
-							tempEnemyDictionary.insert(std::pair<Enemy*, float>(pEnemy, pEnemy->getPosition().y));
+							tempEnemyDictionary.insert(std::make_pair(&enemy, enemy.getPosition().y));
 						}
 					}
 				}
@@ -246,11 +249,8 @@ namespace lpa
 			// Para eliminar primero a los enemigos de la capa superior
 			if (!tempEnemyDictionary.empty())
 			{
-				size_t result = 0;
-				result = tempEnemyDictionary.size();
-				std::map<Enemy*, float>::iterator it;
-				it = std::max_element(tempEnemyDictionary.begin(), tempEnemyDictionary.end(), comparePositionY);
-				attack(it->first);
+				auto it = std::max_element(tempEnemyDictionary.begin(), tempEnemyDictionary.end(), comparePositionY);
+				attack(*it->first);
 			}
 		}
 	}
@@ -275,16 +275,16 @@ namespace lpa
 	}
 	void Player::resetPosition()
 	{
-		m_position.x = k_WindowWidth / 2;
-		m_position.y = k_WindowHeight / 2 + m_animatedSprite.getGlobalBounds().height;
+		m_position.x = k_WindowWidth * 0.5f;
+		m_position.y = k_WindowHeight * 0.5f + m_animatedSprite.getGlobalBounds().height;
 		m_animatedSprite.setPosition(m_position);
 	}
-	void Player::attack(Enemy* enemy)
+	void Player::attack(Enemy& enemy)
 	{
 		m_timeSinceLastAttack = m_clockAttack.getElapsedTime();
 		if (m_timeSinceLastAttack > m_speedAttack)
 		{
-			enemy->takeDamage(calculateDamage());
+			enemy.takeDamage(calculateDamage());
 			m_attacking = false;
 
 			m_clockAttack.restart();
@@ -305,20 +305,21 @@ namespace lpa
 		if (m_upPressed || m_downPressed || m_rightPressed || m_leftPressed)
 		{
 			m_moving = true;
-			m_currentAnimation = &m_walkingAnimation;
+			m_currentAnimation = m_walkingAnimation;
 			m_animatedSprite.play(*m_currentAnimation);
 		}
 		else
 		{
 			m_moving = false;
-			if (m_currentAnimation == &m_walkingAnimation)
+			auto& currentAnimation{ m_currentAnimation.value().get() };
+			if (&currentAnimation == &m_walkingAnimation)
 			{
 				m_animatedSprite.stop();
 			}
 
 			if (!m_animatedSprite.isPlaying())
 			{
-				m_currentAnimation = &m_idleAnimation;
+				m_currentAnimation = m_idleAnimation;
 				m_animatedSprite.play(*m_currentAnimation);
 			}	
 		}
@@ -343,7 +344,7 @@ namespace lpa
 		}
 		std::cout << "Player Health: " << m_health << std::endl;
 
-		m_currentAnimation = &m_hurtAnimation;
+		m_currentAnimation = m_hurtAnimation;
 		m_animatedSprite.play(*m_currentAnimation);
 		m_animatedSpriteBlood.play();
 	}
@@ -351,10 +352,11 @@ namespace lpa
 	{
 		if (m_health <= 0)
 		{
-			if (m_active && m_currentAnimation != &m_dieAnimation)
+			auto& currentAnimation{ m_currentAnimation.value().get() };
+			if (m_active && (&currentAnimation != &m_dieAnimation))
 			{
 				m_animatedSprite.pause();
-				m_currentAnimation = &m_dieAnimation;
+				m_currentAnimation = m_dieAnimation;
 				m_animatedSprite.play(*m_currentAnimation);
 				m_animatedSprite.setFrame(1);
 				m_active = false;
@@ -368,29 +370,39 @@ namespace lpa
 			}
 		}
 	}
-	void Player::addAttackableEnemy(Enemy* pEnemy)
+	void Player::addAttackableEnemy(Enemy& enemy)
 	{
-		if (isItemAttackablesEnemiesList(pEnemy))
+		if (isItemAttackablesEnemiesList(enemy))
 			return;
 
-		m_attackablesEnemies.push_back(pEnemy);
+		m_attackablesEnemies.emplace_back(std::ref(enemy));
 	}
-	void Player::removeAttackableEnemy(Enemy* pEnemy)
+	void Player::removeAttackableEnemy(Enemy& enemy)
 	{
-		if (isItemAttackablesEnemiesList(pEnemy))
-			m_attackablesEnemies.remove(pEnemy);
+		if (!isItemAttackablesEnemiesList(enemy)) return;
+		
+		m_attackablesEnemies.remove_if(
+				[&](const auto& enemyInContainer) { return &enemyInContainer.get() == &enemy; }
+		);
 	}
-	bool Player::isItemAttackablesEnemiesList(const Enemy* pEnemy)
+	bool Player::isItemAttackablesEnemiesList(const Enemy& enemy)
 	{
-		return (std::find(m_attackablesEnemies.begin(), m_attackablesEnemies.end(), pEnemy) != m_attackablesEnemies.end());
+		auto it = std::find_if(m_attackablesEnemies.begin(), m_attackablesEnemies.end(),
+			[&](const auto& enemyInContainer) { return &enemyInContainer.get() == &enemy; });
+		
+		if (it != m_attackablesEnemies.end())
+			return true;
+		
+		return false;
 	}
 	void Player::setAttributesAnimations()
 	{
-		if (m_currentAnimation == &m_idleAnimation)
+		auto& currentAnimation{ m_currentAnimation.value().get() };
+		if	(&currentAnimation == &m_idleAnimation)
 		{
 			m_animatedSprite.setFrameTime(sf::seconds(0.2f));
 		}
-		else if (m_currentAnimation == &m_attackAnimation || m_currentAnimation == &m_hurtAnimation)
+		else if (&currentAnimation == &m_attackAnimation || &currentAnimation == &m_hurtAnimation)
 		{
 			m_animatedSprite.setFrameTime(sf::seconds(0.05f));
 		}

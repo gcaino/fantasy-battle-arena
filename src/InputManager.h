@@ -5,7 +5,7 @@ namespace lpa
 	class InputManager
 	{
 	public:
-		InputManager();
+		InputManager() = default;
 
 		void moveUp()		{ m_upPressed    = true; }
 		void moveDown()		{ m_downPressed  = true; }
@@ -18,10 +18,10 @@ namespace lpa
 		void stopRigth()	{ m_rightPressed = false; }
 
 	protected:
-		bool m_upPressed;
-		bool m_downPressed;
-		bool m_leftPressed;
-		bool m_rightPressed;
+		bool m_upPressed	{ false };
+		bool m_downPressed	{ false };
+		bool m_leftPressed	{ false };
+		bool m_rightPressed	{ false };
 	};
 }
 
