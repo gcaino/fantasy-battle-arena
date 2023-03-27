@@ -137,16 +137,6 @@ namespace lpa
 			}
 		}
 	}
-	void GameplayScreen::handleInput()
-	{
-		if (isPaused()) return;
-
-		if (!m_player.isAlive())
-			return;
-
-		m_player.handlerInputs();
-		m_player.handlerInputsAttack(m_enemyManager, m_screenManager.get().getRenderWindow());
-	}
 	void GameplayScreen::update(sf::Time elapsedTime)
 	{
 		if (isPaused()) return;
@@ -155,6 +145,8 @@ namespace lpa
 
 		if (m_player.isAlive())
 		{
+			m_player.handlerInputs();
+			m_player.handlerInputsAttack(m_enemyManager, m_screenManager.get().getRenderWindow());
 			m_player.update(elapsedTime);
 			m_enemyManager.update(elapsedTime, m_player);
 
@@ -212,11 +204,7 @@ namespace lpa
 			}
 		}
 	}
-
 	void GameplayScreen::draw(sf::RenderTarget& target, sf::RenderStates states) const
-	{
-	}
-	void GameplayScreen::draw(sf::RenderTarget& target, sf::RenderStates states)
 	{
 		target.draw(m_arena.getSprite(), sf::RenderStates::Default);
 	

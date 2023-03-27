@@ -12,8 +12,9 @@ namespace lpa
 	public:
 		EnemyManager();
 
+		Enemy&		 getEnemyRefByIndex(uint index)			{ return m_enemies[index]; }
+		const Enemy& getEnemyRefByIndex(uint index) const	{ return m_enemies[index]; }
 		uint	getRemainingEnemies() const		{ return m_remainingEnemies; }
-		Enemy&  getEnemyRefByIndex(uint index)	{ return m_enemies[index]; }
 		uint	getIndexCurrentEnemy() const	{ return m_indexCurrentEnemy; }
 		uint	getMaxEnemies() const { return static_cast<uint>(m_enemies.size()); }
 

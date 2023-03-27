@@ -10,12 +10,12 @@ namespace lpa
 	public:
 		CreditScreen(ScreenManager& screenManager);
 
-		virtual void handleEvent(sf::Event event);
-		virtual void update(sf::Time elapsedTime);
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states);
+		void handleEvent(sf::Event event) override;
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	private:
+		sf::Texture	m_backgroundTexture;
+		sf::Sprite	m_backgroundSprite;
 		sf::Font	m_font;
 		sf::Text	m_text;
 	};

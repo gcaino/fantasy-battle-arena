@@ -1,17 +1,18 @@
 #include "pch.h"
 #include "CreditsScreen.h"
 // ----------------------------------------------------------------------------
-#include "Constants.h"
-#include "TitleScreen.h"
 #include "ScreenManager.h"
+#include "TitleScreen.h"
 // ----------------------------------------------------------------------------
 namespace lpa
 {
 	CreditScreen::CreditScreen(ScreenManager& screenManager)
 		: Screen(screenManager)
+		, m_backgroundTexture{}
+		, m_backgroundSprite {}
 	{
-		m_texture.loadFromFile(Constants::pathCreditsScreenImage);
-		m_sprite.setTexture(m_texture);
+		m_backgroundTexture.loadFromFile(Constants::pathCreditsScreenImage);
+		m_backgroundSprite.setTexture(m_backgroundTexture);
 		m_font.loadFromFile(Constants::creditScreenFont);
 		m_text.setFont(m_font);
 		m_text.setFillColor(sf::Color::Color(9, 18, 51));
@@ -33,18 +34,9 @@ namespace lpa
 		if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Escape)
 			m_screenManager.get().changeScreen(std::make_unique<TitleScreen>(m_screenManager));
 	}
-
-	void CreditScreen::update(sf::Time elapsedTime)
-	{
-	}
-
 	void CreditScreen::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
-	}
-
-	void CreditScreen::draw(sf::RenderTarget& target, sf::RenderStates states)
-	{
-		target.draw(m_sprite, states);
+		target.draw(m_backgroundSprite, states);
 		target.draw(m_text, states);
 	}
 }

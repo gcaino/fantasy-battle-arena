@@ -206,6 +206,7 @@
     <ClInclude Include="src\systems\SpawnManager.h" />
     <ClInclude Include="src\screens\TitleScreen.h" />
     <ClInclude Include="src\systems\EnemyManager.h" />
+    <ClInclude Include="src\UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

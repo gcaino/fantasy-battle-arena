@@ -46,7 +46,6 @@ namespace lpa
 	}
 	void GameEngine::update(sf::Time elapsedTime)
 	{	
-		m_screenManager.getScreen().handleInput();
 		m_screenManager.getScreen().update(elapsedTime);
 	}	
 	void GameEngine::draw()

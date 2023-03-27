@@ -6,14 +6,10 @@
 #include "systems\EnemyManager.h"
 #include "systems\SpawnManager.h"
 #include "Screen.h"
+#include "UI.h"
 // -----------------------------------------
 namespace lpa
 {
-	struct Text
-	{
-		sf::Text text	{};
-		bool	 visible{};
-	};
 	class ScreenManager;
 	// -----------------------------------------
 	class GameplayScreen : public Screen
@@ -21,18 +17,19 @@ namespace lpa
 	public:
 		GameplayScreen(ScreenManager& screenManager);
 
-		virtual void handleInput();
-		virtual void handleEvent(sf::Event event);
-		virtual void update(sf::Time elapsedTime);
-		void draw(sf::RenderTarget& target, sf::RenderStates states);
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+		void handleEvent(sf::Event event) override;
+		void update(sf::Time elapsedTime) override;
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	private:
-		using Texts = std::vector<Ref<Text>>;
+		using Texts = std::vector<Ref<ui::Text>>;
 		
 		void pause();
 		constexpr bool isPaused() const noexcept { return m_paused; }
 		
+		void setMousePointer();
+		void updateMousePointer();
+
 		void initTexts();
 		void addTextsToDraw();
 		void updateTexts();
@@ -50,9 +47,6 @@ namespace lpa
 		void checkAttackRangeEnemies();
 		void checkAttackRangePlayer();
 
-		void setMousePointer();
-		void updateMousePointer();
-
 		Texts				m_texts;
 		uint				m_score;
 		uint				m_highScore;
@@ -69,11 +63,11 @@ namespace lpa
 		sf::Sprite			m_spriteMousePointer;
 
 		sf::Font			m_orcHordeFont;
-		Text				m_EnemyManagerText;
-		Text				m_scoreText;
-		Text				m_victoryText;
-		Text				m_defeatText;
-		Text				m_objectiveText;
+		ui::Text			m_EnemyManagerText;
+		ui::Text			m_scoreText;
+		ui::Text			m_victoryText;
+		ui::Text			m_defeatText;
+		ui::Text			m_objectiveText;
 		sf::Texture			m_healthStatusBarTexture;
 		sf::Texture			m_currentHealthTexture;
 		sf::Texture			m_orcsKilledBarTexture;
