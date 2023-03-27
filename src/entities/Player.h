@@ -3,12 +3,12 @@
 #include "pch.h"
 #include "Character.h"
 #include "GameObject.h"
-#include "InputManager.h"
+#include "systems\InputManager.h"
 // -----------------------------------------
 namespace lpa
 {
 	class Enemy;
-	class Wave;
+	class EnemyManager;
 	// -----------------------------------------
 	class Player : public Character, public InputManager
 	{
@@ -29,7 +29,7 @@ namespace lpa
 		void setupAnimations();
 
 		void handlerInputs();
-		void handlerInputsAttack(Wave& wave, const sf::RenderWindow& window);
+		void handlerInputsAttack(EnemyManager& EnemyManager, const sf::RenderWindow& window);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 		void update(sf::Time elapsedTime);
 		void movePreviousPosition();

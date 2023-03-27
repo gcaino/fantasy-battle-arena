@@ -1,17 +1,17 @@
 #include "pch.h"
-#include "Wave.h"
+#include "EnemyManager.h"
 // -----------------------------------------
-#include "Player.h"
+#include "entities\Player.h"
 // -----------------------------------------
 namespace lpa
 {
-	Wave::Wave()
+	EnemyManager::EnemyManager()
 		: m_enemies {}
 		, m_remainingEnemies { k_MaxEnemies }
 		, m_indexCurrentEnemy { 0 }
 	{
 	}
-	void Wave::update(sf::Time elapsedTime, Player& player)
+	void EnemyManager::update(sf::Time elapsedTime, Player& player)
 	{
 		for (auto& enemy : m_enemies)
 		{
@@ -19,7 +19,7 @@ namespace lpa
 				enemy.update(elapsedTime, player);
 		}
 	}
-	void Wave::draw(sf::RenderTarget& target, sf::RenderStates states) const
+	void EnemyManager::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		for (const auto& enemy : m_enemies)
 		{

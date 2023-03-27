@@ -1,17 +1,17 @@
 #include "pch.h"
 #include "SpawnManager.h"
 // -----------------------------------------
-#include "Wave.h"
+#include "systems\EnemyManager.h"
 // -----------------------------------------
 namespace lpa
 {
-	SpawnManager::SpawnManager(Wave& wave)
+	SpawnManager::SpawnManager(EnemyManager& EnemyManager)
 		: m_spawnPointOne { 0, 768 * 0.75f }
 		, m_spawnPointTwo { 1024 - 100, 768 * 0.75f }
 		, m_spawnPoints   { m_spawnPointOne, m_spawnPointTwo }
 		, m_spawnTime { sf::seconds(10.f) }
 		, m_timeSinceLastSpawn { sf::seconds(0.f) }
-		, m_wave { wave }
+		, m_EnemyManager { EnemyManager }
 	{
 	}
 	void SpawnManager::update(sf::Time elapsedTime)
@@ -25,19 +25,19 @@ namespace lpa
 	}
 	void SpawnManager::spawnEnemies()
 	{
-		auto& wave { m_wave.get() };
-		if (wave.getRemainingEnemies() > 0)
+		auto& EnemyManager { m_EnemyManager.get() };
+		if (EnemyManager.getRemainingEnemies() > 0)
 		{
 			uint randomPoint { std::rand() % k_MaxSpawnPoints };
-			uint indexCurrentEnemy { wave.getIndexCurrentEnemy() };
+			uint indexCurrentEnemy { EnemyManager.getIndexCurrentEnemy() };
 
-			Enemy& currentEnemy { wave.getEnemyRefByIndex(indexCurrentEnemy) };
+			Enemy& currentEnemy { EnemyManager.getEnemyRefByIndex(indexCurrentEnemy) };
 			currentEnemy.setAlive(true);
 			currentEnemy.setActive(true);
 			currentEnemy.setPosition(m_spawnPoints[randomPoint]);
 
-			wave.increaseIndexCurrentEnemy();
-			wave.decreaseRemainingEnemies();
+			EnemyManager.increaseIndexCurrentEnemy();
+			EnemyManager.decreaseRemainingEnemies();
 
 			std::cout << "Spawn Enemy" << std::endl;
 		}

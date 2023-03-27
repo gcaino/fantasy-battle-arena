@@ -1,7 +1,7 @@
 #pragma once
 // -----------------------------------------
 #include "pch.h"
-#include "ScreenManager.h"
+#include "screens\ScreenManager.h"
 // -----------------------------------------
 namespace lpa
 {
@@ -17,15 +17,15 @@ namespace lpa
 		void setMousePointer();
 		void updateMousePointer();
 
+		void handleEvents();
 		void update(sf::Time elapsedTime);
 		void draw();
 
-		static constexpr unsigned int k_Fps { 60 };
+		static constexpr float k_Fps			{ 60.f };
+		static constexpr float k_TimePerFrame	{ 1.f / k_Fps };
 	
 		sf::RenderWindow	m_window;
 		ScreenManager		m_screenManager;
-		sf::Clock			m_clock;
-		sf::Time			m_elapsedTime;
 		bool				m_paused;
 			
 		sf::Texture			m_textureMousePointer;

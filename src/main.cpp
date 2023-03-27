@@ -25,7 +25,7 @@ int main()
 	}
 	catch (...)
 	{
-		std::cerr << "Abnormal termination\n" << std::endl;
+		std::cerr << "Abnormal termination" << std::endl;
 	}
 	return 0;
 }

@@ -21,52 +21,52 @@
     <ClCompile Include="src\Animation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Arena.cpp">
+    <ClCompile Include="src\entities\Arena.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Character.cpp">
+    <ClCompile Include="src\entities\Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\CollisionManager.cpp">
+    <ClCompile Include="src\systems\CollisionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\CreditsScreen.cpp">
+    <ClCompile Include="src\screens\CreditsScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Enemy.cpp">
+    <ClCompile Include="src\entities\Enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GameEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameObject.cpp">
+    <ClCompile Include="src\entities\GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameplayScreen.cpp">
+    <ClCompile Include="src\screens\GameplayScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\InputManager.cpp">
+    <ClCompile Include="src\systems\InputManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Player.cpp">
+    <ClCompile Include="src\entities\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Screen.cpp">
+    <ClCompile Include="src\screens\Screen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ScreenManager.cpp">
+    <ClCompile Include="src\screens\ScreenManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SpawnManager.cpp">
+    <ClCompile Include="src\systems\SpawnManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TitleScreen.cpp">
+    <ClCompile Include="src\screens\TitleScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Wave.cpp">
+    <ClCompile Include="src\systems\EnemyManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp">
@@ -80,52 +80,52 @@
     <ClInclude Include="src\Animation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Arena.h">
+    <ClInclude Include="src\entities\Arena.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Character.h">
+    <ClInclude Include="src\entities\Character.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\CollisionManager.h">
+    <ClInclude Include="src\systems\CollisionManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\CreditsScreen.h">
+    <ClInclude Include="src\screens\CreditsScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Enemy.h">
+    <ClInclude Include="src\entities\Enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\GameEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameObject.h">
+    <ClInclude Include="src\entities\GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameplayScreen.h">
+    <ClInclude Include="src\screens\GameplayScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\InputManager.h">
+    <ClInclude Include="src\systems\InputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Player.h">
+    <ClInclude Include="src\entities\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Screen.h">
+    <ClInclude Include="src\screens\Screen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ScreenManager.h">
+    <ClInclude Include="src\screens\ScreenManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\SpawnManager.h">
+    <ClInclude Include="src\systems\SpawnManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\TitleScreen.h">
+    <ClInclude Include="src\screens\TitleScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Wave.h">
+    <ClInclude Include="src\systems\EnemyManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Aliases.h">

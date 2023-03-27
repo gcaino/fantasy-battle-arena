@@ -1,17 +1,16 @@
 #pragma once
 // -----------------------------------------
 #include "pch.h"
-#include "Enemy.h"
+#include "entities\Enemy.h"
 // -----------------------------------------
 namespace lpa
 {
-	// -----------------------------------------
 	class Player;
-	// -----------------------------------------
-	class Wave : public sf::Drawable
+	// -------------------------------------
+	class EnemyManager : public sf::Drawable
 	{
 	public:
-		Wave();
+		EnemyManager();
 
 		uint	getRemainingEnemies() const		{ return m_remainingEnemies; }
 		Enemy&  getEnemyRefByIndex(uint index)	{ return m_enemies[index]; }

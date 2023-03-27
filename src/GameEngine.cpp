@@ -1,52 +1,60 @@
 #include "pch.h"
 #include "GameEngine.h"
 // -----------------------------------------
-#include "TitleScreen.h"
+#include "screens\TitleScreen.h"
 // -----------------------------------------
 namespace lpa
 {
 	GameEngine::GameEngine()
 		: m_window{}
 		, m_screenManager{ m_window }
-		, m_clock{}
-		, m_elapsedTime{}
 		, m_paused{ false }
 		, m_textureMousePointer{}
 		, m_spriteMousePointer{}
 	{
 		m_window.create(sf::VideoMode(Constants::k_WindowWidth,
 									  Constants::k_WindowHeight), Constants::k_WindowTitle.data());
-		m_window.setFramerateLimit(k_Fps);
 		setMousePointer();
 	
 		m_screenManager.addScreen(std::make_unique<TitleScreen>(m_screenManager));
 	}	
 	void GameEngine::run()
 	{	
+		sf::Clock clock {};
+		sf::Time  elapsedTime{ sf::Time::Zero };
+		sf::Time  timePerFrame{ sf::seconds(k_TimePerFrame) };
 		while (m_window.isOpen())
 		{
-			sf::Event event;
-			while (m_window.pollEvent(event))
+			handleEvents();
+
+			elapsedTime += clock.restart();
+			while (elapsedTime > timePerFrame)
 			{
-				if (event.type == sf::Event::Closed)
-					m_window.close();
-	
-				m_screenManager.getScreen().handleEvent(event);
+				elapsedTime -= timePerFrame;
+				update(timePerFrame);
 			}
-			m_screenManager.getScreen().handleInput();
-	
-			m_elapsedTime = m_clock.restart();
-			update(m_elapsedTime);
-	
+
 			draw();
 		}
 	}	
+	void GameEngine::handleEvents()
+	{
+		sf::Event event;
+		while (m_window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				m_window.close();
+
+			m_screenManager.getScreen().handleEvent(event);
+		}
+	}
 	void GameEngine::update(sf::Time elapsedTime)
 	{	
 		updateMousePointer();
-	
+		m_screenManager.getScreen().handleInput();
+
 		if (!m_paused)
-			m_screenManager.getScreen().update(m_elapsedTime);
+			m_screenManager.getScreen().update(elapsedTime);
 	}	
 	void GameEngine::draw()
 	{	

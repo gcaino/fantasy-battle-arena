@@ -1,7 +1,7 @@
 #pragma once
 // -----------------------------------
 #include "pch.h"
-#include "GameObject.h"
+#include "entities\GameObject.h"
 // -----------------------------------
 namespace lpa
 {

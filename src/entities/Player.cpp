@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "Player.h"
 // -----------------------------------------
-#include "CollisionManager.h"
+#include "systems\CollisionManager.h"
 #include "Constants.h"
 #include "Enemy.h"
-#include "Wave.h"
+#include "systems\EnemyManager.h"
 // -----------------------------------------
 namespace lpa
 {
@@ -205,7 +205,7 @@ namespace lpa
 			stopDown();
 		}
 	}
-	void Player::handlerInputsAttack(Wave& wave, const sf::RenderWindow& window)
+	void Player::handlerInputsAttack(EnemyManager& EnemyManager, const sf::RenderWindow& window)
 	{
 		if (!m_active) return;
 		// TODO - Para atacar con una tecla hay que tener en cuenta la dirección donde está pegando,
@@ -226,12 +226,12 @@ namespace lpa
 		if (m_attacking)
 		{
 			sf::Vector2i targetCoords = sf::Mouse::getPosition(window);
-			auto maxWaveEnemies { wave.getMaxEnemies() };
+			auto maxEnemyManagerEnemies { EnemyManager.getMaxEnemies() };
 
 			std::map<Enemy*, float> tempEnemyDictionary;
-			for (uint i = 0; i < maxWaveEnemies; i++)
+			for (uint i = 0; i < maxEnemyManagerEnemies; i++)
 			{
-				auto& enemy = wave.getEnemyRefByIndex(i);
+				auto& enemy = EnemyManager.getEnemyRefByIndex(i);
 				if (enemy.isAlive())
 				{
 					if (enemy.getAnimatedSprite().getGlobalBounds().contains(static_cast<sf::Vector2f>(targetCoords)))

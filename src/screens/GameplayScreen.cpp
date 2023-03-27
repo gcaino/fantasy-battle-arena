@@ -2,8 +2,8 @@
 #include "GameplayScreen.h"
 // -----------------------------------------
 #include "AnimatedSprite.h"
-#include "CollisionManager.h"
-#include "GameObject.h"
+#include "systems\CollisionManager.h"
+#include "entities\GameObject.h"
 #include "ScreenManager.h"
 #include "TitleScreen.h"
 #include "CreditsScreen.h"
@@ -18,9 +18,8 @@ namespace lpa
 	GameplayScreen::GameplayScreen(ScreenManager& screenManager)
 		: Screen(screenManager)
 		, m_texts {}
-		, m_indexCurrentWave {}
 		, m_victory	{false}
-		, m_spawnManager{ m_waves[0] }
+		, m_spawnManager{ m_enemyManager }
 		, m_score		{}
 		, m_highScore	{}
 		, m_waitTime	{ sf::seconds(10.f) }
@@ -51,18 +50,18 @@ namespace lpa
 	void GameplayScreen::initTexts()
 	{
 		m_orcHordeFont.loadFromFile(Constants::ortHordeFont);
-		m_waveText.text.setFont(m_orcHordeFont);
-		m_waveText.text.setFillColor(sf::Color::Color(255, 175, 5));
-		m_waveText.text.setCharacterSize(60);
-		m_waveText.text.setStyle(sf::Text::Bold);
-		m_waveText.text.setString("ORCS ARE COMING...");
-		m_waveText.text.setPosition((Constants::k_WindowWidth * 0.5f) - (m_waveText.text.getGlobalBounds().width * 0.5f), Constants::k_WindowHeight * 0.2f);
-		m_waveText.visible = true;
+		m_EnemyManagerText.text.setFont(m_orcHordeFont);
+		m_EnemyManagerText.text.setFillColor(sf::Color::Color(255, 175, 5));
+		m_EnemyManagerText.text.setCharacterSize(60);
+		m_EnemyManagerText.text.setStyle(sf::Text::Bold);
+		m_EnemyManagerText.text.setString("ORCS ARE COMING...");
+		m_EnemyManagerText.text.setPosition((Constants::k_WindowWidth * 0.5f) - (m_EnemyManagerText.text.getGlobalBounds().width * 0.5f), Constants::k_WindowHeight * 0.2f);
+		m_EnemyManagerText.visible = true;
 
 		m_objectiveText.text.setFont(m_orcHordeFont);
 		m_objectiveText.text.setFillColor(sf::Color::Black);
 		m_objectiveText.text.setCharacterSize(23);
-		m_objectiveText.text.setString("[OBJECTIVE: Kill " + std::to_string(m_waves[m_indexCurrentWave].getMaxEnemies()) + " Orcs]");
+		m_objectiveText.text.setString("[OBJECTIVE: Kill " + std::to_string(m_enemyManager.getMaxEnemies()) + " Orcs]");
 		m_objectiveText.text.setPosition(sf::Vector2f(Constants::k_WindowWidth * 0.67f, 50.f));
 		m_objectiveText.visible = true;
 
@@ -92,7 +91,7 @@ namespace lpa
 
 	void GameplayScreen::addTextsToDraw()
 	{
-		m_texts.push_back(m_waveText);
+		m_texts.push_back(m_EnemyManagerText);
 		m_texts.push_back(m_scoreText);
 		m_texts.push_back(m_victoryText);
 		m_texts.push_back(m_defeatText);
@@ -115,7 +114,7 @@ namespace lpa
 		m_elapsedWaitTime += elapsedTime;
 		if (m_elapsedWaitTime > m_waitTime)
 		{
-			m_waveText.visible = false;
+			m_EnemyManagerText.visible = false;
 		}
 	}
 
@@ -134,14 +133,14 @@ namespace lpa
 			return;
 
 		m_player.handlerInputs();
-		m_player.handlerInputsAttack(m_waves[m_indexCurrentWave], m_screenManager.get().getRenderWindow());
+		m_player.handlerInputsAttack(m_enemyManager, m_screenManager.get().getRenderWindow());
 	}
 	void GameplayScreen::update(sf::Time elapsedTime)
 	{
 		if (m_player.isAlive())
 		{
 			m_player.update(elapsedTime);
-			m_waves[m_indexCurrentWave].update(elapsedTime, m_player);
+			m_enemyManager.update(elapsedTime, m_player);
 
 			collisionDetectionPlayerLimitsArena();
 			collisionDetectionEnemiesLimitsArena(elapsedTime);
@@ -166,7 +165,7 @@ namespace lpa
 
 	void GameplayScreen::checkVictoryCondition(sf::Time elapsedTime)
 	{
-		if (m_waves[m_indexCurrentWave].getMaxEnemies() == m_player.getEnemiesKilled())
+		if (m_enemyManager.getMaxEnemies() == m_player.getEnemiesKilled())
 		{
 			m_victory = true;
 			m_victoryText.visible = true;
@@ -209,10 +208,10 @@ namespace lpa
 			sprites.push_back(m_player.getAnimatedSpriteBlood());
 		}
 
-		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() };
-		for (uint i { 0 }; i < maxWaveEnemies; i++)
+		auto maxEnemyManagerEnemies { m_enemyManager.getMaxEnemies() };
+		for (uint i { 0 }; i < maxEnemyManagerEnemies; i++)
 		{
-			const auto& enemy { m_waves[m_indexCurrentWave].getEnemyRefByIndex(i) };
+			const auto& enemy { m_enemyManager.getEnemyRefByIndex(i) };
 			if (enemy.isAlive())
 			{
 				sprites.push_back(enemy.getAnimatedSprite());
@@ -253,10 +252,10 @@ namespace lpa
 	void GameplayScreen::collisionDetectionEnemiesLimitsArena(sf::Time elapsedTime)
 	{
 		const sf::Image& imageArenaCollision { m_arena.getImageCollision() };
-		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() };
-		for (uint i { 0 }; i < maxWaveEnemies; i++)
+		auto maxEnemyManagerEnemies { m_enemyManager.getMaxEnemies() };
+		for (uint i { 0 }; i < maxEnemyManagerEnemies; i++)
 		{
-			Enemy& enemy = m_waves.at(m_indexCurrentWave).getEnemyRefByIndex(i);
+			Enemy& enemy = m_enemyManager.getEnemyRefByIndex(i);
 			if (enemy.isActive())
 			{
 				if (CollisionManager::pixelTest(enemy.getAnimatedSprite(), imageArenaCollision))
@@ -271,13 +270,13 @@ namespace lpa
 	}
 	void GameplayScreen::collisionDetectionPlayerEnemies()
 	{
-		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() };
-		for (uint i { 0 }; i < maxWaveEnemies; i++)
+		auto maxEnemyManagerEnemies { m_enemyManager.getMaxEnemies() };
+		for (uint i { 0 }; i < maxEnemyManagerEnemies; i++)
 		{
-			Enemy* pEnemy = &m_waves[m_indexCurrentWave].getEnemyRefByIndex(i);
-			if (pEnemy->isActive())
+			auto& enemy{ m_enemyManager.getEnemyRefByIndex(i) };
+			if (enemy.isActive())
 			{
-				if (CollisionManager::boundingBoxTest(m_player.getAnimatedSprite(), pEnemy->getAnimatedSprite(), 0.5f))
+				if (CollisionManager::boundingBoxTest(m_player.getAnimatedSprite(), enemy.getAnimatedSprite(), 0.5f))
 				{
 					m_player.movePreviousPosition();
 				}
@@ -287,15 +286,15 @@ namespace lpa
 
 	void GameplayScreen::collisionDetectionEnemiesPlayer()
 	{
-		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() } ;
-		for (uint i { 0 }; i < maxWaveEnemies; i++)
+		auto maxEnemyManagerEnemies { m_enemyManager.getMaxEnemies() } ;
+		for (uint i { 0 }; i < maxEnemyManagerEnemies; i++)
 		{
-			Enemy* pEnemy = &m_waves[m_indexCurrentWave].getEnemyRefByIndex(i);
-			if (pEnemy->isActive())
+			auto& enemy { m_enemyManager.getEnemyRefByIndex(i) };
+			if (enemy.isActive())
 			{
-				if (CollisionManager::boundingBoxTest(pEnemy->getAnimatedSprite(), m_player.getAnimatedSprite(), 0.5f))
+				if (CollisionManager::boundingBoxTest(enemy.getAnimatedSprite(), m_player.getAnimatedSprite(), 0.5f))
 				{
-					pEnemy->movePreviousPosition();
+					enemy.movePreviousPosition();
 				}
 			}
 		}
@@ -303,15 +302,15 @@ namespace lpa
 
 	void GameplayScreen::checkAttackRangeEnemies()
 	{
-		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() };
-		for (uint i { 0 }; i < maxWaveEnemies; i++)
+		auto maxEnemyManagerEnemies { m_enemyManager.getMaxEnemies() };
+		for (uint i { 0 }; i < maxEnemyManagerEnemies; i++)
 		{
-			Enemy* pEnemy = &m_waves[m_indexCurrentWave].getEnemyRefByIndex(i);
-			if (pEnemy->isActive())
+			auto& enemy { m_enemyManager.getEnemyRefByIndex(i) };
+			if (enemy.isActive())
 			{
-				if (CollisionManager::boundingBoxRangeAttack(pEnemy->getAnimatedSprite(), m_player.getAnimatedSprite(), 0.3f))
+				if (CollisionManager::boundingBoxRangeAttack(enemy.getAnimatedSprite(), m_player.getAnimatedSprite(), 0.3f))
 				{
-					pEnemy->attack(m_player);
+					enemy.attack(m_player);
 				}
 			}
 		}
@@ -319,10 +318,10 @@ namespace lpa
 
 	void GameplayScreen::checkAttackRangePlayer()
 	{
-		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() };
-		for (uint i = 0; i < maxWaveEnemies; i++)
+		auto maxEnemyManagerEnemies { m_enemyManager.getMaxEnemies() };
+		for (uint i = 0; i < maxEnemyManagerEnemies; i++)
 		{
-			auto& enemy = m_waves[m_indexCurrentWave].getEnemyRefByIndex(i);
+			auto& enemy { m_enemyManager.getEnemyRefByIndex(i) };
 			if (enemy.isActive())
 			{
 				if (CollisionManager::boundingBoxRangeAttack(m_player.getAnimatedSprite(), enemy.getAnimatedSprite(), 0.3f))
@@ -339,23 +338,23 @@ namespace lpa
 
 	void GameplayScreen::collisionDetectionEnemyEmemies(sf::Time elapsedTime)
 	{
-		auto maxWaveEnemies { m_waves[m_indexCurrentWave].getMaxEnemies() } ;
-		for (uint i { 0 }; i < maxWaveEnemies - 1; i++)
+		auto maxEnemyManagerEnemies { m_enemyManager.getMaxEnemies() } ;
+		for (uint i { 0 }; i < maxEnemyManagerEnemies - 1; i++)
 		{
-			Enemy* enemy = &m_waves[m_indexCurrentWave].getEnemyRefByIndex(i);
-			if (enemy->isActive())
+			auto& enemy { m_enemyManager.getEnemyRefByIndex(i) };
+			if (enemy.isActive())
 			{
-				for (uint j = 0; j < maxWaveEnemies; j++)
+				for (uint j = 0; j < maxEnemyManagerEnemies; j++)
 				{
-					Enemy* enemy2 = &m_waves[m_indexCurrentWave].getEnemyRefByIndex(j);
-					if (enemy2->isActive() && (enemy != enemy2))
+					auto& enemy2 { m_enemyManager.getEnemyRefByIndex(j) };
+					if (enemy2.isActive() && (&enemy != &enemy2))
 					{
-						if (CollisionManager::boundingBoxTest(enemy->getAnimatedSprite(), enemy2->getAnimatedSprite(), 0.7f))
+						if (CollisionManager::boundingBoxTest(enemy.getAnimatedSprite(), enemy2.getAnimatedSprite(), 0.7f))
 						{
-							enemy->movePreviousPosition();
-							if ((enemy->getPosition().y + (enemy->getVelocity() * elapsedTime.asSeconds())) < Constants::k_WindowHeight - 30.f)
+							enemy.movePreviousPosition();
+							if ((enemy.getPosition().y + (enemy.getVelocity() * elapsedTime.asSeconds())) < Constants::k_WindowHeight - 30.f)
 							{
-								enemy->setPosition(enemy->getPosition().x, enemy->getPosition().y + (enemy->getVelocity() * elapsedTime.asSeconds()));
+								enemy.setPosition(enemy.getPosition().x, enemy.getPosition().y + (enemy.getVelocity() * elapsedTime.asSeconds()));
 							}
 							return;
 						}

@@ -4,12 +4,12 @@
 // -----------------------------------------
 namespace lpa
 {
-	class Wave;
+	class EnemyManager;
 	// -----------------------------------------
 	class SpawnManager
 	{
 	public:
-		SpawnManager(Wave& wave);
+		SpawnManager(EnemyManager& EnemyManager);
 
 		void update(sf::Time elapsedTime);
 
@@ -22,7 +22,7 @@ namespace lpa
 		
 		sf::Time	  m_spawnTime;
 		sf::Time	  m_timeSinceLastSpawn;
-		Ref<Wave>	  m_wave;
+		Ref<EnemyManager>	  m_EnemyManager;
 
 		void spawnEnemies();
 	};

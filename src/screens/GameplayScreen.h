@@ -1,10 +1,10 @@
 #pragma once
 // -----------------------------------------
 #include "pch.h"
-#include "Arena.h"
-#include "Player.h"
-#include "SpawnManager.h"
-#include "Wave.h"
+#include "entities\Arena.h"
+#include "entities\Player.h"
+#include "systems\EnemyManager.h"
+#include "systems\SpawnManager.h"
 #include "Screen.h"
 // -----------------------------------------
 namespace lpa
@@ -28,8 +28,6 @@ namespace lpa
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	private:
-		static constexpr uint k_MaxWave{ 5 };
-		using Waves = std::array<Wave, k_MaxWave>;
 		using Texts = std::vector<Ref<Text>>;
 
 		void initTexts();
@@ -55,14 +53,13 @@ namespace lpa
 		bool				m_victory;
 		Player				m_player;
 		Arena				m_arena;
-		uint				m_indexCurrentWave;
-		Waves				m_waves;
+		EnemyManager		m_enemyManager;
 		SpawnManager		m_spawnManager;
 							
 		sf::Music			m_orcCampMusic;
 							
 		sf::Font			m_orcHordeFont;
-		Text				m_waveText;
+		Text				m_EnemyManagerText;
 		Text				m_scoreText;
 		Text				m_victoryText;
 		Text				m_defeatText;
