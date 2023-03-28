@@ -2,17 +2,18 @@
 #include "CreditsScreen.h"
 // ----------------------------------------------------------------------------
 #include "ScreenManager.h"
+#include "TextureManager.h"
 #include "TitleScreen.h"
 // ----------------------------------------------------------------------------
 namespace lpa
 {
 	CreditScreen::CreditScreen(ScreenManager& screenManager)
 		: Screen(screenManager)
-		, m_backgroundTexture{}
 		, m_backgroundSprite {}
 	{
-		m_backgroundTexture.loadFromFile(Constants::pathCreditsScreenImage);
-		m_backgroundSprite.setTexture(m_backgroundTexture);
+		TextureManager::Insert("background-credits", Constants::pathCreditsScreenImage);
+		m_backgroundSprite.setTexture(TextureManager::GetTextureByKey("background-credits"));
+		
 		m_font.loadFromFile(Constants::creditScreenFont);
 		m_text.setFont(m_font);
 		m_text.setFillColor(sf::Color::Color(9, 18, 51));
@@ -21,7 +22,6 @@ namespace lpa
 
 		std::string credits;
 		credits = "\t\t\t\tCREDITS\n";
-		credits.append("Profesor: Sergio Baretto\n\n");
 		credits.append("Diseño: Germán Caíno\n");
 		credits.append("Programación: Germán Caíno\n");
 		credits.append("Arte: https://craftpix.net/ \n");

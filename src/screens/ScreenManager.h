@@ -10,8 +10,8 @@ namespace lpa
 	public:
 		ScreenManager(sf::RenderWindow& m_window);
 
-		sf::RenderWindow& getRenderWindow()				{ return m_window; }
-		const sf::RenderWindow& getRenderWindow() const { return m_window; }
+		constexpr sf::RenderWindow& getRenderWindow()		noexcept  { return m_window; }
+		constexpr sf::RenderWindow& getRenderWindow() const noexcept  { return m_window; }
 
 		void addScreen(UPtr<Screen> screen);
 		void changeScreen(UPtr<Screen> screen);

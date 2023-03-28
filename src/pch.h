@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
+#include <filesystem>
 #include <functional>
 #include <iostream>
 #include <iterator>

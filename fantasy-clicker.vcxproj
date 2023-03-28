@@ -184,6 +184,7 @@
     <ClCompile Include="src\systems\SpawnManager.cpp" />
     <ClCompile Include="src\screens\TitleScreen.cpp" />
     <ClCompile Include="src\systems\EnemyManager.cpp" />
+    <ClCompile Include="src\TextureManager.cpp" />
     <ClCompile Include="src\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -207,6 +208,7 @@
     <ClInclude Include="src\systems\SpawnManager.h" />
     <ClInclude Include="src\screens\TitleScreen.h" />
     <ClInclude Include="src\systems\EnemyManager.h" />
+    <ClInclude Include="src\TextureManager.h" />
     <ClInclude Include="src\UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

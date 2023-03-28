@@ -14,7 +14,6 @@ namespace lpa
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	private:
-		sf::Texture	m_backgroundTexture;
 		sf::Sprite	m_backgroundSprite;
 		sf::Font	m_font;
 		sf::Text	m_text;

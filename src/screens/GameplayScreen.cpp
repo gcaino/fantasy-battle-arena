@@ -7,6 +7,7 @@
 #include "ScreenManager.h"
 #include "TitleScreen.h"
 #include "CreditsScreen.h"
+#include "TextureManager.h"
 // -----------------------------------------
 namespace lpa
 {
@@ -17,32 +18,34 @@ namespace lpa
 	// -----------------------------------------
 	GameplayScreen::GameplayScreen(ScreenManager& screenManager)
 		: Screen(screenManager)
-		, m_texts {}
-		, m_victory	{false}
-		, m_enemyManager	{}
-		, m_spawnManager	{ m_enemyManager }
-		, m_paused	{ false }
+		, m_enemyManager{}
+		, m_spawnManager{ m_enemyManager }
+		, m_texts		{}
+		, m_victory		{false}
+		, m_paused		{ false }
 		, m_score		{}
 		, m_highScore	{}
 		, m_waitTime	{ sf::seconds(10.f) }
 		, m_victoryTime	{ sf::seconds(8.f) }
 		, m_elapsedWaitTime		{ sf::Time::Zero }
 		, m_elapsedVictoryTime	{ sf::Time::Zero }
-		, m_textureMousePointer{}
 		, m_spriteMousePointer{}
 	{
 		setMousePointer();
 		initSounds();
 		initTexts();
 
-		m_healthStatusBarTexture.loadFromFile(Constants::textureHealthStatusBar);
-		m_healthStatusBar.setTexture(m_healthStatusBarTexture);
+		TextureManager::Insert("health-status-bar", Constants::textureHealthStatusBar);
+		TextureManager::Insert("current-healt", Constants::textureCurrentHealth);
+		TextureManager::Insert("orcs-killed-bar", Constants::textureOrcsKilledBar);
+		
+		m_healthStatusBar.setTexture(TextureManager::GetTextureByKey("health-status-bar"));
 		m_healthStatusBar.setPosition(sf::Vector2f(10.f, 15.f));
-		m_currentHealthTexture.loadFromFile(Constants::textureCurrentHealth);
-		m_currentHealth.setTexture(m_currentHealthTexture);
+
+		m_currentHealth.setTexture(TextureManager::GetTextureByKey("current-healt"));
 		m_currentHealth.setPosition(sf::Vector2f(76.f, 50.f));
-		m_orcsKilledBarTexture.loadFromFile(Constants::textureOrcsKilledBar);
-		m_orcsKilledBar.setTexture(m_orcsKilledBarTexture);
+
+		m_orcsKilledBar.setTexture(TextureManager::GetTextureByKey("orcs-killed-bar"));
 		m_orcsKilledBar.setPosition(sf::Vector2f(330.f, 15.f));
 	}
 	void GameplayScreen::initSounds()
@@ -255,8 +258,8 @@ namespace lpa
 		auto& window{ m_screenManager.get().getRenderWindow() };
 		window.setMouseCursorVisible(false);
 
-		m_textureMousePointer.loadFromFile(Constants::texturesPathMousePointerAxe);
-		m_spriteMousePointer.setTexture(m_textureMousePointer);
+		TextureManager::Insert("mouse-pointer", Constants::texturesPathMousePointerAxe);
+		m_spriteMousePointer.setTexture(TextureManager::GetTextureByKey("mouse-pointer"));
 
 		sf::Vector2f mousePointerOrigin;
 		mousePointerOrigin.x = m_spriteMousePointer.getGlobalBounds().width / 2;

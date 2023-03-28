@@ -2,6 +2,7 @@
 #include "TitleScreen.h"
 // ----------------------------------------------------------------------------
 #include "ScreenManager.h"
+#include "TextureManager.h"
 #include "GameplayScreen.h"
 #include "CreditsScreen.h"
 // ----------------------------------------------------------------------------
@@ -9,12 +10,11 @@ namespace lpa
 {
 	TitleScreen::TitleScreen(ScreenManager& screenManager)
 		: Screen(screenManager)
-		, m_backgroundTexture{}
 		, m_backgroundSprite {}
 		, m_buttons{{ui::Button{m_screenManager.get().getRenderWindow()}, ui::Button{m_screenManager.get().getRenderWindow()}}}
 	{
-		m_backgroundTexture.loadFromFile(Constants::pathTitleScreenImage);
-		m_backgroundSprite.setTexture(m_backgroundTexture);
+		TextureManager::Insert("background-title", Constants::pathTitleScreenImage);
+		m_backgroundSprite.setTexture(TextureManager::GetTextureByKey("background-title"));
 
 		m_soundBufferButtonClick.loadFromFile(Constants::clickButtonSound);
 		m_soundButtonClick.setBuffer(m_soundBufferButtonClick);

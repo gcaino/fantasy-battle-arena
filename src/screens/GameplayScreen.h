@@ -47,33 +47,31 @@ namespace lpa
 		void checkAttackRangeEnemies();
 		void checkAttackRangePlayer();
 
+		EnemyManager		m_enemyManager;
+		SpawnManager		m_spawnManager;
+
 		Texts				m_texts;
 		uint				m_score;
 		uint				m_highScore;
 		bool				m_victory;
 		Player				m_player;
 		Arena				m_arena;
-		EnemyManager		m_enemyManager;
-		SpawnManager		m_spawnManager;
 		bool				m_paused;
 
 		sf::Music			m_orcCampMusic;
-				
-		sf::Texture			m_textureMousePointer;
-		sf::Sprite			m_spriteMousePointer;
-
+		
 		sf::Font			m_orcHordeFont;
 		ui::Text			m_EnemyManagerText;
 		ui::Text			m_scoreText;
 		ui::Text			m_victoryText;
 		ui::Text			m_defeatText;
 		ui::Text			m_objectiveText;
-		sf::Texture			m_healthStatusBarTexture;
-		sf::Texture			m_currentHealthTexture;
-		sf::Texture			m_orcsKilledBarTexture;
+
+		sf::Sprite			m_spriteMousePointer;
 		sf::Sprite			m_orcsKilledBar;
 		sf::Sprite			m_healthStatusBar;
 		sf::Sprite			m_currentHealth;
+
 		sf::Time			m_elapsedWaitTime;
 		sf::Time			m_waitTime;
 		sf::Time			m_victoryTime;

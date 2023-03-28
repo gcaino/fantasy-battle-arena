@@ -57,7 +57,6 @@ namespace lpa
 		Animation		m_dieAnimation;
 		Animation		m_idleAnimation;
 		
-
 		sf::Texture		m_texture;
 		sf::Texture		m_textureIdle;
 		sf::Texture		m_textureWalk;
