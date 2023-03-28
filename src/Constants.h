@@ -45,9 +45,7 @@ namespace Constants
 
 	const std::string textureCreditsButton = "assets/textures/button-credits-hover.png";
 	const std::string texturePlayButton = "assets/textures/button-play-hover.png";
-	const std::string textureHealthStatusBar = "assets/textures/healthStatusBar-1024.png";
-	const std::string textureCurrentHealth = "assets/textures/currentHelath-1024.png";
-	const std::string textureOrcsKilledBar = "assets/textures/orcs-killed-bar-1024.png";
+
 }
 
 

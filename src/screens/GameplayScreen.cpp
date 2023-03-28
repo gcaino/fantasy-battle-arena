@@ -8,6 +8,7 @@
 #include "TitleScreen.h"
 #include "CreditsScreen.h"
 #include "TextureManager.h"
+#include "JsonUtility.h"
 // -----------------------------------------
 namespace lpa
 {
@@ -35,10 +36,16 @@ namespace lpa
 		initSounds();
 		initTexts();
 
-		TextureManager::Insert("health-status-bar", Constants::textureHealthStatusBar);
-		TextureManager::Insert("current-healt", Constants::textureCurrentHealth);
-		TextureManager::Insert("orcs-killed-bar", Constants::textureOrcsKilledBar);
-		
+		auto json = json::ParseJsonFile("assets/json/assets.json");
+		for (const auto& assets : json)
+		{
+			if (assets.contains("textures"))
+			{
+				for (const auto& texture : assets["textures"])
+					TextureManager::Insert(texture["key"], texture["path"]);
+			}	
+		}
+
 		m_healthStatusBar.setTexture(TextureManager::GetTextureByKey("health-status-bar"));
 		m_healthStatusBar.setPosition(sf::Vector2f(10.f, 15.f));
 
