@@ -184,6 +184,7 @@
     <ClCompile Include="src\systems\SpawnManager.cpp" />
     <ClCompile Include="src\screens\TitleScreen.cpp" />
     <ClCompile Include="src\systems\EnemyManager.cpp" />
+    <ClCompile Include="src\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h" />

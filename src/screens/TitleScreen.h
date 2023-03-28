@@ -16,10 +16,11 @@ namespace lpa
 
 	private:
 		static constexpr uint k_MaxButtons { 2 };
+		using Buttons = std::array<ui::Button, k_MaxButtons>;
 
 		sf::Texture		m_backgroundTexture;
 		sf::Sprite		m_backgroundSprite;
-		ui::Button		m_buttons[k_MaxButtons];
+		Buttons			m_buttons;
 		sf::SoundBuffer	m_soundBufferButtonClick;
 		sf::Sound		m_soundButtonClick;
 	};

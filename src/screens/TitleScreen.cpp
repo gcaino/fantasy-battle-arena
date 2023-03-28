@@ -11,6 +11,7 @@ namespace lpa
 		: Screen(screenManager)
 		, m_backgroundTexture{}
 		, m_backgroundSprite {}
+		, m_buttons{{ui::Button{m_screenManager.get().getRenderWindow()}, ui::Button{m_screenManager.get().getRenderWindow()}}}
 	{
 		m_backgroundTexture.loadFromFile(Constants::pathTitleScreenImage);
 		m_backgroundSprite.setTexture(m_backgroundTexture);
@@ -19,17 +20,25 @@ namespace lpa
 		m_soundButtonClick.setBuffer(m_soundBufferButtonClick);
 		
 		// Button: "Play Now"
-		m_buttons[0].texture.loadFromFile(Constants::texturePlayButton);
-		m_buttons[0].sprite.setTexture(m_buttons[0].texture);
-		m_buttons[0].sprite.setPosition(sf::Vector2f(365.f, 443.f));
-		m_buttons[0].rect = m_buttons[0].sprite.getGlobalBounds();
-		m_buttons[0].visible = false;
+		m_buttons[0].setTexture(Constants::texturePlayButton);
+		m_buttons[0].setPosition(sf::Vector2f(365.f, 443.f));
+
+		auto playBtnCallback = [&sndBtnClick = m_soundButtonClick, &screenManager = m_screenManager]() {
+			sndBtnClick.play();
+			screenManager.get().changeScreen(std::make_unique<GameplayScreen>(screenManager));
+		};
+		m_buttons[0].setCallback(playBtnCallback);
+
 		// Button: "Credits"
-		m_buttons[1].texture.loadFromFile(Constants::textureCreditsButton);
-		m_buttons[1].sprite.setTexture(m_buttons[1].texture);
-		m_buttons[1].sprite.setPosition(sf::Vector2f(364.f, 549.f));
-		m_buttons[1].rect = m_buttons[1].sprite.getGlobalBounds();
-		m_buttons[1].visible = false;
+		m_buttons[1].setTexture(Constants::textureCreditsButton);
+		m_buttons[1].setPosition(sf::Vector2f(364.f, 549.f));
+
+		auto creditsBtnCallback = [&sndBtnClick = m_soundButtonClick, &screenManager = m_screenManager]() {
+			sndBtnClick.play();
+			sf::sleep(sf::seconds(0.25f));
+			screenManager.get().changeScreen(std::make_unique<CreditScreen>(screenManager));
+		};
+		m_buttons[1].setCallback(creditsBtnCallback);
 	}
 	void TitleScreen::handleEvent(sf::Event event)
 	{
@@ -39,35 +48,24 @@ namespace lpa
 				m_screenManager.get().getRenderWindow().close();
 		}
 
-		if (event.type == sf::Event::MouseMoved)
+		for (auto& button : m_buttons)
 		{
-			for (size_t i = 0; i < k_MaxButtons; i++)
+			if (button.isMouseOver())
 			{
-				if ((event.mouseMove.x >= m_buttons[i].rect.left &&
-					 event.mouseMove.x <= m_buttons[i].rect.left + m_buttons[i].rect.width) &&
-					(event.mouseMove.y >= m_buttons[i].rect.top &&
-					 event.mouseMove.y <= m_buttons[i].rect.top + m_buttons[i].rect.height))
-				{
-					m_buttons[i].visible = true;
-				}
-				else
-				{
-					m_buttons[i].visible = false;
-				}
+				if (!button.isActive())
+					button.activate();
 			}
-		}
-	
-		if (event.type == sf::Event::MouseButtonPressed)
-		{
-			if (m_buttons[0].visible)
+			else
 			{
-				m_soundButtonClick.play();
-				m_screenManager.get().changeScreen(std::make_unique<GameplayScreen>(m_screenManager));
+				if (button.isActive())
+					button.deactivate();
 			}
-			else if (m_buttons[1].visible)
+
+			if (button.isActive() && 
+				event.type == sf::Event::MouseButtonPressed)
 			{
-				m_soundButtonClick.play();
-				m_screenManager.get().changeScreen(std::make_unique<CreditScreen>(m_screenManager));
+				button.click();
+				break;
 			}
 		}
 	}
@@ -75,10 +73,7 @@ namespace lpa
 	{
 		target.draw(m_backgroundSprite, states);
 		for (const auto& button : m_buttons)
-		{
-			if (button.visible)
-				target.draw(button.sprite);
-		}
+			button.draw();
 	}
 }
 
