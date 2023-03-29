@@ -2,7 +2,7 @@
 #include "TitleScreen.h"
 // ----------------------------------------------------------------------------
 #include "ScreenManager.h"
-#include "TextureManager.h"
+#include "AssetManager.h"
 #include "GameplayScreen.h"
 #include "CreditsScreen.h"
 // ----------------------------------------------------------------------------
@@ -10,26 +10,26 @@ namespace lpa
 {
 	TitleScreen::TitleScreen(ScreenManager& screenManager)
 		: Screen(screenManager)
-		, m_backgroundSprite {}
 		, m_buttons{{ui::Button{m_screenManager.get().getRenderWindow()}, ui::Button{m_screenManager.get().getRenderWindow()}}}
+		, m_backgroundSprite{}
+		, m_soundButtonClick{}
 	{
-		m_backgroundSprite.setTexture(TextureManager::GetTextureByKey("menu-screen"));
-
-		m_soundBufferButtonClick.loadFromFile(Constants::clickButtonSound);
-		m_soundButtonClick.setBuffer(m_soundBufferButtonClick);
+		m_backgroundSprite.setTexture(AssetManager<sf::Texture>::GetAssetByKey("menu-screen"));
+		m_soundButtonClick.setBuffer(AssetManager<sf::SoundBuffer>::GetAssetByKey("wooden-click-sound"));
 		
 		// Button: "Play Now"
-		m_buttons[0].setTexture(TextureManager::GetTextureByKey("hover-play-button"));
+		m_buttons[0].setTexture(AssetManager<sf::Texture>::GetAssetByKey("hover-play-button"));
 		m_buttons[0].setPosition(sf::Vector2f(365.f, 443.f));
 
 		auto playBtnCallback = [&sndBtnClick = m_soundButtonClick, &screenManager = m_screenManager]() {
 			sndBtnClick.play();
+			sf::sleep(sf::seconds(0.25f));
 			screenManager.get().changeScreen(std::make_unique<GameplayScreen>(screenManager));
 		};
 		m_buttons[0].setCallback(playBtnCallback);
 
 		// Button: "Credits"
-		m_buttons[1].setTexture(TextureManager::GetTextureByKey("hover-credits-button"));
+		m_buttons[1].setTexture(AssetManager<sf::Texture>::GetAssetByKey("hover-credits-button"));
 		m_buttons[1].setPosition(sf::Vector2f(364.f, 549.f));
 
 		auto creditsBtnCallback = [&sndBtnClick = m_soundButtonClick, &screenManager = m_screenManager]() {

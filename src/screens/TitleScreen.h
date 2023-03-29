@@ -18,9 +18,8 @@ namespace lpa
 		static constexpr uint k_MaxButtons { 2 };
 		using Buttons = std::array<ui::Button, k_MaxButtons>;
 
-		sf::Sprite		m_backgroundSprite;
 		Buttons			m_buttons;
-		sf::SoundBuffer	m_soundBufferButtonClick;
+		sf::Sprite		m_backgroundSprite;
 		sf::Sound		m_soundButtonClick;
 	};
 }

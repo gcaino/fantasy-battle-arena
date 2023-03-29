@@ -5,7 +5,7 @@
 #include "Constants.h"
 #include "Enemy.h"
 #include "systems\EnemyManager.h"
-#include "TextureManager.h"
+#include "AssetManager.h"
 #include "AnimationManager.h"
 // -----------------------------------------
 namespace lpa
@@ -26,7 +26,6 @@ namespace lpa
 	Player::Player()
 		: m_attackablesEnemies{}
 		, m_keyboardInputComponent{}
-		, m_axeSoundBuffer{}
 		, m_axeSound{}
 		, m_speedAttack{ sf::seconds(0.5f) }
 		, m_attacking{ false }
@@ -53,8 +52,7 @@ namespace lpa
 		m_deadTime = sf::seconds(2.f);
 		m_elapsedDeadTime = sf::seconds(0.f);
 
-		m_axeSoundBuffer.loadFromFile(Constants::battleAxeSwingSound);
-		m_axeSound.setBuffer(m_axeSoundBuffer);
+		m_axeSound.setBuffer(AssetManager<sf::SoundBuffer>::GetAssetByKey("battle-axe-swing-sound"));
 
 		m_keyboardInputComponent.bindKeyToAction(sf::Keyboard::W, "up");
 		m_keyboardInputComponent.bindKeyToAction(sf::Keyboard::S, "down");

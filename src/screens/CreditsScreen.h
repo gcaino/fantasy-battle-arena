@@ -15,7 +15,6 @@ namespace lpa
 
 	private:
 		sf::Sprite	m_backgroundSprite;
-		sf::Font	m_font;
 		sf::Text	m_text;
 	};
 }

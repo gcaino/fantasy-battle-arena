@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Arena.h"
 // -------------------------------------------------------------------------
-#include "TextureManager.h"
+#include "AssetManager.h"
 // -------------------------------------------------------------------------
 namespace lpa
 {
@@ -9,8 +9,8 @@ namespace lpa
 		: m_imageCollision  {}
 		, m_spriteCollision {}
 	{
-		m_sprite.setTexture(TextureManager::GetTextureByKey("arena-01"));
-		m_spriteCollision.setTexture(TextureManager::GetTextureByKey("collision-arena-01"));
+		m_sprite.setTexture(AssetManager<sf::Texture>::GetAssetByKey("arena-01"));
+		m_spriteCollision.setTexture(AssetManager<sf::Texture>::GetAssetByKey("collision-arena-01"));
 		m_imageCollision = m_spriteCollision.getTexture()->copyToImage();
 	}
 	void Arena::draw(sf::RenderTarget& target, sf::RenderStates states) const

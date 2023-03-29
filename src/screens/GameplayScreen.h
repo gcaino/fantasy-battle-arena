@@ -61,8 +61,7 @@ namespace lpa
 		bool		 m_paused;
 					 
 		sf::Music	 m_orcCampMusic;
-					 
-		sf::Font	 m_orcHordeFont;
+
 		ui::Text	 m_EnemyManagerText;
 		ui::Text	 m_scoreText;
 		ui::Text	 m_victoryText;

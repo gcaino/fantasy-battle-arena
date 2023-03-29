@@ -50,8 +50,6 @@ namespace lpa
 		sf::Time			m_elapsedWaitTime;
 		bool				m_waiting;
 							
-		sf::SoundBuffer		m_orcAttackSoundBuffer;
-		sf::SoundBuffer		m_orcDieSoundBuffer;
 		sf::Sound			m_orcAttackSound;
 		sf::Sound			m_orcDieSound;
 	};

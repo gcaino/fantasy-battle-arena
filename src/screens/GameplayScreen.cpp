@@ -7,7 +7,7 @@
 #include "ScreenManager.h"
 #include "TitleScreen.h"
 #include "CreditsScreen.h"
-#include "TextureManager.h"
+#include "AssetManager.h"
 // -----------------------------------------
 namespace lpa
 {
@@ -32,18 +32,19 @@ namespace lpa
 		, m_elapsedWaitTime		{ sf::Time::Zero }
 		, m_elapsedVictoryTime	{ sf::Time::Zero }
 		, m_spriteMousePointer{}
+		, m_orcCampMusic{}
 	{
 		setMousePointer();
 		initSounds();
 		initTexts();
 
-		m_healthStatusBar.setTexture(TextureManager::GetTextureByKey("health-status-bar"));
+		m_healthStatusBar.setTexture(AssetManager<sf::Texture>::GetAssetByKey("health-status-bar"));
 		m_healthStatusBar.setPosition(sf::Vector2f(10.f, 15.f));
 
-		m_currentHealth.setTexture(TextureManager::GetTextureByKey("current-health"));
+		m_currentHealth.setTexture(AssetManager<sf::Texture>::GetAssetByKey("current-health"));
 		m_currentHealth.setPosition(sf::Vector2f(76.f, 50.f));
 
-		m_orcsKilledBar.setTexture(TextureManager::GetTextureByKey("orcs-killed-bar"));
+		m_orcsKilledBar.setTexture(AssetManager<sf::Texture>::GetAssetByKey("orcs-killed-bar"));
 		m_orcsKilledBar.setPosition(sf::Vector2f(330.f, 15.f));
 
 		m_player.initialize();
@@ -51,15 +52,17 @@ namespace lpa
 	}
 	void GameplayScreen::initSounds()
 	{
-		m_orcCampMusic.openFromFile(Constants::orcCampMusic);
+		// TODO: Music Player
+		m_orcCampMusic.openFromFile("assets/sounds/orc-camp.ogg");
 		m_orcCampMusic.setLoop(true);
 		m_orcCampMusic.play();
 	}
 
 	void GameplayScreen::initTexts()
 	{
-		m_orcHordeFont.loadFromFile(Constants::ortHordeFont);
-		m_EnemyManagerText.text.setFont(m_orcHordeFont);
+		const auto& orcFont = AssetManager<sf::Font>::GetAssetByKey("orc-horde-font");
+
+		m_EnemyManagerText.text.setFont(orcFont);
 		m_EnemyManagerText.text.setFillColor(sf::Color::Color(255, 175, 5));
 		m_EnemyManagerText.text.setCharacterSize(60);
 		m_EnemyManagerText.text.setStyle(sf::Text::Bold);
@@ -67,19 +70,19 @@ namespace lpa
 		m_EnemyManagerText.text.setPosition((Constants::k_WindowWidth * 0.5f) - (m_EnemyManagerText.text.getGlobalBounds().width * 0.5f), Constants::k_WindowHeight * 0.2f);
 		m_EnemyManagerText.visible = true;
 
-		m_objectiveText.text.setFont(m_orcHordeFont);
+		m_objectiveText.text.setFont(orcFont);
 		m_objectiveText.text.setFillColor(sf::Color::Black);
 		m_objectiveText.text.setCharacterSize(23);
 		m_objectiveText.text.setString("[OBJECTIVE: Kill " + std::to_string(m_enemyManager.getMaxEnemies()) + " Orcs]");
 		m_objectiveText.text.setPosition(sf::Vector2f(Constants::k_WindowWidth * 0.67f, 50.f));
 		m_objectiveText.visible = true;
 
-		m_scoreText.text.setFont(m_orcHordeFont);
+		m_scoreText.text.setFont(orcFont);
 		m_scoreText.text.setFillColor(sf::Color::Yellow);
 		m_scoreText.text.setCharacterSize(23);
 		m_scoreText.visible = true;
 
-		m_victoryText.text.setFont(m_orcHordeFont);
+		m_victoryText.text.setFont(orcFont);
 		m_victoryText.text.setFillColor(sf::Color::Green);
 		m_victoryText.text.setCharacterSize(120);
 		m_victoryText.text.setStyle(sf::Text::Bold);
@@ -87,7 +90,7 @@ namespace lpa
 		m_victoryText.text.setPosition((Constants::k_WindowWidth * 0.5f) - (m_victoryText.text.getGlobalBounds().width * 0.5f), Constants::k_WindowHeight * 0.2f);
 		m_victoryText.visible = false;
 
-		m_defeatText.text.setFont(m_orcHordeFont);
+		m_defeatText.text.setFont(orcFont);
 		m_defeatText.text.setFillColor(sf::Color::Red);
 		m_defeatText.text.setCharacterSize(120);
 		m_defeatText.text.setStyle(sf::Text::Bold);
@@ -274,7 +277,7 @@ namespace lpa
 		auto& window{ m_screenManager.get().getRenderWindow() };
 		window.setMouseCursorVisible(false);
 
-		m_spriteMousePointer.setTexture(TextureManager::GetTextureByKey("axe-mouse-pointer"));
+		m_spriteMousePointer.setTexture(AssetManager<sf::Texture>::GetAssetByKey("axe-mouse-pointer"));
 
 		sf::Vector2f mousePointerOrigin;
 		mousePointerOrigin.x = m_spriteMousePointer.getGlobalBounds().width * 0.5f;

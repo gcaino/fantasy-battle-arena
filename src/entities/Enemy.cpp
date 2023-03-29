@@ -3,7 +3,7 @@
 // -----------------------------------------
 #include "AnimatedSprite.h"
 #include "Player.h"
-#include "TextureManager.h"
+#include "AssetManager.h"
 #include "AnimationManager.h"
 // -----------------------------------------
 namespace lpa
@@ -22,6 +22,8 @@ namespace lpa
 		, m_waiting(false)
 		, m_waitTime(sf::seconds(5.f))
 		, m_elapsedWaitTime(sf::Time::Zero)
+		, m_orcAttackSound{}
+		, m_orcDieSound{}
 	{
 	}
 	void Enemy::initialize()
@@ -37,11 +39,10 @@ namespace lpa
 		m_deadTime = sf::seconds(10.f);
 		m_elapsedDeadTime = sf::seconds(0.f);
 
-		m_orcAttackSoundBuffer.loadFromFile(Constants::orcAttackSound);
-		m_orcAttackSound.setBuffer(m_orcAttackSoundBuffer);
+		m_orcAttackSound.setBuffer(AssetManager<sf::SoundBuffer>::GetAssetByKey("orc-attack-sound"));
 		m_orcAttackSound.setVolume(80.f);
-		m_orcDieSoundBuffer.loadFromFile(Constants::orcDieSound);
-		m_orcDieSound.setBuffer(m_orcDieSoundBuffer);
+
+		m_orcDieSound.setBuffer(AssetManager<sf::SoundBuffer>::GetAssetByKey("orc-die-sound"));
 		m_orcDieSound.setVolume(80.f);
 	}
 

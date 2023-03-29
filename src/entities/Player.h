@@ -47,7 +47,6 @@ namespace lpa
 		std::list<Ref<Enemy>>	m_attackablesEnemies;
 		KeyboardInputComponent  m_keyboardInputComponent;
 
-		sf::SoundBuffer		m_axeSoundBuffer;
 		sf::Sound			m_axeSound;
 
 		sf::Time			m_speedAttack;

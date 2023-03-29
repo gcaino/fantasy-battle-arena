@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "GameEngine.h"
 // -----------------------------------------
-#include "TextureManager.h"
+#include "AssetManager.h"
 #include "JsonUtility.h"
 #include "screens\TitleScreen.h"
 #include "AnimationManager.h"
@@ -25,12 +25,32 @@ namespace lpa
 		const auto& assetsFile = json::ParseJsonFile("assets/json/assets.json");
 		for (const auto& assets : assetsFile)
 		{
-			if (assets.contains("textures"))
+			if (!assets["textures"].empty())
 			{
 				for (const auto& texture : assets["textures"])
-					TextureManager::Insert(texture["key"], texture["path"]);
+					AssetManager<sf::Texture>::Insert(texture["key"], texture["path"]);
+			}
+
+			if (!assets["sounds"].empty())
+			{
+				for (const auto& sound : assets["sounds"])
+					AssetManager<sf::SoundBuffer>::Insert(sound["key"], sound["path"]);
+			}
+
+			if (!assets["musics"].empty())
+			{
+				// TODO: Music Player
+			}
+
+			if (!assets["fonts"].empty())
+			{
+				for (const auto& font : assets["fonts"])
+					AssetManager<sf::Font>::Insert(font["key"], font["path"]);
 			}
 		}
+
+		AssetManager<sf::SoundBuffer>::GetAssetByKey("wooden-click-sound");
+		AssetManager<sf::Font>::GetAssetByKey("credits-screen-font");
 
 		const auto& animationsFile = json::ParseJsonFile("assets/json/animations.json");
 		for (const auto& animationData : animationsFile["animations"])
@@ -43,7 +63,7 @@ namespace lpa
 
 			const auto& textureID = static_cast<std::string>(animationData["textureID"]);
 			auto& animation = AnimationManager::getAnimationByKey(key);
-			animation.setSpriteSheet(TextureManager::GetTextureByKey(textureID));
+			animation.setSpriteSheet(AssetManager<sf::Texture>::GetAssetByKey(textureID));
 
 			for (int frame = 0; frame < frames; frame++)
 			{

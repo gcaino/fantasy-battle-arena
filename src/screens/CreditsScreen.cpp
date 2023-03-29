@@ -2,7 +2,7 @@
 #include "CreditsScreen.h"
 // ----------------------------------------------------------------------------
 #include "ScreenManager.h"
-#include "TextureManager.h"
+#include "AssetManager.h"
 #include "TitleScreen.h"
 // ----------------------------------------------------------------------------
 namespace lpa
@@ -10,11 +10,11 @@ namespace lpa
 	CreditScreen::CreditScreen(ScreenManager& screenManager)
 		: Screen(screenManager)
 		, m_backgroundSprite {}
+		, m_text{}
 	{
-		m_backgroundSprite.setTexture(TextureManager::GetTextureByKey("credits-screen"));
+		m_backgroundSprite.setTexture(AssetManager<sf::Texture>::GetAssetByKey("credits-screen"));
 		
-		m_font.loadFromFile(Constants::creditScreenFont);
-		m_text.setFont(m_font);
+		m_text.setFont(AssetManager<sf::Font>::GetAssetByKey("credits-screen-font"));
 		m_text.setFillColor(sf::Color::Color(9, 18, 51));
 		m_text.setStyle(sf::Text::Bold);
 		m_text.setCharacterSize(25);

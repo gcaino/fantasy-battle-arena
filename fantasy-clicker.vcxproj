@@ -195,7 +195,6 @@
     <ClCompile Include="src\systems\SpawnManager.cpp" />
     <ClCompile Include="src\screens\TitleScreen.cpp" />
     <ClCompile Include="src\systems\EnemyManager.cpp" />
-    <ClCompile Include="src\TextureManager.cpp" />
     <ClCompile Include="src\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -222,8 +221,15 @@
     <ClInclude Include="src\systems\SpawnManager.h" />
     <ClInclude Include="src\screens\TitleScreen.h" />
     <ClInclude Include="src\systems\EnemyManager.h" />
-    <ClInclude Include="src\TextureManager.h" />
+    <ClInclude Include="src\AssetManager.h" />
     <ClInclude Include="src\UI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\AssetManager.tpp">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

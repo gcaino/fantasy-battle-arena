@@ -75,9 +75,6 @@
     <ClCompile Include="src\UI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TextureManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\JsonUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -152,7 +149,7 @@
     <ClInclude Include="src\UI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\TextureManager.h">
+    <ClInclude Include="src\AssetManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\JsonUtility.h">
@@ -164,5 +161,6 @@
     <ClInclude Include="src\cmp\KeyboardInputComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AssetManager.tpp" />
   </ItemGroup>
 </Project>
