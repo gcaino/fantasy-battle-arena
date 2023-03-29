@@ -27,6 +27,7 @@ namespace lpa
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
 
 		void calculateDirection();
+		void setPreviousDirection();
 		void rotateSprite();
 
 		AnimatedSprite	getAnimatedSprite() const { return m_animatedSprite; }

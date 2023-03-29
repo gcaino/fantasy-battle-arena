@@ -21,21 +21,25 @@ namespace lpa
 		m_direction.axisX = DirectionAxis::Right;
 		m_prevDirection.axisX = DirectionAxis::Right;
 	}
+
 	void Character::calculateDirection()
 	{
-		m_prevDirection = m_direction;
-
 		if		(m_position.x > m_prevPosition.x)	m_direction.axisX = DirectionAxis::Right;
 		else if (m_position.x < m_prevPosition.x)	m_direction.axisX = DirectionAxis::Left;
 
 		if		(m_position.y > m_prevPosition.y)	m_direction.axisY = DirectionAxis::Down;
 		else if (m_position.y < m_prevPosition.y)	m_direction.axisY = DirectionAxis::Up;
 	}
+
+	void Character::setPreviousDirection()
+	{
+		if		(m_prevDirection.axisX != m_direction.axisX)	m_prevDirection.axisX = m_direction.axisX;
+		else if (m_prevDirection.axisY != m_direction.axisY)	m_prevDirection.axisY = m_direction.axisY;
+	}
+
 	void Character::rotateSprite()
 	{
 		if (m_prevDirection.axisX != m_direction.axisX)
-		{
 			m_animatedSprite.scale(-1, 1);
-		}	
 	}
 }

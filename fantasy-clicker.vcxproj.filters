@@ -84,6 +84,9 @@
     <ClCompile Include="src\AnimationManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\cmp\KeyboardInputComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AnimatedSprite.h">
@@ -156,6 +159,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AnimationManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cmp\KeyboardInputComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

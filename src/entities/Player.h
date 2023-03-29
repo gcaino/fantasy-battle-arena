@@ -4,13 +4,14 @@
 #include "Character.h"
 #include "GameObject.h"
 #include "systems\InputManager.h"
+#include "cmp\KeyboardInputComponent.h"
 // -----------------------------------------
 namespace lpa
 {
 	class Enemy;
 	class EnemyManager;
 	// -----------------------------------------
-	class Player : public Character, public InputManager
+	class Player : public Character
 	{
 	public:
 		Player();
@@ -29,7 +30,6 @@ namespace lpa
 		void removeAttackableEnemy(Enemy& enemy);
 		bool isItemAttackablesEnemiesList(const Enemy& enemy);
 
-		void handlerInputs();
 		void handlerInputsAttack(EnemyManager& EnemyManager, const sf::RenderWindow& window);
 		
 		void update(sf::Time elapsedTime);
@@ -45,6 +45,7 @@ namespace lpa
 		void setAttributesAnimations();
 
 		std::list<Ref<Enemy>>	m_attackablesEnemies;
+		KeyboardInputComponent  m_keyboardInputComponent;
 
 		sf::SoundBuffer		m_axeSoundBuffer;
 		sf::Sound			m_axeSound;

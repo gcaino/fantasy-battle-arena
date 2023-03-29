@@ -140,6 +140,16 @@ namespace lpa
 				pause();
 			}
 		}
+
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			m_player.handlerInputsAttack(m_enemyManager, m_screenManager.get().getRenderWindow());
+		}
+		else
+		{
+			if (m_player.isAttacking())
+				m_player.setAttacking(false);
+		}
 	}
 
 	void GameplayScreen::update(sf::Time elapsedTime)
@@ -150,8 +160,7 @@ namespace lpa
 
 		if (m_player.isAlive())
 		{
-			m_player.handlerInputs();
-			m_player.handlerInputsAttack(m_enemyManager, m_screenManager.get().getRenderWindow());
+			//m_player.handlerInputsAttack(m_enemyManager, m_screenManager.get().getRenderWindow());
 			m_player.update(elapsedTime);
 			m_enemyManager.update(elapsedTime, m_player);
 

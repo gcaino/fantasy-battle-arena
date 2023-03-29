@@ -170,6 +170,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\cmp\KeyboardInputComponent.cpp" />
     <ClCompile Include="src\AnimatedSprite.cpp" />
     <ClCompile Include="src\Animation.cpp" />
     <ClCompile Include="src\AnimationManager.cpp" />
@@ -198,6 +199,7 @@
     <ClCompile Include="src\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\cmp\KeyboardInputComponent.h" />
     <ClInclude Include="src\AnimationManager.h" />
     <ClInclude Include="src\JsonUtility.h" />
     <ClInclude Include="src\pch.h" />

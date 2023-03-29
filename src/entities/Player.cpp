@@ -13,7 +13,7 @@ namespace lpa
 	using namespace Constants;
 	/**
 	 * Función utilitaria, utilizada para comparar pares de valores y obtener
-	 * el enemigo con el máximo valor en el eje y. 
+	 * el enemigo con el máximo valor en el eje y.
 	 * Al momento de atacar se almacenan los enemigos atacables en un diccionario,
 	 * utilizando como valor el eje y se logra atacar al enemigo visible y no al solapado.
 	 */
@@ -25,12 +25,13 @@ namespace lpa
 	// -----------------------------------------
 	Player::Player()
 		: m_attackablesEnemies{}
+		, m_keyboardInputComponent{}
 		, m_axeSoundBuffer{}
 		, m_axeSound{}
-		, m_speedAttack { sf::seconds(0.5f) }
-		, m_attacking { false }
-		, m_moving { false }
-		, m_rangeAttack {}
+		, m_speedAttack{ sf::seconds(0.5f) }
+		, m_attacking{ false }
+		, m_moving{ false }
+		, m_rangeAttack{}
 		, m_enemiesKilled{}
 	{
 	}
@@ -39,7 +40,7 @@ namespace lpa
 		m_currentAnimation = AnimationManager::getAnimationByKey("knight-idle");
 		m_animatedSprite.setAnimation(*m_currentAnimation);
 		m_animatedSprite.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
-		
+
 		m_animatedSpriteBlood.setAnimation(AnimationManager::getAnimationByKey("red-blood"));
 		m_animatedSpriteBlood.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
 		resetPosition();
@@ -54,107 +55,64 @@ namespace lpa
 
 		m_axeSoundBuffer.loadFromFile(Constants::battleAxeSwingSound);
 		m_axeSound.setBuffer(m_axeSoundBuffer);
+
+		m_keyboardInputComponent.bindKeyToAction(sf::Keyboard::W, "up");
+		m_keyboardInputComponent.bindKeyToAction(sf::Keyboard::S, "down");
+		m_keyboardInputComponent.bindKeyToAction(sf::Keyboard::A, "left");
+		m_keyboardInputComponent.bindKeyToAction(sf::Keyboard::D, "right");
+
+		m_keyboardInputComponent.bindActionsToCommands("up",	[this](sf::Time elapsedTime) {m_position.y -= m_velocity * elapsedTime.asSeconds(); });
+		m_keyboardInputComponent.bindActionsToCommands("down",	[this](sf::Time elapsedTime) {m_position.y += m_velocity * elapsedTime.asSeconds(); });
+		m_keyboardInputComponent.bindActionsToCommands("left",	[this](sf::Time elapsedTime) {m_position.x -= m_velocity * elapsedTime.asSeconds(); });
+		m_keyboardInputComponent.bindActionsToCommands("right", [this](sf::Time elapsedTime) {m_position.x += m_velocity * elapsedTime.asSeconds(); });
 	}
-	void Player::handlerInputs()
-	{
-		if (!m_active) return;
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || 
-			sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		{
-			moveLeft();
-		}
-		else
-		{
-			stopLeft();
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
-			sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-		{
-			moveRigth();
-		}
-		else
-		{
-			stopRigth();
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) ||
-			sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-		{
-			moveUp();
-		}
-		else
-		{
-			stopUp();
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ||
-			sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-		{
-			moveDown();
-		}
-		else
-		{
-			stopDown();
-		}
-	}
 	void Player::handlerInputsAttack(EnemyManager& EnemyManager, const sf::RenderWindow& window)
 	{
 		if (!m_active) return;
 		// TODO - Para atacar con una tecla hay que tener en cuenta la dirección donde está pegando,
 		// sino le puede pegar a otros que están en la lista de atacables
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		{
-			m_attacking = true;
+		m_attacking = true;
 
-			m_currentAnimation = AnimationManager::getAnimationByKey("knight-attack");
-			m_animatedSprite.play(*m_currentAnimation);
-			m_axeSound.play();
-		}
-		else
-		{
-			m_attacking = false;
-		}
+		m_currentAnimation = AnimationManager::getAnimationByKey("knight-attack");
+		m_animatedSprite.play(*m_currentAnimation);
+		m_axeSound.play();
 
-		if (m_attacking)
-		{
-			sf::Vector2i targetCoords = sf::Mouse::getPosition(window);
-			auto maxEnemyManagerEnemies { EnemyManager.getMaxEnemies() };
+		sf::Vector2i targetCoords = sf::Mouse::getPosition(window);
+		auto maxEnemyManagerEnemies{ EnemyManager.getMaxEnemies() };
 
-			std::map<Enemy*, float> tempEnemyDictionary;
-			for (uint i = 0; i < maxEnemyManagerEnemies; i++)
+		std::map<Enemy*, float> tempEnemyDictionary;
+		for (uint i = 0; i < maxEnemyManagerEnemies; i++)
+		{
+			auto& enemy = EnemyManager.getEnemyRefByIndex(i);
+			if (enemy.isAlive())
 			{
-				auto& enemy = EnemyManager.getEnemyRefByIndex(i);
-				if (enemy.isAlive())
+				if (enemy.getAnimatedSprite().getGlobalBounds().contains(static_cast<sf::Vector2f>(targetCoords)))
 				{
-					if (enemy.getAnimatedSprite().getGlobalBounds().contains(static_cast<sf::Vector2f>(targetCoords)))
+					//std::cout << "Attack with mouse, Coordinates: x: " << targetCoords.x << " - y: " << targetCoords.y << std::endl;
+					// Verifica si está en la lista de enemigos atacables (se incluyen por estar en rango de ataque)
+					if (isItemAttackablesEnemiesList(enemy))
 					{
-						//std::cout << "Attack with mouse, Coordinates: x: " << targetCoords.x << " - y: " << targetCoords.y << std::endl;
-						// Verifica si está en la lista de enemigos atacables (se incluyen por estar en rango de ataque)
-						if (isItemAttackablesEnemiesList(enemy))
-						{
-							tempEnemyDictionary.insert(std::make_pair(&enemy, enemy.getPosition().y));
-						}
+						tempEnemyDictionary.insert(std::make_pair(&enemy, enemy.getPosition().y));
 					}
 				}
 			}
-			// Ordena los items por la posición en el eje y, y toma el mayor valor
-			// Para eliminar primero a los enemigos de la capa superior
-			if (!tempEnemyDictionary.empty())
-			{
-				auto it = std::max_element(tempEnemyDictionary.begin(), tempEnemyDictionary.end(), comparePositionY);
-				attack(*it->first);
-			}
+		}
+		// Ordena los items por la posición en el eje y, y toma el mayor valor
+		// Para eliminar primero a los enemigos de la capa superior
+		if (!tempEnemyDictionary.empty())
+		{
+			auto it = std::max_element(tempEnemyDictionary.begin(), tempEnemyDictionary.end(), comparePositionY);
+			attack(*it->first);
 		}
 	}
+
 	void Player::update(sf::Time elapsedTime)
 	{
 		if (m_active)
 		{
+			m_keyboardInputComponent.update(elapsedTime);
 			move(elapsedTime);
-			calculateDirection();
-			rotateSprite();
 		}
 
 		verifyDeath(elapsedTime);
@@ -163,16 +121,14 @@ namespace lpa
 		m_animatedSprite.update(elapsedTime);
 		m_animatedSpriteBlood.update(elapsedTime);
 	}
-	void Player::draw(sf::RenderTarget & target, sf::RenderStates states) const
-	{
-		target.draw(m_animatedSprite);
-	}
+
 	void Player::resetPosition()
 	{
 		m_position.x = k_WindowWidth * 0.5f;
 		m_position.y = k_WindowHeight * 0.5f + m_animatedSprite.getGlobalBounds().height;
 		m_animatedSprite.setPosition(m_position);
 	}
+
 	void Player::attack(Enemy& enemy)
 	{
 		m_timeSinceLastAttack = m_clockAttack.getElapsedTime();
@@ -184,23 +140,23 @@ namespace lpa
 			m_clockAttack.restart();
 		}
 	}
+
 	void Player::move(sf::Time elapsedTime)
 	{
-		m_prevPosition = m_position;
-
-		if (m_upPressed)	m_position.y -= m_velocity * elapsedTime.asSeconds();
-		if (m_downPressed)	m_position.y += m_velocity * elapsedTime.asSeconds();
-		if (m_rightPressed)	m_position.x += m_velocity * elapsedTime.asSeconds();
-		if (m_leftPressed)	m_position.x -= m_velocity * elapsedTime.asSeconds();
-
-		m_animatedSprite.setPosition(m_position);
-		m_animatedSpriteBlood.setPosition(m_position.x, m_position.y + 5.f);
-
-		if (m_upPressed || m_downPressed || m_rightPressed || m_leftPressed)
+		if (m_prevPosition != m_position)
 		{
+			calculateDirection();
+			rotateSprite();
+			setPreviousDirection();
+
+			m_animatedSprite.setPosition(m_position);
+			m_animatedSpriteBlood.setPosition(m_position.x, m_position.y + 5.f);
+
 			m_moving = true;
 			m_currentAnimation = AnimationManager::getAnimationByKey("knight-walk");
-			m_animatedSprite.play(*m_currentAnimation);
+			m_animatedSprite.play(*m_currentAnimation);	
+
+			m_prevPosition = m_position;
 		}
 		else
 		{
@@ -215,19 +171,22 @@ namespace lpa
 			{
 				m_currentAnimation = AnimationManager::getAnimationByKey("knight-idle");
 				m_animatedSprite.play(*m_currentAnimation);
-			}	
+			}
 		}
 	}
+
 	void Player::movePreviousPosition()
 	{
 		m_position = m_prevPosition;
 		m_animatedSprite.setPosition(m_position);
 		m_animatedSpriteBlood.setPosition(m_position.x, m_position.y + 5.f);
 	}
+
 	uint Player::calculateDamage()
 	{
 		return	m_strength;
 	}
+
 	void Player::takeDamage(uint damage)
 	{
 		m_health -= damage;
@@ -242,6 +201,7 @@ namespace lpa
 		m_animatedSprite.play(*m_currentAnimation);
 		m_animatedSpriteBlood.play();
 	}
+
 	void Player::verifyDeath(sf::Time elapsedTime)
 	{
 		if (m_health <= 0)
@@ -264,6 +224,7 @@ namespace lpa
 			}
 		}
 	}
+
 	void Player::addAttackableEnemy(Enemy& enemy)
 	{
 		if (isItemAttackablesEnemiesList(enemy))
@@ -271,37 +232,40 @@ namespace lpa
 
 		m_attackablesEnemies.emplace_back(std::ref(enemy));
 	}
+
 	void Player::removeAttackableEnemy(Enemy& enemy)
 	{
 		if (!isItemAttackablesEnemiesList(enemy)) return;
-		
+
 		m_attackablesEnemies.remove_if(
-				[&](const auto& enemyInContainer) { return &enemyInContainer.get() == &enemy; }
+			[&](const auto& enemyInContainer) { return &enemyInContainer.get() == &enemy; }
 		);
 	}
+	
 	bool Player::isItemAttackablesEnemiesList(const Enemy& enemy)
 	{
 		auto it = std::find_if(m_attackablesEnemies.begin(), m_attackablesEnemies.end(),
 			[&](const auto& enemyInContainer) { return &enemyInContainer.get() == &enemy; });
-		
+
 		if (it != m_attackablesEnemies.end())
 			return true;
-		
+
 		return false;
 	}
+
 	void Player::setAttributesAnimations()
 	{
 		auto& currentAnimation{ m_currentAnimation.value().get() };
-		if	(&currentAnimation == &AnimationManager::getAnimationByKey("knight-idle"))
+		if (&currentAnimation == &AnimationManager::getAnimationByKey("knight-idle"))
 		{
 			m_animatedSprite.setFrameTime(sf::seconds(0.2f));
 		}
-		else if (&currentAnimation == &AnimationManager::getAnimationByKey("knight-attack") || 
-				 &currentAnimation == &AnimationManager::getAnimationByKey("knight-hurt"))
+		else if (&currentAnimation == &AnimationManager::getAnimationByKey("knight-attack") ||
+			&currentAnimation == &AnimationManager::getAnimationByKey("knight-hurt"))
 		{
 			m_animatedSprite.setFrameTime(sf::seconds(0.05f));
 		}
-		else 
+		else
 		{
 			m_animatedSprite.setFrameTime(sf::seconds(0.1f));
 		}
@@ -314,5 +278,10 @@ namespace lpa
 		{
 			m_drawBlood = false;
 		}
+	}
+
+	void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
+	{
+		target.draw(m_animatedSprite);
 	}
 }

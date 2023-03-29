@@ -21,7 +21,6 @@ namespace lpa
 	
 		void update(sf::Time elapsedTime, Player& player);
 		void movePreviousPosition();
-		void moveRandomDirection();
 		void waitToFollow(sf::Time elapsedTime);
 		void restartClockToFollow();
 		void attack(Player& player);
