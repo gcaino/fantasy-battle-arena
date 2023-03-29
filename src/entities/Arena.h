@@ -16,9 +16,7 @@ namespace lpa
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	private:			
-		sf::Sprite		m_spriteCollision;
-		sf::Texture     m_texture;
-		sf::Texture		m_textureCollision;
-		sf::Image		m_imageCollision;
+		sf::Image	m_imageCollision;
+		sf::Sprite	m_spriteCollision;
 	};
 }

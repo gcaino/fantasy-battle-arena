@@ -12,7 +12,6 @@ namespace lpa
 		, m_evasion(0)
 		, m_level(1)
 		, m_alive(false)
-		, m_texture()
 		, m_currentAnimation { std::nullopt }
 		, m_animatedSprite(sf::seconds(0.1f), true, false)
 		, m_animatedSpriteBlood(sf::seconds(0.1f), true, false)

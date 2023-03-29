@@ -11,8 +11,7 @@ namespace lpa
 		: Screen(screenManager)
 		, m_backgroundSprite {}
 	{
-		TextureManager::Insert("background-credits", Constants::pathCreditsScreenImage);
-		m_backgroundSprite.setTexture(TextureManager::GetTextureByKey("background-credits"));
+		m_backgroundSprite.setTexture(TextureManager::GetTextureByKey("credits-screen"));
 		
 		m_font.loadFromFile(Constants::creditScreenFont);
 		m_text.setFont(m_font);

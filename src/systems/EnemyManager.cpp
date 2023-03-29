@@ -11,6 +11,13 @@ namespace lpa
 		, m_indexCurrentEnemy { 0 }
 	{
 	}
+	void EnemyManager::initialize()
+	{
+		for (auto& enemy : m_enemies)
+		{
+			enemy.initialize();
+		}
+	}
 	void EnemyManager::update(sf::Time elapsedTime, Player& player)
 	{
 		for (auto& enemy : m_enemies)

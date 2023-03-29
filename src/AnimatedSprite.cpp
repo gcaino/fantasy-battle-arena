@@ -41,6 +41,7 @@ void AnimatedSprite::setFrameTime(sf::Time time)
 void AnimatedSprite::play()
 {
 	m_isPaused = false;
+	setFrame(m_currentFrame, false);
 }
 void AnimatedSprite::play(const Animation& animation)
 {
@@ -140,22 +141,22 @@ void AnimatedSprite::update(sf::Time deltaTime)
 			m_currentTime = sf::microseconds(m_currentTime.asMicroseconds() % m_frameTime.asMicroseconds());
 
 			// get next Frame index
-			if (m_currentFrame + 1 < m_animation->getSize())
+			if (m_currentFrame < m_animation->getSize() - 1)
+			{
 				m_currentFrame++;
+				// set the current frame, not reseting the time
+				setFrame(m_currentFrame, false);
+			}
 			else
 			{
 				// animation has ended
 				m_currentFrame = 0; // reset to start
-
+				
 				if (!m_isLooped)
 				{
 					m_isPaused = true;
 				}
-
 			}
-
-			// set the current frame, not reseting the time
-			setFrame(m_currentFrame, false);
 		}
 	}
 }

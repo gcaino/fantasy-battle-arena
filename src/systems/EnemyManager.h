@@ -21,11 +21,12 @@ namespace lpa
 		void	increaseIndexCurrentEnemy() { ++m_indexCurrentEnemy; }
 		void	decreaseRemainingEnemies()	{ if (m_remainingEnemies == 0) return; --m_remainingEnemies; }
 
+		void initialize();
 		void update(sf::Time elapsedTime, Player& player);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	private:
-		static constexpr uint k_MaxEnemies{ 9 };
+		static constexpr uint k_MaxEnemies{ 1 };
 		using  Enemies = std::array<Enemy, k_MaxEnemies>;
 
 		Enemies m_enemies;

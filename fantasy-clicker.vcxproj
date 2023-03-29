@@ -125,6 +125,10 @@
       <AdditionalIncludeDirectories>D:\dev\repos\fantasy-clicker\fantasy-clicker\ext\json\include;D:\dev\repos\fantasy-clicker\fantasy-clicker\src;D:\dev\repos\fantasy-clicker\fantasy-clicker\ext\VLD\include;D:\dev\repos\fantasy-clicker\fantasy-clicker\ext\SFML-2.5.1-windows-vc15-64-bit\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,6 +152,10 @@
       <AdditionalIncludeDirectories>D:\dev\repos\fantasy-clicker\fantasy-clicker\ext\json\include;D:\dev\repos\fantasy-clicker\fantasy-clicker\src;D:\dev\repos\fantasy-clicker\fantasy-clicker\ext\SFML-2.5.1-windows-vc15-64-bit\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -164,6 +172,7 @@
   <ItemGroup>
     <ClCompile Include="src\AnimatedSprite.cpp" />
     <ClCompile Include="src\Animation.cpp" />
+    <ClCompile Include="src\AnimationManager.cpp" />
     <ClCompile Include="src\entities\Arena.cpp" />
     <ClCompile Include="src\entities\Character.cpp" />
     <ClCompile Include="src\JsonUtility.cpp" />
@@ -189,6 +198,7 @@
     <ClCompile Include="src\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AnimationManager.h" />
     <ClInclude Include="src\JsonUtility.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Aliases.h" />

@@ -13,14 +13,13 @@ namespace lpa
 		, m_backgroundSprite {}
 		, m_buttons{{ui::Button{m_screenManager.get().getRenderWindow()}, ui::Button{m_screenManager.get().getRenderWindow()}}}
 	{
-		TextureManager::Insert("background-title", Constants::pathTitleScreenImage);
-		m_backgroundSprite.setTexture(TextureManager::GetTextureByKey("background-title"));
+		m_backgroundSprite.setTexture(TextureManager::GetTextureByKey("menu-screen"));
 
 		m_soundBufferButtonClick.loadFromFile(Constants::clickButtonSound);
 		m_soundButtonClick.setBuffer(m_soundBufferButtonClick);
 		
 		// Button: "Play Now"
-		m_buttons[0].setTexture(Constants::texturePlayButton);
+		m_buttons[0].setTexture(TextureManager::GetTextureByKey("hover-play-button"));
 		m_buttons[0].setPosition(sf::Vector2f(365.f, 443.f));
 
 		auto playBtnCallback = [&sndBtnClick = m_soundButtonClick, &screenManager = m_screenManager]() {
@@ -30,7 +29,7 @@ namespace lpa
 		m_buttons[0].setCallback(playBtnCallback);
 
 		// Button: "Credits"
-		m_buttons[1].setTexture(Constants::textureCreditsButton);
+		m_buttons[1].setTexture(TextureManager::GetTextureByKey("hover-credits-button"));
 		m_buttons[1].setPosition(sf::Vector2f(364.f, 549.f));
 
 		auto creditsBtnCallback = [&sndBtnClick = m_soundButtonClick, &screenManager = m_screenManager]() {

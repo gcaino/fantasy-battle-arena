@@ -12,11 +12,13 @@ namespace lpa
 	public:
 		Enemy();
 
+		void initialize() override;
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
 		bool isFollowing() const			{ return m_following; }
 		void setFollowing(bool following)	{ m_following = following; }
 		bool isClockFollowingActive() const { return m_clockFollowingActive; }
 	
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 		void update(sf::Time elapsedTime, Player& player);
 		void movePreviousPosition();
 		void moveRandomDirection();
@@ -27,7 +29,6 @@ namespace lpa
 
 	private:
 		void waiting(sf::Time elapsedTime);
-		void setupAnimations();
 		void setAttributesAnimations();
 		void move(sf::Time elapsedTime, const Player& player);
 		uint calculateDamage();

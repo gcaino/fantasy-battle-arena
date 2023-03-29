@@ -11,7 +11,7 @@ namespace lpa
 
 		sf::Sprite	getSprite() const { return m_sprite; }
 
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {};
 
 	protected:
 		sf::Sprite m_sprite;

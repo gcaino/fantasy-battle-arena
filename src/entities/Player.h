@@ -15,6 +15,9 @@ namespace lpa
 	public:
 		Player();
 
+		void initialize() override;
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
 		bool isAttacking() const			{ return m_attacking; }
 		void setAttacking(bool attacking)	{ m_attacking = attacking; }
 		bool isMoving() const				{ return m_moving; }
@@ -26,11 +29,9 @@ namespace lpa
 		void removeAttackableEnemy(Enemy& enemy);
 		bool isItemAttackablesEnemiesList(const Enemy& enemy);
 
-		void setupAnimations();
-
 		void handlerInputs();
 		void handlerInputsAttack(EnemyManager& EnemyManager, const sf::RenderWindow& window);
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+		
 		void update(sf::Time elapsedTime);
 		void movePreviousPosition();
 		void attack(Enemy& enemy);

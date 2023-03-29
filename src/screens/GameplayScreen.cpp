@@ -8,7 +8,6 @@
 #include "TitleScreen.h"
 #include "CreditsScreen.h"
 #include "TextureManager.h"
-#include "JsonUtility.h"
 // -----------------------------------------
 namespace lpa
 {
@@ -21,12 +20,14 @@ namespace lpa
 		: Screen(screenManager)
 		, m_enemyManager{}
 		, m_spawnManager{ m_enemyManager }
+		, m_player{}
+		, m_arena{}
 		, m_texts		{}
+		, m_score{}
+		, m_highScore{}
 		, m_victory		{false}
 		, m_paused		{ false }
-		, m_score		{}
-		, m_highScore	{}
-		, m_waitTime	{ sf::seconds(10.f) }
+		, m_waitTime	{ sf::seconds(5.f) }
 		, m_victoryTime	{ sf::seconds(8.f) }
 		, m_elapsedWaitTime		{ sf::Time::Zero }
 		, m_elapsedVictoryTime	{ sf::Time::Zero }
@@ -36,24 +37,17 @@ namespace lpa
 		initSounds();
 		initTexts();
 
-		auto json = json::ParseJsonFile("assets/json/assets.json");
-		for (const auto& assets : json)
-		{
-			if (assets.contains("textures"))
-			{
-				for (const auto& texture : assets["textures"])
-					TextureManager::Insert(texture["key"], texture["path"]);
-			}	
-		}
-
 		m_healthStatusBar.setTexture(TextureManager::GetTextureByKey("health-status-bar"));
 		m_healthStatusBar.setPosition(sf::Vector2f(10.f, 15.f));
 
-		m_currentHealth.setTexture(TextureManager::GetTextureByKey("current-healt"));
+		m_currentHealth.setTexture(TextureManager::GetTextureByKey("current-health"));
 		m_currentHealth.setPosition(sf::Vector2f(76.f, 50.f));
 
 		m_orcsKilledBar.setTexture(TextureManager::GetTextureByKey("orcs-killed-bar"));
 		m_orcsKilledBar.setPosition(sf::Vector2f(330.f, 15.f));
+
+		m_player.initialize();
+		m_enemyManager.initialize();
 	}
 	void GameplayScreen::initSounds()
 	{
@@ -147,6 +141,7 @@ namespace lpa
 			}
 		}
 	}
+
 	void GameplayScreen::update(sf::Time elapsedTime)
 	{
 		if (isPaused()) return;
@@ -180,11 +175,13 @@ namespace lpa
 			checkLossCondition(elapsedTime);
 		}
 	}
+
 	void GameplayScreen::pause()
 	{
 		(m_paused) ? m_paused = false : m_paused = true;
 		std::cout << "Pause: " << m_paused << std::endl;
 	}
+
 	void GameplayScreen::checkVictoryCondition(sf::Time elapsedTime)
 	{
 		if (m_enemyManager.getMaxEnemies() == m_player.getEnemiesKilled())
@@ -214,6 +211,7 @@ namespace lpa
 			}
 		}
 	}
+
 	void GameplayScreen::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		target.draw(m_arena.getSprite(), sf::RenderStates::Default);
@@ -247,38 +245,41 @@ namespace lpa
 		{
 			target.draw(*it, sf::RenderStates::Default);
 		}
+
 		// HUD
 		target.draw(m_healthStatusBar);
 		target.draw(m_currentHealth);
 		target.draw(m_orcsKilledBar);
-		// Texts
+
 		for (const auto& text : m_texts)
 		{
 			if (text.get().visible)
 				target.draw(text.get().text);
 		}
-		// Mouse Pointer
+
 		target.draw(m_spriteMousePointer, sf::RenderStates::Default);
 	}
+
 	void GameplayScreen::setMousePointer()
 	{
 		auto& window{ m_screenManager.get().getRenderWindow() };
 		window.setMouseCursorVisible(false);
 
-		TextureManager::Insert("mouse-pointer", Constants::texturesPathMousePointerAxe);
-		m_spriteMousePointer.setTexture(TextureManager::GetTextureByKey("mouse-pointer"));
+		m_spriteMousePointer.setTexture(TextureManager::GetTextureByKey("axe-mouse-pointer"));
 
 		sf::Vector2f mousePointerOrigin;
-		mousePointerOrigin.x = m_spriteMousePointer.getGlobalBounds().width / 2;
-		mousePointerOrigin.y = m_spriteMousePointer.getLocalBounds().height / 2;
+		mousePointerOrigin.x = m_spriteMousePointer.getGlobalBounds().width * 0.5f;
+		mousePointerOrigin.y = m_spriteMousePointer.getLocalBounds().height * 0.5f;
 		m_spriteMousePointer.setOrigin(mousePointerOrigin);
 	}
+
 	void GameplayScreen::updateMousePointer()
 	{
 		auto& window{ m_screenManager.get().getRenderWindow() };
 		sf::Vector2i mousePosition = static_cast<sf::Vector2i>(sf::Mouse::getPosition(window));
 		m_spriteMousePointer.setPosition(static_cast<sf::Vector2f>(mousePosition));
 	}
+
 	void GameplayScreen::collisionDetectionPlayerLimitsArena()
 	{
 		sf::Image imageArenaCollision = m_arena.getImageCollision();
@@ -288,6 +289,7 @@ namespace lpa
 			m_player.movePreviousPosition();
 		}
 	}
+
 	void GameplayScreen::collisionDetectionEnemiesLimitsArena(sf::Time elapsedTime)
 	{
 		const sf::Image& imageArenaCollision { m_arena.getImageCollision() };
@@ -307,6 +309,7 @@ namespace lpa
 			}
 		}
 	}
+
 	void GameplayScreen::collisionDetectionPlayerEnemies()
 	{
 		auto maxEnemyManagerEnemies { m_enemyManager.getMaxEnemies() };

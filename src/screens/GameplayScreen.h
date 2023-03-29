@@ -29,13 +29,18 @@ namespace lpa
 		
 		void setMousePointer();
 		void updateMousePointer();
+		void updateHealthBar(const Player& player);
 
 		void initTexts();
-		void addTextsToDraw();
-		void updateTexts();
-		void showStartText(sf::Time elapsedTime);
-		void updateHealthBar(const Player& player);
 		void initSounds();
+
+		void addTextsToDraw();
+		void showStartText(sf::Time elapsedTime);
+		void updateTexts();
+		
+		void checkAttackRangeEnemies();
+		void checkAttackRangePlayer();
+		
 		void checkVictoryCondition(sf::Time elapsedTime);
 		void checkLossCondition(sf::Time elapsedTime);
 
@@ -44,38 +49,35 @@ namespace lpa
 		void collisionDetectionPlayerEnemies();
 		void collisionDetectionEnemiesPlayer();
 		void collisionDetectionEnemyEmemies(sf::Time elapsedTime);
-		void checkAttackRangeEnemies();
-		void checkAttackRangePlayer();
-
-		EnemyManager		m_enemyManager;
-		SpawnManager		m_spawnManager;
-
-		Texts				m_texts;
-		uint				m_score;
-		uint				m_highScore;
-		bool				m_victory;
-		Player				m_player;
-		Arena				m_arena;
-		bool				m_paused;
-
-		sf::Music			m_orcCampMusic;
 		
-		sf::Font			m_orcHordeFont;
-		ui::Text			m_EnemyManagerText;
-		ui::Text			m_scoreText;
-		ui::Text			m_victoryText;
-		ui::Text			m_defeatText;
-		ui::Text			m_objectiveText;
-
-		sf::Sprite			m_spriteMousePointer;
-		sf::Sprite			m_orcsKilledBar;
-		sf::Sprite			m_healthStatusBar;
-		sf::Sprite			m_currentHealth;
-
-		sf::Time			m_elapsedWaitTime;
-		sf::Time			m_waitTime;
-		sf::Time			m_victoryTime;
-		sf::Time			m_elapsedVictoryTime;	
+		EnemyManager m_enemyManager;
+		SpawnManager m_spawnManager;
+		Player		 m_player;
+		Arena		 m_arena;
+		Texts		 m_texts;
+		uint		 m_score;
+		uint		 m_highScore;
+		bool		 m_victory;
+		bool		 m_paused;
+					 
+		sf::Music	 m_orcCampMusic;
+					 
+		sf::Font	 m_orcHordeFont;
+		ui::Text	 m_EnemyManagerText;
+		ui::Text	 m_scoreText;
+		ui::Text	 m_victoryText;
+		ui::Text	 m_defeatText;
+		ui::Text	 m_objectiveText;
+					 
+		sf::Sprite	 m_spriteMousePointer;
+		sf::Sprite	 m_orcsKilledBar;
+		sf::Sprite	 m_healthStatusBar;
+		sf::Sprite	 m_currentHealth;
+					 
+		sf::Time	 m_elapsedWaitTime;
+		sf::Time	 m_waitTime;
+		sf::Time	 m_victoryTime;
+		sf::Time	 m_elapsedVictoryTime;	
 	};
 }
 

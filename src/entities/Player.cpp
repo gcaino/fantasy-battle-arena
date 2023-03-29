@@ -5,6 +5,8 @@
 #include "Constants.h"
 #include "Enemy.h"
 #include "systems\EnemyManager.h"
+#include "TextureManager.h"
+#include "AnimationManager.h"
 // -----------------------------------------
 namespace lpa
 {
@@ -29,13 +31,20 @@ namespace lpa
 		, m_attacking { false }
 		, m_moving { false }
 		, m_rangeAttack {}
+		, m_enemiesKilled{}
 	{
-		setupAnimations();
+	}
+	void Player::initialize()
+	{
+		m_currentAnimation = AnimationManager::getAnimationByKey("knight-idle");
+		m_animatedSprite.setAnimation(*m_currentAnimation);
 		m_animatedSprite.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
+		
+		m_animatedSpriteBlood.setAnimation(AnimationManager::getAnimationByKey("red-blood"));
 		m_animatedSpriteBlood.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
 		resetPosition();
 
-		m_health = 500.f;
+		m_health = 300.f;
 		m_maxHealth = m_health;
 		m_alive = true;
 		m_active = true;
@@ -45,121 +54,6 @@ namespace lpa
 
 		m_axeSoundBuffer.loadFromFile(Constants::battleAxeSwingSound);
 		m_axeSound.setBuffer(m_axeSoundBuffer);
-	}
-	void Player::setupAnimations()
-	{
-		// IDLE
-		m_textureIdle.loadFromFile(texturePlayerIdleAnimation);
-		m_idleAnimation.setSpriteSheet(m_textureIdle);
-
-		m_idleAnimation.addFrame(sf::IntRect(0, 0, 123, 122));
-		m_idleAnimation.addFrame(sf::IntRect(123, 0, 123, 122));
-		m_idleAnimation.addFrame(sf::IntRect(246, 0, 123, 122));
-		m_idleAnimation.addFrame(sf::IntRect(369, 0, 123, 122));
-		m_idleAnimation.addFrame(sf::IntRect(492, 0, 123, 122));
-		m_idleAnimation.addFrame(sf::IntRect(615, 0, 123, 122));
-		m_idleAnimation.addFrame(sf::IntRect(738, 0, 123, 122));
-		m_idleAnimation.addFrame(sf::IntRect(861, 0, 123, 122));
-		m_idleAnimation.addFrame(sf::IntRect(984, 0, 123, 122));
-		m_idleAnimation.addFrame(sf::IntRect(1107, 0, 123, 122));
-		m_idleAnimation.addFrame(sf::IntRect(1230, 0, 123, 122));
-		m_idleAnimation.addFrame(sf::IntRect(1353, 0, 123, 122));
-		m_idleAnimation.addFrame(sf::IntRect(1476, 0, 123, 122));
-		m_idleAnimation.addFrame(sf::IntRect(1599, 0, 123, 122));
-
-		// WALK
-		m_textureWalk.loadFromFile(texturePlayerWalkAnimation);
-		m_walkingAnimation.setSpriteSheet(m_textureWalk);
-
-		m_walkingAnimation.addFrame(sf::IntRect(0, 0, 127, 122));
-		m_walkingAnimation.addFrame(sf::IntRect(127, 0, 127, 122));
-		m_walkingAnimation.addFrame(sf::IntRect(254, 0, 127, 122));
-		m_walkingAnimation.addFrame(sf::IntRect(381, 0, 127, 122));
-		m_walkingAnimation.addFrame(sf::IntRect(508, 0, 127, 122));
-		m_walkingAnimation.addFrame(sf::IntRect(635, 0, 127, 122));
-		m_walkingAnimation.addFrame(sf::IntRect(762, 0, 127, 122));
-		m_walkingAnimation.addFrame(sf::IntRect(889, 0, 127, 122));
-		m_walkingAnimation.addFrame(sf::IntRect(1016, 0, 127, 122));
-		m_walkingAnimation.addFrame(sf::IntRect(1143, 0, 127, 122));
-		m_walkingAnimation.addFrame(sf::IntRect(1270, 0, 127, 122));
-		m_walkingAnimation.addFrame(sf::IntRect(1397, 0, 127, 122));
-		m_walkingAnimation.addFrame(sf::IntRect(1524, 0, 127, 122));
-		m_walkingAnimation.addFrame(sf::IntRect(1651, 0, 127, 122));
-
-		// ATTACK
-		m_textureAttack.loadFromFile(texturePlayerAttackAnimation);
-		m_attackAnimation.setSpriteSheet(m_textureAttack);
-
-		m_attackAnimation.addFrame(sf::IntRect(0, 0, 139, 122));
-		m_attackAnimation.addFrame(sf::IntRect(139, 0, 139, 122));
-		m_attackAnimation.addFrame(sf::IntRect(278, 0, 139, 122));
-		m_attackAnimation.addFrame(sf::IntRect(417, 0, 139, 122));
-		m_attackAnimation.addFrame(sf::IntRect(556, 0, 139, 122));
-		m_attackAnimation.addFrame(sf::IntRect(695, 0, 139, 122));
-		m_attackAnimation.addFrame(sf::IntRect(834, 0, 139, 122));
-		m_attackAnimation.addFrame(sf::IntRect(973, 0, 139, 122));
-		m_attackAnimation.addFrame(sf::IntRect(1112, 0, 139, 122));
-		m_attackAnimation.addFrame(sf::IntRect(1251, 0, 139, 122));
-		m_attackAnimation.addFrame(sf::IntRect(1390, 0, 139, 122));
-		m_attackAnimation.addFrame(sf::IntRect(1529, 0, 139, 122));
-		m_attackAnimation.addFrame(sf::IntRect(1668, 0, 139, 122));
-		m_attackAnimation.addFrame(sf::IntRect(1807, 0, 139, 122));
-
-		// HURT
-		m_textureHurt.loadFromFile(texturePlayerHurtAnimation);
-		m_hurtAnimation.setSpriteSheet(m_textureHurt);
-		
-		m_hurtAnimation.addFrame(sf::IntRect(0, 0, 140, 122));
-		m_hurtAnimation.addFrame(sf::IntRect(140, 0, 140, 122));
-		m_hurtAnimation.addFrame(sf::IntRect(280, 0, 140, 122));
-		m_hurtAnimation.addFrame(sf::IntRect(420, 0, 140, 122));
-		m_hurtAnimation.addFrame(sf::IntRect(560, 0, 140, 122));
-		m_hurtAnimation.addFrame(sf::IntRect(700, 0, 140, 122));
-		m_hurtAnimation.addFrame(sf::IntRect(840, 0, 140, 122));
-		m_hurtAnimation.addFrame(sf::IntRect(980, 0, 140, 122));
-		m_hurtAnimation.addFrame(sf::IntRect(1120, 0, 140, 122));
-		m_hurtAnimation.addFrame(sf::IntRect(1260, 0, 140, 122));
-		m_hurtAnimation.addFrame(sf::IntRect(1400, 0, 140, 122));
-		m_hurtAnimation.addFrame(sf::IntRect(1540, 0, 140, 122));
-		m_hurtAnimation.addFrame(sf::IntRect(1680, 0, 140, 122));
-		m_hurtAnimation.addFrame(sf::IntRect(1820, 0, 140, 122));
-
-		// DIE
-		m_textureDie.loadFromFile(texturePlayerDieAnimation);
-		m_dieAnimation.setSpriteSheet(m_textureDie);
-		
-		m_dieAnimation.addFrame(sf::IntRect(2158, 0, 166, 122));
-		m_dieAnimation.addFrame(sf::IntRect(0, 0, 166, 122));
-		m_dieAnimation.addFrame(sf::IntRect(166, 0, 166, 122));
-		m_dieAnimation.addFrame(sf::IntRect(332, 0, 166, 122));
-		m_dieAnimation.addFrame(sf::IntRect(498, 0, 166, 122));
-		m_dieAnimation.addFrame(sf::IntRect(664, 0, 166, 122));
-		m_dieAnimation.addFrame(sf::IntRect(830, 0, 166, 122));
-		m_dieAnimation.addFrame(sf::IntRect(996, 0, 166, 122));
-		m_dieAnimation.addFrame(sf::IntRect(1162, 0, 166, 122));
-		m_dieAnimation.addFrame(sf::IntRect(1328, 0, 166, 122));
-		m_dieAnimation.addFrame(sf::IntRect(1494, 0, 166, 122));
-		m_dieAnimation.addFrame(sf::IntRect(1660, 0, 166, 122));
-		m_dieAnimation.addFrame(sf::IntRect(1826, 0, 166, 122));
-		m_dieAnimation.addFrame(sf::IntRect(1992, 0, 166, 122));
-		m_dieAnimation.addFrame(sf::IntRect(2158, 0, 166, 122));
-		
-		m_currentAnimation = m_idleAnimation;
-		m_animatedSprite.setAnimation(*m_currentAnimation);
-
-		// RED BLOOD
-		m_redBloodTexture.loadFromFile(Constants::texturePathRedBlood);
-		m_bloodAnimation.setSpriteSheet(m_redBloodTexture);
-		
-		m_bloodAnimation.addFrame(sf::IntRect(640, 0, 128, 128));
-		m_bloodAnimation.addFrame(sf::IntRect(0, 0, 128, 128));
-		m_bloodAnimation.addFrame(sf::IntRect(128, 0, 128, 128));
-		m_bloodAnimation.addFrame(sf::IntRect(256, 0, 128, 128));
-		m_bloodAnimation.addFrame(sf::IntRect(384, 0, 128, 128));
-		m_bloodAnimation.addFrame(sf::IntRect(512, 0, 128, 128));
-		m_bloodAnimation.addFrame(sf::IntRect(640, 0, 128, 128));
-		
-		m_animatedSpriteBlood.setAnimation(m_bloodAnimation);
 	}
 	void Player::handlerInputs()
 	{
@@ -214,7 +108,7 @@ namespace lpa
 		{
 			m_attacking = true;
 
-			m_currentAnimation = m_attackAnimation;
+			m_currentAnimation = AnimationManager::getAnimationByKey("knight-attack");
 			m_animatedSprite.play(*m_currentAnimation);
 			m_axeSound.play();
 		}
@@ -305,21 +199,21 @@ namespace lpa
 		if (m_upPressed || m_downPressed || m_rightPressed || m_leftPressed)
 		{
 			m_moving = true;
-			m_currentAnimation = m_walkingAnimation;
+			m_currentAnimation = AnimationManager::getAnimationByKey("knight-walk");
 			m_animatedSprite.play(*m_currentAnimation);
 		}
 		else
 		{
 			m_moving = false;
 			auto& currentAnimation{ m_currentAnimation.value().get() };
-			if (&currentAnimation == &m_walkingAnimation)
+			if (&currentAnimation == &AnimationManager::getAnimationByKey("knight-walk"))
 			{
 				m_animatedSprite.stop();
 			}
 
 			if (!m_animatedSprite.isPlaying())
 			{
-				m_currentAnimation = m_idleAnimation;
+				m_currentAnimation = AnimationManager::getAnimationByKey("knight-idle");
 				m_animatedSprite.play(*m_currentAnimation);
 			}	
 		}
@@ -344,7 +238,7 @@ namespace lpa
 		}
 		std::cout << "Player Health: " << m_health << std::endl;
 
-		m_currentAnimation = m_hurtAnimation;
+		m_currentAnimation = AnimationManager::getAnimationByKey("knight-hurt");
 		m_animatedSprite.play(*m_currentAnimation);
 		m_animatedSpriteBlood.play();
 	}
@@ -353,10 +247,10 @@ namespace lpa
 		if (m_health <= 0)
 		{
 			auto& currentAnimation{ m_currentAnimation.value().get() };
-			if (m_active && (&currentAnimation != &m_dieAnimation))
+			if (m_active && (&currentAnimation != &AnimationManager::getAnimationByKey("knight-die")))
 			{
 				m_animatedSprite.pause();
-				m_currentAnimation = m_dieAnimation;
+				m_currentAnimation = AnimationManager::getAnimationByKey("knight-die");
 				m_animatedSprite.play(*m_currentAnimation);
 				m_animatedSprite.setFrame(1);
 				m_active = false;
@@ -398,11 +292,12 @@ namespace lpa
 	void Player::setAttributesAnimations()
 	{
 		auto& currentAnimation{ m_currentAnimation.value().get() };
-		if	(&currentAnimation == &m_idleAnimation)
+		if	(&currentAnimation == &AnimationManager::getAnimationByKey("knight-idle"))
 		{
 			m_animatedSprite.setFrameTime(sf::seconds(0.2f));
 		}
-		else if (&currentAnimation == &m_attackAnimation || &currentAnimation == &m_hurtAnimation)
+		else if (&currentAnimation == &AnimationManager::getAnimationByKey("knight-attack") || 
+				 &currentAnimation == &AnimationManager::getAnimationByKey("knight-hurt"))
 		{
 			m_animatedSprite.setFrameTime(sf::seconds(0.05f));
 		}

@@ -3,6 +3,8 @@
 // -----------------------------------------
 #include "AnimatedSprite.h"
 #include "Player.h"
+#include "TextureManager.h"
+#include "AnimationManager.h"
 // -----------------------------------------
 namespace lpa
 {
@@ -21,8 +23,14 @@ namespace lpa
 		, m_waitTime(sf::seconds(5.f))
 		, m_elapsedWaitTime(sf::Time::Zero)
 	{
-		setupAnimations();
+	}
+	void Enemy::initialize()
+	{
+		m_currentAnimation = AnimationManager::getAnimationByKey("orc-idle");
+		m_animatedSprite.setAnimation(*m_currentAnimation);
 		m_animatedSprite.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
+		
+		m_animatedSpriteBlood.setAnimation(AnimationManager::getAnimationByKey("green-blood"));
 		m_animatedSpriteBlood.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
 
 		m_timeSinceLastAttack = m_clockAttack.restart();
@@ -35,121 +43,6 @@ namespace lpa
 		m_orcDieSoundBuffer.loadFromFile(Constants::orcDieSound);
 		m_orcDieSound.setBuffer(m_orcDieSoundBuffer);
 		m_orcDieSound.setVolume(80.f);
-	}
-	void Enemy::setupAnimations()
-	{
-		// IDLE
-		m_textureIdle.loadFromFile(textureOrcIdleAnimation);
-		m_idleAnimation.setSpriteSheet(m_textureIdle);
-
-		m_idleAnimation.addFrame(sf::IntRect(0, 0, 158, 155));
-		m_idleAnimation.addFrame(sf::IntRect(158, 0, 158, 155));
-		m_idleAnimation.addFrame(sf::IntRect(316, 0, 158, 155));
-		m_idleAnimation.addFrame(sf::IntRect(474, 0, 158, 155));
-		m_idleAnimation.addFrame(sf::IntRect(632, 0, 158, 155));
-		m_idleAnimation.addFrame(sf::IntRect(790, 0, 158, 155));
-		m_idleAnimation.addFrame(sf::IntRect(948, 0, 158, 155));
-		m_idleAnimation.addFrame(sf::IntRect(1106, 0, 158, 155));
-		m_idleAnimation.addFrame(sf::IntRect(1264, 0, 158, 155));
-		m_idleAnimation.addFrame(sf::IntRect(1422, 0, 158, 155));
-		m_idleAnimation.addFrame(sf::IntRect(1580, 0, 158, 155));
-		m_idleAnimation.addFrame(sf::IntRect(1738, 0, 158, 155));
-		m_idleAnimation.addFrame(sf::IntRect(1896, 0, 158, 155));
-		m_idleAnimation.addFrame(sf::IntRect(2054, 0, 158, 155));
-
-		// WALK
-		m_textureWalk.loadFromFile(textureOrcWalkAnimation);
-		m_walkingAnimation.setSpriteSheet(m_textureWalk);
-
-		m_walkingAnimation.addFrame(sf::IntRect(0, 0, 161, 155));
-		m_walkingAnimation.addFrame(sf::IntRect(161, 0, 161, 155));
-		m_walkingAnimation.addFrame(sf::IntRect(322, 0, 161, 155));
-		m_walkingAnimation.addFrame(sf::IntRect(483, 0, 161, 155));
-		m_walkingAnimation.addFrame(sf::IntRect(644, 0, 161, 155));
-		m_walkingAnimation.addFrame(sf::IntRect(805, 0, 161, 155));
-		m_walkingAnimation.addFrame(sf::IntRect(966, 0, 161, 155));
-		m_walkingAnimation.addFrame(sf::IntRect(1127, 0, 161, 155));
-		m_walkingAnimation.addFrame(sf::IntRect(1288, 0, 161, 155));
-		m_walkingAnimation.addFrame(sf::IntRect(1449, 0, 161, 155));
-		m_walkingAnimation.addFrame(sf::IntRect(1610, 0, 161, 155));
-		m_walkingAnimation.addFrame(sf::IntRect(1771, 0, 161, 155));
-		m_walkingAnimation.addFrame(sf::IntRect(1932, 0, 161, 155));
-		m_walkingAnimation.addFrame(sf::IntRect(2093, 0, 161, 155));
-
-		// ATTACK
-		m_textureAttack.loadFromFile(textureOrcAttackAnimation);
-		m_attackAnimation.setSpriteSheet(m_textureAttack);
-
-		m_attackAnimation.addFrame(sf::IntRect(0, 0, 177, 155));
-		m_attackAnimation.addFrame(sf::IntRect(177, 0, 177, 155));
-		m_attackAnimation.addFrame(sf::IntRect(354, 0, 177, 155));
-		m_attackAnimation.addFrame(sf::IntRect(531, 0, 177, 155));
-		m_attackAnimation.addFrame(sf::IntRect(708, 0, 177, 155));
-		m_attackAnimation.addFrame(sf::IntRect(885, 0, 177, 155));
-		m_attackAnimation.addFrame(sf::IntRect(1062, 0, 177, 155));
-		m_attackAnimation.addFrame(sf::IntRect(1239, 0, 177, 155));
-		m_attackAnimation.addFrame(sf::IntRect(1416, 0, 177, 155));
-		m_attackAnimation.addFrame(sf::IntRect(1593, 0, 177, 155));
-		m_attackAnimation.addFrame(sf::IntRect(1770, 0, 177, 155));
-		m_attackAnimation.addFrame(sf::IntRect(1947, 0, 177, 155));
-		m_attackAnimation.addFrame(sf::IntRect(2124, 0, 177, 155));
-		m_attackAnimation.addFrame(sf::IntRect(2301, 0, 177, 155));
-
-		// HURT
-		m_textureHurt.loadFromFile(textureOrcHurtAnimation);
-		m_hurtAnimation.setSpriteSheet(m_textureHurt);
-
-		m_hurtAnimation.addFrame(sf::IntRect(0, 0, 153, 155));
-		m_hurtAnimation.addFrame(sf::IntRect(153, 0, 153, 155));
-		m_hurtAnimation.addFrame(sf::IntRect(306, 0, 153, 155));
-		m_hurtAnimation.addFrame(sf::IntRect(459, 0, 153, 155));
-		m_hurtAnimation.addFrame(sf::IntRect(612, 0, 153, 155));
-		m_hurtAnimation.addFrame(sf::IntRect(765, 0, 153, 155));
-		m_hurtAnimation.addFrame(sf::IntRect(918, 0, 153, 155));
-		m_hurtAnimation.addFrame(sf::IntRect(1071, 0, 153, 155));
-		m_hurtAnimation.addFrame(sf::IntRect(1224, 0, 153, 155));
-		m_hurtAnimation.addFrame(sf::IntRect(1377, 0, 153, 155));
-		m_hurtAnimation.addFrame(sf::IntRect(1530, 0, 153, 155));
-		m_hurtAnimation.addFrame(sf::IntRect(1683, 0, 153, 155));
-		m_hurtAnimation.addFrame(sf::IntRect(1836, 0, 153, 155));
-		m_hurtAnimation.addFrame(sf::IntRect(1989, 0, 153, 155));
-
-		// DIE
-		m_textureDie.loadFromFile(textureOrcDieAnimation);
-		m_dieAnimation.setSpriteSheet(m_textureDie);
-
-		m_dieAnimation.addFrame(sf::IntRect(2860, 0, 220, 155));
-		m_dieAnimation.addFrame(sf::IntRect(0, 0, 220, 155));
-		m_dieAnimation.addFrame(sf::IntRect(220, 0, 220, 155));
-		m_dieAnimation.addFrame(sf::IntRect(440, 0, 220, 155));
-		m_dieAnimation.addFrame(sf::IntRect(660, 0, 220, 155));
-		m_dieAnimation.addFrame(sf::IntRect(880, 0, 220, 155));
-		m_dieAnimation.addFrame(sf::IntRect(1100, 0, 220, 155));
-		m_dieAnimation.addFrame(sf::IntRect(1320, 0, 220, 155));
-		m_dieAnimation.addFrame(sf::IntRect(1540, 0, 220, 155));
-		m_dieAnimation.addFrame(sf::IntRect(1760, 0, 220, 155));
-		m_dieAnimation.addFrame(sf::IntRect(1980, 0, 220, 155));
-		m_dieAnimation.addFrame(sf::IntRect(2200, 0, 220, 155));
-		m_dieAnimation.addFrame(sf::IntRect(2420, 0, 220, 155));
-		m_dieAnimation.addFrame(sf::IntRect(2640, 0, 220, 155));
-		m_dieAnimation.addFrame(sf::IntRect(2860, 0, 220, 155));
-
-		m_currentAnimation = m_idleAnimation;
-		m_animatedSprite.setAnimation(*m_currentAnimation);
-
-		// GREEN BLOOD
-		m_greenBloodTexture.loadFromFile(Constants::texturePathGreenBlood);
-		m_bloodAnimation.setSpriteSheet(m_greenBloodTexture);
-
-		m_bloodAnimation.addFrame(sf::IntRect(640, 0, 128, 128));
-		m_bloodAnimation.addFrame(sf::IntRect(0, 0, 128, 128));
-		m_bloodAnimation.addFrame(sf::IntRect(128, 0, 128, 128));
-		m_bloodAnimation.addFrame(sf::IntRect(256, 0, 128, 128));
-		m_bloodAnimation.addFrame(sf::IntRect(384, 0, 128, 128));
-		m_bloodAnimation.addFrame(sf::IntRect(512, 0, 128, 128));
-		m_bloodAnimation.addFrame(sf::IntRect(640, 0, 128, 128));
-
-		m_animatedSpriteBlood.setAnimation(m_bloodAnimation);
 	}
 	void Enemy::update(sf::Time elapsedTime, Player& player)
 	{
@@ -179,10 +72,10 @@ namespace lpa
 			if (!m_waiting)
 			{
 				auto& currentAnimation{ m_currentAnimation.value().get() };
-				if ((&currentAnimation == &m_hurtAnimation) && m_animatedSprite.isPlaying()) 
+				if ((&currentAnimation == &AnimationManager::getAnimationByKey("orc-hurt")) && m_animatedSprite.isPlaying())
 					return;
 
-				if ((&currentAnimation == &m_idleAnimation) && m_animatedSprite.isPlaying()) 
+				if ((&currentAnimation == &AnimationManager::getAnimationByKey("orc-idle")) && m_animatedSprite.isPlaying())
 					m_animatedSprite.stop();
 
 				m_prevPosition = m_position;
@@ -202,7 +95,7 @@ namespace lpa
 
 				if (!m_animatedSprite.isPlaying())
 				{
-					m_currentAnimation = m_walkingAnimation;
+					m_currentAnimation = AnimationManager::getAnimationByKey("orc-walk");
 					m_animatedSprite.play(*m_currentAnimation);
 				}
 			}
@@ -210,7 +103,7 @@ namespace lpa
 			{
 				if (!m_animatedSprite.isPlaying())
 				{
-					m_currentAnimation = m_idleAnimation;
+					m_currentAnimation = AnimationManager::getAnimationByKey("orc-idle");
 					m_animatedSprite.play(*m_currentAnimation);
 				}
 			}
@@ -261,7 +154,7 @@ namespace lpa
 			player.takeDamage(calculateDamage());
 
 			m_orcAttackSound.play();
-			m_currentAnimation = m_attackAnimation;
+			m_currentAnimation = AnimationManager::getAnimationByKey("orc-attack");
 			m_animatedSprite.play(*m_currentAnimation);
 			
 			m_waiting = true;
@@ -278,7 +171,7 @@ namespace lpa
 			return;
 		}
 
-		m_currentAnimation = m_hurtAnimation;
+		m_currentAnimation = AnimationManager::getAnimationByKey("orc-hurt");
 		m_animatedSprite.play(*m_currentAnimation);
 		m_animatedSpriteBlood.play();
 	}
@@ -291,10 +184,10 @@ namespace lpa
 		if (m_health <= 0)
 		{
 			auto& currentAnimation{ m_currentAnimation.value().get() };
-			if (m_active && (&currentAnimation != &m_dieAnimation))
+			if (m_active && (&currentAnimation != &AnimationManager::getAnimationByKey("orc-die")))
 			{
 				m_animatedSprite.pause();
-				m_currentAnimation = m_dieAnimation;
+				m_currentAnimation = AnimationManager::getAnimationByKey("orc-die");
 				m_animatedSprite.play(*m_currentAnimation);
 				m_animatedSprite.setFrame(1);
 				m_active = false;
@@ -313,11 +206,12 @@ namespace lpa
 	void Enemy::setAttributesAnimations()
 	{
 		auto& currentAnimation{ m_currentAnimation.value().get() };
-		if (&currentAnimation == &m_idleAnimation)
+		if (&currentAnimation == &AnimationManager::getAnimationByKey("orc-idle"))
 		{
 			m_animatedSprite.setFrameTime(sf::seconds(0.2f));
 		}
-		else if (&currentAnimation == &m_attackAnimation || &currentAnimation == &m_hurtAnimation)
+		else if (&currentAnimation == &AnimationManager::getAnimationByKey("orc-attack") ||	
+				 &currentAnimation == &AnimationManager::getAnimationByKey("orc-hurt"))
 		{
 			m_animatedSprite.setFrameTime(sf::seconds(0.05f));
 		}

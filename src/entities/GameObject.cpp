@@ -3,7 +3,4 @@
 // -----------------------------------
 namespace lpa
 {
-	void GameObject::draw(sf::RenderTarget& target, sf::RenderStates states) const
-	{
-	}
 }
