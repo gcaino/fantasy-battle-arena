@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "GameEngine.h"
-// -----------------------------------------
+// --------------------------------------------------------------------------------
 #include "AssetManager.h"
 #include "JsonUtility.h"
 #include "screens\TitleScreen.h"
 #include "AnimationManager.h"
-// -----------------------------------------
+// ---------------------------------------------------------------------------------
 namespace lpa
 {
 	GameEngine::GameEngine()
@@ -13,15 +13,17 @@ namespace lpa
 		, m_screenManager{ m_window }
 
 	{
-		m_window.create(sf::VideoMode(Constants::k_WindowWidth,
-			Constants::k_WindowHeight), Constants::k_WindowTitle.data());
-		
-		loadAssetsFromFiles();
-		
-		m_screenManager.addScreen(std::make_unique<TitleScreen>(m_screenManager));
+		loadFromFile();
+		initialize();
 	}
-	void GameEngine::loadAssetsFromFiles()
+	void GameEngine::loadFromFile()
 	{
+		const auto& configFile = json::ParseJsonFile("assets/json/config.json");
+		const auto& windowTitle = static_cast<std::string>(configFile["window"]["title"]);
+		m_window.create(sf::VideoMode(configFile["window"]["width"].get<unsigned>(),
+			configFile["window"]["height"].get<unsigned>()),
+			windowTitle);
+
 		const auto& assetsFile = json::ParseJsonFile("assets/json/assets.json");
 		for (const auto& assets : assetsFile)
 		{
@@ -49,9 +51,6 @@ namespace lpa
 			}
 		}
 
-		AssetManager<sf::SoundBuffer>::GetAssetByKey("wooden-click-sound");
-		AssetManager<sf::Font>::GetAssetByKey("credits-screen-font");
-
 		const auto& animationsFile = json::ParseJsonFile("assets/json/animations.json");
 		for (const auto& animationData : animationsFile["animations"])
 		{
@@ -74,7 +73,11 @@ namespace lpa
 
 				animation.addFrame(sf::IntRect(data.x, data.y, data.width, data.height));
 			}
-		}
+		}	
+	}
+	void GameEngine::initialize()
+	{
+		m_screenManager.addScreen(std::make_unique<TitleScreen>(m_screenManager));
 	}
 	void GameEngine::run()
 	{

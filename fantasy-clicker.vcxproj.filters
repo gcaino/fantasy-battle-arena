@@ -101,9 +101,6 @@
     <ClInclude Include="src\systems\CollisionManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Constants.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\screens\CreditsScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -61,20 +61,21 @@ namespace lpa
 	void GameplayScreen::initTexts()
 	{
 		const auto& orcFont = AssetManager<sf::Font>::GetAssetByKey("orc-horde-font");
+		const auto& window = m_screenManager.get().getRenderWindow();
 
 		m_EnemyManagerText.text.setFont(orcFont);
 		m_EnemyManagerText.text.setFillColor(sf::Color::Color(255, 175, 5));
 		m_EnemyManagerText.text.setCharacterSize(60);
 		m_EnemyManagerText.text.setStyle(sf::Text::Bold);
 		m_EnemyManagerText.text.setString("ORCS ARE COMING...");
-		m_EnemyManagerText.text.setPosition((Constants::k_WindowWidth * 0.5f) - (m_EnemyManagerText.text.getGlobalBounds().width * 0.5f), Constants::k_WindowHeight * 0.2f);
+		m_EnemyManagerText.text.setPosition((window.getSize().x * 0.5f) - (m_EnemyManagerText.text.getGlobalBounds().width * 0.5f), window.getSize().y * 0.2f);
 		m_EnemyManagerText.visible = true;
 
 		m_objectiveText.text.setFont(orcFont);
 		m_objectiveText.text.setFillColor(sf::Color::Black);
 		m_objectiveText.text.setCharacterSize(23);
 		m_objectiveText.text.setString("[OBJECTIVE: Kill " + std::to_string(m_enemyManager.getMaxEnemies()) + " Orcs]");
-		m_objectiveText.text.setPosition(sf::Vector2f(Constants::k_WindowWidth * 0.67f, 50.f));
+		m_objectiveText.text.setPosition(sf::Vector2f(window.getSize().x * 0.67f, 50.f));
 		m_objectiveText.visible = true;
 
 		m_scoreText.text.setFont(orcFont);
@@ -87,7 +88,7 @@ namespace lpa
 		m_victoryText.text.setCharacterSize(120);
 		m_victoryText.text.setStyle(sf::Text::Bold);
 		m_victoryText.text.setString("VICTORY!!!");
-		m_victoryText.text.setPosition((Constants::k_WindowWidth * 0.5f) - (m_victoryText.text.getGlobalBounds().width * 0.5f), Constants::k_WindowHeight * 0.2f);
+		m_victoryText.text.setPosition((window.getSize().x * 0.5f) - (m_victoryText.text.getGlobalBounds().width * 0.5f), window.getSize().y * 0.2f);
 		m_victoryText.visible = false;
 
 		m_defeatText.text.setFont(orcFont);
@@ -95,7 +96,7 @@ namespace lpa
 		m_defeatText.text.setCharacterSize(120);
 		m_defeatText.text.setStyle(sf::Text::Bold);
 		m_defeatText.text.setString("DEFEAT!!!");
-		m_defeatText.text.setPosition((Constants::k_WindowWidth * 0.5f) - (m_defeatText.text.getGlobalBounds().width * 0.5f), Constants::k_WindowHeight * 0.2f);
+		m_defeatText.text.setPosition((window.getSize().x * 0.5f) - (m_defeatText.text.getGlobalBounds().width * 0.5f), window.getSize().y * 0.2f);
 		m_defeatText.visible = false;
 
 		addTextsToDraw();
@@ -405,8 +406,9 @@ namespace lpa
 					{
 						if (CollisionManager::boundingBoxTest(enemy.getAnimatedSprite(), enemy2.getAnimatedSprite(), 0.7f))
 						{
+							const auto& window = m_screenManager.get().getRenderWindow();
 							enemy.movePreviousPosition();
-							if ((enemy.getPosition().y + (enemy.getVelocity() * elapsedTime.asSeconds())) < Constants::k_WindowHeight - 30.f)
+							if ((enemy.getPosition().y + (enemy.getVelocity() * elapsedTime.asSeconds())) < window.getSize().y - 30.f)
 							{
 								enemy.setPosition(enemy.getPosition().x, enemy.getPosition().y + (enemy.getVelocity() * elapsedTime.asSeconds()));
 							}

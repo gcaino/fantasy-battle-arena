@@ -13,7 +13,8 @@ namespace lpa
 		void run();
 
 	private:
-		void loadAssetsFromFiles();
+		void loadFromFile();
+		void initialize();
 		void handleEvents();
 		void update(sf::Time elapsedTime);
 		void draw();

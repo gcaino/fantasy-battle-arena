@@ -208,7 +208,6 @@
     <ClInclude Include="src\entities\Arena.h" />
     <ClInclude Include="src\entities\Character.h" />
     <ClInclude Include="src\systems\CollisionManager.h" />
-    <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\screens\CreditsScreen.h" />
     <ClInclude Include="src\entities\Enemy.h" />
     <ClInclude Include="src\GameEngine.h" />

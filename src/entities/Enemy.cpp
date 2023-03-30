@@ -8,8 +8,6 @@
 // -----------------------------------------
 namespace lpa
 {
-	using namespace Constants;
-
 	Enemy::Enemy()
 		: m_velocity(20.f)
 		, m_speedAttack(sf::seconds(3.f))

@@ -2,7 +2,6 @@
 #include "Player.h"
 // -----------------------------------------
 #include "systems\CollisionManager.h"
-#include "Constants.h"
 #include "Enemy.h"
 #include "systems\EnemyManager.h"
 #include "AssetManager.h"
@@ -10,7 +9,6 @@
 // -----------------------------------------
 namespace lpa
 {
-	using namespace Constants;
 	/**
 	 * Función utilitaria, utilizada para comparar pares de valores y obtener
 	 * el enemigo con el máximo valor en el eje y.
@@ -122,8 +120,9 @@ namespace lpa
 
 	void Player::resetPosition()
 	{
-		m_position.x = k_WindowWidth * 0.5f;
-		m_position.y = k_WindowHeight * 0.5f + m_animatedSprite.getGlobalBounds().height;
+		// TODO: Game Context
+		m_position.x = 1024 * 0.5f;
+		m_position.y = 768 * 0.5f + m_animatedSprite.getGlobalBounds().height;
 		m_animatedSprite.setPosition(m_position);
 	}
 
