@@ -34,7 +34,7 @@ namespace lpa
 			Enemy& currentEnemy { EnemyManager.getEnemyRefByIndex(indexCurrentEnemy) };
 			currentEnemy.setAlive(true);
 			currentEnemy.setActive(true);
-			currentEnemy.setPosition(m_spawnPoints[randomPoint]);
+			currentEnemy.getMovCmp().position = m_spawnPoints[randomPoint];
 
 			EnemyManager.increaseIndexCurrentEnemy();
 			EnemyManager.decreaseRemainingEnemies();

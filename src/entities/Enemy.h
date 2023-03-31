@@ -2,6 +2,7 @@
 // -----------------------------------------
 #include "pch.h"
 #include "Character.h"
+#include "cmp\MovementCmp.h"
 // -----------------------------------------
 namespace lpa
 {
@@ -12,6 +13,8 @@ namespace lpa
 	public:
 		Enemy();
 
+		MovementCmp& getMovCmp() { return m_movCmp; };
+
 		void initialize() override;
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -21,6 +24,7 @@ namespace lpa
 	
 		void update(sf::Time elapsedTime, Player& player);
 		void movePreviousPosition();
+		void rotateSprite();
 		void waitToFollow(sf::Time elapsedTime);
 		void restartClockToFollow();
 		void attack(Player& player);
@@ -33,7 +37,9 @@ namespace lpa
 		uint calculateDamage();
 		void verifyDeath(sf::Time elapsedTime, Player& player);
 
-		float				m_velocity;
+		MovementCmp			m_movCmp;
+
+		//float				m_velocity;
 		uint				m_points;
 		bool				m_following;					
 		float				m_rangeAttack;

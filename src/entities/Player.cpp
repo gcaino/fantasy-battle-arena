@@ -23,7 +23,8 @@ namespace lpa
 	// -----------------------------------------
 	Player::Player()
 		: m_attackablesEnemies{}
-		, m_keyboardInputComponent{}
+		, m_keyboardInputCmp{}
+		, m_movCmp{}
 		, m_axeSound{}
 		, m_speedAttack{ sf::seconds(0.5f) }
 		, m_attacking{ false }
@@ -34,6 +35,10 @@ namespace lpa
 	}
 	void Player::initialize()
 	{
+		m_movCmp.currentDirection.xAxis = AxisDirection::Right;
+		m_movCmp.prevDirection.xAxis	= AxisDirection::Right;
+		m_movCmp.velocity = 100.f;
+
 		m_currentAnimation = AnimationManager::getAnimationByKey("knight-idle");
 		m_animatedSprite.setAnimation(*m_currentAnimation);
 		m_animatedSprite.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
@@ -52,15 +57,15 @@ namespace lpa
 
 		m_axeSound.setBuffer(AssetManager<sf::SoundBuffer>::GetAssetByKey("battle-axe-swing-sound"));
 
-		m_keyboardInputComponent.bindKeyToAction(sf::Keyboard::W, "up");
-		m_keyboardInputComponent.bindKeyToAction(sf::Keyboard::S, "down");
-		m_keyboardInputComponent.bindKeyToAction(sf::Keyboard::A, "left");
-		m_keyboardInputComponent.bindKeyToAction(sf::Keyboard::D, "right");
-
-		m_keyboardInputComponent.bindActionsToCommands("up",	[this](sf::Time elapsedTime) {m_position.y -= m_velocity * elapsedTime.asSeconds(); });
-		m_keyboardInputComponent.bindActionsToCommands("down",	[this](sf::Time elapsedTime) {m_position.y += m_velocity * elapsedTime.asSeconds(); });
-		m_keyboardInputComponent.bindActionsToCommands("left",	[this](sf::Time elapsedTime) {m_position.x -= m_velocity * elapsedTime.asSeconds(); });
-		m_keyboardInputComponent.bindActionsToCommands("right", [this](sf::Time elapsedTime) {m_position.x += m_velocity * elapsedTime.asSeconds(); });
+		m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::W, "up");
+		m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::S, "down");
+		m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::A, "left");
+		m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::D, "right");
+						
+		m_keyboardInputCmp.bindActionsToCommands("up",		[this](sf::Time elapsedTime) {m_movCmp.position.y -= m_movCmp.velocity * elapsedTime.asSeconds(); });
+		m_keyboardInputCmp.bindActionsToCommands("down",	[this](sf::Time elapsedTime) {m_movCmp.position.y += m_movCmp.velocity * elapsedTime.asSeconds(); });
+		m_keyboardInputCmp.bindActionsToCommands("left",	[this](sf::Time elapsedTime) {m_movCmp.position.x -= m_movCmp.velocity * elapsedTime.asSeconds(); });
+		m_keyboardInputCmp.bindActionsToCommands("right",	[this](sf::Time elapsedTime) {m_movCmp.position.x += m_movCmp.velocity * elapsedTime.asSeconds(); });
 	}
 
 	void Player::handlerInputsAttack(EnemyManager& EnemyManager, const sf::RenderWindow& window)
@@ -89,7 +94,7 @@ namespace lpa
 					// Verifica si está en la lista de enemigos atacables (se incluyen por estar en rango de ataque)
 					if (isItemAttackablesEnemiesList(enemy))
 					{
-						tempEnemyDictionary.insert(std::make_pair(&enemy, enemy.getPosition().y));
+						tempEnemyDictionary.insert(std::make_pair(&enemy, enemy.getMovCmp().position.y));
 					}
 				}
 			}
@@ -107,7 +112,8 @@ namespace lpa
 	{
 		if (m_active)
 		{
-			m_keyboardInputComponent.update(elapsedTime);
+			m_movCmp.prevPosition = m_movCmp.position;
+			m_keyboardInputCmp.update(elapsedTime);
 			move(elapsedTime);
 		}
 
@@ -121,9 +127,9 @@ namespace lpa
 	void Player::resetPosition()
 	{
 		// TODO: Game Context
-		m_position.x = 1024 * 0.5f;
-		m_position.y = 768 * 0.5f + m_animatedSprite.getGlobalBounds().height;
-		m_animatedSprite.setPosition(m_position);
+		m_movCmp.position.x = 1024 * 0.5f;
+		m_movCmp.position.y = 768 * 0.5f + m_animatedSprite.getGlobalBounds().height;
+		m_animatedSprite.setPosition(m_movCmp.position);
 	}
 
 	void Player::attack(Enemy& enemy)
@@ -140,20 +146,18 @@ namespace lpa
 
 	void Player::move(sf::Time elapsedTime)
 	{
-		if (m_prevPosition != m_position)
+		if (m_movCmp.prevPosition != m_movCmp.position)
 		{
-			calculateDirection();
+			m_movCmp.calculateDirection();
 			rotateSprite();
-			setPreviousDirection();
+			m_movCmp.setPreviousDirection();
 
-			m_animatedSprite.setPosition(m_position);
-			m_animatedSpriteBlood.setPosition(m_position.x, m_position.y + 5.f);
+			m_animatedSprite.setPosition(m_movCmp.position);
+			m_animatedSpriteBlood.setPosition(m_movCmp.position.x, m_movCmp.position.y + 5.f);
 
 			m_moving = true;
 			m_currentAnimation = AnimationManager::getAnimationByKey("knight-walk");
-			m_animatedSprite.play(*m_currentAnimation);	
-
-			m_prevPosition = m_position;
+			m_animatedSprite.play(*m_currentAnimation);			
 		}
 		else
 		{
@@ -174,9 +178,15 @@ namespace lpa
 
 	void Player::movePreviousPosition()
 	{
-		m_position = m_prevPosition;
-		m_animatedSprite.setPosition(m_position);
-		m_animatedSpriteBlood.setPosition(m_position.x, m_position.y + 5.f);
+		m_movCmp.position = m_movCmp.prevPosition;
+		m_animatedSprite.setPosition(m_movCmp.position);
+		m_animatedSpriteBlood.setPosition(m_movCmp.position.x, m_movCmp.position.y + 5.f);
+	}
+
+	void Player::rotateSprite()
+	{
+		if (m_movCmp.currentDirection.xAxis != m_movCmp.prevDirection.xAxis)
+			m_animatedSprite.scale(-1, 1);
 	}
 
 	uint Player::calculateDamage()

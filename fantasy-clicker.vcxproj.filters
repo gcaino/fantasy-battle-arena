@@ -39,9 +39,6 @@
     <ClCompile Include="src\GameEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\entities\GameObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\screens\GameplayScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -81,7 +78,16 @@
     <ClCompile Include="src\AnimationManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\cmp\KeyboardInputComponent.cpp">
+    <ClCompile Include="src\cmp\KeyboardInputCmp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmp\SpriteCmp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmp\MovementCmp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmp\AttackCmp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -108,9 +114,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\GameEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\entities\GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\screens\GameplayScreen.h">
@@ -155,9 +158,21 @@
     <ClInclude Include="src\AnimationManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\cmp\KeyboardInputComponent.h">
+    <ClInclude Include="src\cmp\KeyboardInputCmp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AssetManager.tpp" />
+    <ClInclude Include="src\entities\Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cmp\SpriteCmp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cmp\MovementCmp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cmp\AttackCmp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -9,7 +9,7 @@
 namespace lpa
 {
 	Enemy::Enemy()
-		: m_velocity(20.f)
+		: m_movCmp{}
 		, m_speedAttack(sf::seconds(3.f))
 		, m_points(10)
 		, m_following(true)
@@ -26,6 +26,10 @@ namespace lpa
 	}
 	void Enemy::initialize()
 	{
+		m_movCmp.velocity = 20.f;
+		m_movCmp.currentDirection.xAxis = AxisDirection::Right;
+		m_movCmp.prevDirection.xAxis	= AxisDirection::Right;
+
 		m_currentAnimation = AnimationManager::getAnimationByKey("orc-idle");
 		m_animatedSprite.setAnimation(*m_currentAnimation);
 		m_animatedSprite.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
@@ -50,10 +54,11 @@ namespace lpa
 
 		if (m_active)
 		{
+			m_movCmp.prevPosition = m_movCmp.position;
+			m_movCmp.setPreviousDirection();
 			move(elapsedTime, player);
-			calculateDirection();
+			m_movCmp.calculateDirection();
 			rotateSprite();
-			setPreviousDirection();
 			waiting(elapsedTime);
 		}
 		verifyDeath(elapsedTime, player);
@@ -76,20 +81,22 @@ namespace lpa
 			if ((&currentAnimation == &AnimationManager::getAnimationByKey("orc-idle")) && m_animatedSprite.isPlaying())
 				m_animatedSprite.stop();
 
-			m_prevPosition = m_position;
+			auto& position = m_movCmp.position;
+			auto velocity = m_movCmp.velocity;
+			auto posPlayer = player.getMovCmp().position;
+			
+			if (posPlayer.x > position.x)
+				position.x += velocity * elapsedTime.asSeconds();
+			else if (posPlayer.x < position.x)
+				position.x -= velocity * elapsedTime.asSeconds();
+			
+			if (posPlayer.y > position.y)
+				position.y += velocity * elapsedTime.asSeconds();
+			else if (posPlayer.y < position.y)
+				position.y -= velocity * elapsedTime.asSeconds();
 
-			sf::Vector2f posPlayer = player.getPosition();
-			if (posPlayer.x > m_position.x)
-				m_position.x += m_velocity * elapsedTime.asSeconds();
-			if (posPlayer.x < m_position.x)
-				m_position.x -= m_velocity * elapsedTime.asSeconds();
-			if (posPlayer.y > m_position.y)
-				m_position.y += m_velocity * elapsedTime.asSeconds();
-			if (posPlayer.y < m_position.y)
-				m_position.y -= m_velocity * elapsedTime.asSeconds();
-
-			m_animatedSprite.setPosition(m_position);
-			m_animatedSpriteBlood.setPosition(m_position.x, m_position.y);
+			m_animatedSprite.setPosition(position);
+			m_animatedSpriteBlood.setPosition(position.x, position.y);
 
 			if (!m_animatedSprite.isPlaying())
 			{
@@ -109,9 +116,18 @@ namespace lpa
 
 void Enemy::movePreviousPosition()
 {
-	m_position = m_prevPosition;
-	m_animatedSprite.setPosition(m_position);
-	m_animatedSpriteBlood.setPosition(m_position.x, m_position.y);
+	m_movCmp.position = m_movCmp.prevPosition;
+	m_animatedSprite.setPosition(m_movCmp.position);
+	m_animatedSpriteBlood.setPosition(m_movCmp.position.x, m_movCmp.position.y);
+}
+
+void Enemy::rotateSprite()
+{
+	if (m_movCmp.currentDirection.xAxis != m_movCmp.prevDirection.xAxis)
+	{
+		m_animatedSprite.scale(-1, 1);
+		std::cout << "Sprite Rotated" << std::endl;
+	}
 }
 
 void Enemy::waitToFollow(sf::Time elapsedTime)

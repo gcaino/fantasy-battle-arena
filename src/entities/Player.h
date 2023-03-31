@@ -2,9 +2,8 @@
 // -----------------------------------------
 #include "pch.h"
 #include "Character.h"
-#include "GameObject.h"
-#include "systems\InputManager.h"
-#include "cmp\KeyboardInputComponent.h"
+#include "cmp\KeyboardInputCmp.h"
+#include "cmp\MovementCmp.h"
 // -----------------------------------------
 namespace lpa
 {
@@ -19,19 +18,21 @@ namespace lpa
 		void initialize() override;
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-		bool isAttacking() const			{ return m_attacking; }
-		void setAttacking(bool attacking)	{ m_attacking = attacking; }
-		bool isMoving() const				{ return m_moving; }
-		void setMoving(bool moving)			{ m_moving = moving; }
-		uint getEnemiesKilled() const		{ return m_enemiesKilled; }
-		void addEnemyKilled()				{ ++m_enemiesKilled; }
+		const MovementCmp& getMovCmp() const { return m_movCmp; };
+
+		bool isAttacking() const { return m_attacking; }
+		void setAttacking(bool attacking) { m_attacking = attacking; }
+		bool isMoving() const { return m_moving; }
+		void setMoving(bool moving) { m_moving = moving; }
+		uint getEnemiesKilled() const { return m_enemiesKilled; }
+		void addEnemyKilled() { ++m_enemiesKilled; }
 
 		void addAttackableEnemy(Enemy& enemy);
 		void removeAttackableEnemy(Enemy& enemy);
 		bool isItemAttackablesEnemiesList(const Enemy& enemy);
 
 		void handlerInputsAttack(EnemyManager& EnemyManager, const sf::RenderWindow& window);
-		
+
 		void update(sf::Time elapsedTime);
 		void movePreviousPosition();
 		void attack(Enemy& enemy);
@@ -43,9 +44,11 @@ namespace lpa
 		uint calculateDamage();
 		void verifyDeath(sf::Time elapsedTime);
 		void setAttributesAnimations();
+		void rotateSprite();
 
 		std::list<Ref<Enemy>>	m_attackablesEnemies;
-		KeyboardInputComponent  m_keyboardInputComponent;
+		KeyboardInputCmp		m_keyboardInputCmp;
+		MovementCmp				m_movCmp;
 
 		sf::Sound			m_axeSound;
 
@@ -58,5 +61,4 @@ namespace lpa
 		uint				m_enemiesKilled;
 	};
 }
-
 

@@ -170,10 +170,13 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\cmp\KeyboardInputComponent.cpp" />
+    <ClCompile Include="src\cmp\AttackCmp.cpp" />
+    <ClCompile Include="src\cmp\KeyboardInputCmp.cpp" />
     <ClCompile Include="src\AnimatedSprite.cpp" />
     <ClCompile Include="src\Animation.cpp" />
     <ClCompile Include="src\AnimationManager.cpp" />
+    <ClCompile Include="src\cmp\MovementCmp.cpp" />
+    <ClCompile Include="src\cmp\SpriteCmp.cpp" />
     <ClCompile Include="src\entities\Arena.cpp" />
     <ClCompile Include="src\entities\Character.cpp" />
     <ClCompile Include="src\JsonUtility.cpp" />
@@ -181,7 +184,6 @@
     <ClCompile Include="src\screens\CreditsScreen.cpp" />
     <ClCompile Include="src\entities\Enemy.cpp" />
     <ClCompile Include="src\GameEngine.cpp" />
-    <ClCompile Include="src\entities\GameObject.cpp" />
     <ClCompile Include="src\screens\GameplayScreen.cpp" />
     <ClCompile Include="src\systems\InputManager.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -198,8 +200,12 @@
     <ClCompile Include="src\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\cmp\KeyboardInputComponent.h" />
+    <ClInclude Include="src\cmp\AttackCmp.h" />
+    <ClInclude Include="src\cmp\KeyboardInputCmp.h" />
     <ClInclude Include="src\AnimationManager.h" />
+    <ClInclude Include="src\cmp\MovementCmp.h" />
+    <ClInclude Include="src\cmp\SpriteCmp.h" />
+    <ClInclude Include="src\entities\Entity.h" />
     <ClInclude Include="src\JsonUtility.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Aliases.h" />
@@ -211,7 +217,6 @@
     <ClInclude Include="src\screens\CreditsScreen.h" />
     <ClInclude Include="src\entities\Enemy.h" />
     <ClInclude Include="src\GameEngine.h" />
-    <ClInclude Include="src\entities\GameObject.h" />
     <ClInclude Include="src\screens\GameplayScreen.h" />
     <ClInclude Include="src\systems\InputManager.h" />
     <ClInclude Include="src\entities\Player.h" />

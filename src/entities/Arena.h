@@ -1,22 +1,24 @@
 #pragma once
 // -----------------------------------
 #include "pch.h"
-#include "entities\GameObject.h"
+#include "cmp\SpriteCmp.h"
 // -----------------------------------
 namespace lpa
 {
-	class Arena : public GameObject
+	class Arena
 	{
 	public:
 		Arena();
 
-		const sf::Sprite& getSpriteCollision() const { return m_spriteCollision; }
+		const sf::Sprite& getSpriteCollision() const { return m_spriteCollisionCmp.getSprite(); }
 		const sf::Image& getImageCollision() const   { return m_imageCollision; }
+		
+		const SpriteCmp& getSprCmp() const { return m_spriteCmp; }
+		const SpriteCmp& getSprCollisionCmp() const { return m_spriteCollisionCmp; }
 
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
-	private:			
+	private:		
+		SpriteCmp	m_spriteCmp;
+		SpriteCmp	m_spriteCollisionCmp;
 		sf::Image	m_imageCollision;
-		sf::Sprite	m_spriteCollision;
 	};
 }

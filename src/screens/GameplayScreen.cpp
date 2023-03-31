@@ -3,7 +3,6 @@
 // -----------------------------------------
 #include "AnimatedSprite.h"
 #include "systems\CollisionManager.h"
-#include "entities\GameObject.h"
 #include "ScreenManager.h"
 #include "TitleScreen.h"
 #include "CreditsScreen.h"
@@ -227,8 +226,9 @@ namespace lpa
 
 	void GameplayScreen::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
-		target.draw(m_arena.getSprite(), sf::RenderStates::Default);
-	
+		m_arena.getSprCmp().draw(target, states);
+		//m_arena.getSprCollisionCmp().draw(target, states);
+
 		std::list<AnimatedSprite> sprites;
 		sprites.push_back(m_player.getAnimatedSprite());
 
@@ -314,10 +314,11 @@ namespace lpa
 			{
 				if (CollisionManager::pixelTest(enemy.getAnimatedSprite(), imageArenaCollision))
 				{
-					if (enemy.getPrevPosition().y > enemy.getPosition().y)
-						enemy.setPosition(enemy.getPosition().x, enemy.getPosition().y + (enemy.getVelocity() * elapsedTime.asSeconds()));
+					auto& mov = enemy.getMovCmp();
+					if (mov.prevPosition.y > mov.position.y)
+						mov.position = sf::Vector2f(mov.position.x, mov.position.y + (mov.velocity * elapsedTime.asSeconds()));
 					else
-						enemy.setPosition(enemy.getPosition().x, enemy.getPosition().y - (enemy.getVelocity() * elapsedTime.asSeconds()));
+						mov.position = sf::Vector2f(mov.position.x, mov.position.y - (mov.velocity * elapsedTime.asSeconds()));
 				}
 			}
 		}
@@ -408,9 +409,10 @@ namespace lpa
 						{
 							const auto& window = m_screenManager.get().getRenderWindow();
 							enemy.movePreviousPosition();
-							if ((enemy.getPosition().y + (enemy.getVelocity() * elapsedTime.asSeconds())) < window.getSize().y - 30.f)
+							auto& mov = enemy.getMovCmp();
+							if ((mov.position.y + (mov.velocity * elapsedTime.asSeconds())) < window.getSize().y - 30.f)
 							{
-								enemy.setPosition(enemy.getPosition().x, enemy.getPosition().y + (enemy.getVelocity() * elapsedTime.asSeconds()));
+								mov.position = sf::Vector2f(mov.position.x, mov.position.y + (mov.velocity * elapsedTime.asSeconds()));
 							}
 							return;
 						}
