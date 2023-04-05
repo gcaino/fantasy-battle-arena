@@ -153,7 +153,6 @@ namespace lpa
 			m_movCmp.setPreviousDirection();
 
 			m_animatedSprite.setPosition(m_movCmp.position);
-			m_animatedSpriteBlood.setPosition(m_movCmp.position.x, m_movCmp.position.y + 5.f);
 
 			m_moving = true;
 			m_currentAnimation = AnimationManager::getAnimationByKey("knight-walk");
@@ -180,7 +179,6 @@ namespace lpa
 	{
 		m_movCmp.position = m_movCmp.prevPosition;
 		m_animatedSprite.setPosition(m_movCmp.position);
-		m_animatedSpriteBlood.setPosition(m_movCmp.position.x, m_movCmp.position.y + 5.f);
 	}
 
 	void Player::rotateSprite()
@@ -206,6 +204,8 @@ namespace lpa
 
 		m_currentAnimation = AnimationManager::getAnimationByKey("knight-hurt");
 		m_animatedSprite.play(*m_currentAnimation);
+		
+		m_animatedSpriteBlood.setPosition(m_movCmp.position.x, m_movCmp.position.y);
 		m_animatedSpriteBlood.play();
 	}
 
@@ -275,15 +275,6 @@ namespace lpa
 		else
 		{
 			m_animatedSprite.setFrameTime(sf::seconds(0.1f));
-		}
-
-		if (m_animatedSpriteBlood.isPlaying())
-		{
-			m_drawBlood = true;
-		}
-		else
-		{
-			m_drawBlood = false;
 		}
 	}
 

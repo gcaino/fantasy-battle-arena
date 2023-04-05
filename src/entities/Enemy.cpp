@@ -96,7 +96,6 @@ namespace lpa
 				position.y -= velocity * elapsedTime.asSeconds();
 
 			m_animatedSprite.setPosition(position);
-			m_animatedSpriteBlood.setPosition(position.x, position.y);
 
 			if (!m_animatedSprite.isPlaying())
 			{
@@ -118,7 +117,6 @@ void Enemy::movePreviousPosition()
 {
 	m_movCmp.position = m_movCmp.prevPosition;
 	m_animatedSprite.setPosition(m_movCmp.position);
-	m_animatedSpriteBlood.setPosition(m_movCmp.position.x, m_movCmp.position.y);
 }
 
 void Enemy::rotateSprite()
@@ -126,7 +124,6 @@ void Enemy::rotateSprite()
 	if (m_movCmp.currentDirection.xAxis != m_movCmp.prevDirection.xAxis)
 	{
 		m_animatedSprite.scale(-1, 1);
-		std::cout << "Sprite Rotated" << std::endl;
 	}
 }
 
@@ -185,6 +182,8 @@ void Enemy::takeDamage(unsigned int damage)
 
 	m_currentAnimation = AnimationManager::getAnimationByKey("orc-hurt");
 	m_animatedSprite.play(*m_currentAnimation);
+	
+	m_animatedSpriteBlood.setPosition(m_movCmp.position.x, m_movCmp.position.y);
 	m_animatedSpriteBlood.play();
 }
 
@@ -226,22 +225,13 @@ void Enemy::setAttributesAnimations()
 		m_animatedSprite.setFrameTime(sf::seconds(0.2f));
 	}
 	else if (&currentAnimation == &AnimationManager::getAnimationByKey("orc-attack") ||
-		&currentAnimation == &AnimationManager::getAnimationByKey("orc-hurt"))
+			 &currentAnimation == &AnimationManager::getAnimationByKey("orc-hurt"))
 	{
 		m_animatedSprite.setFrameTime(sf::seconds(0.05f));
 	}
 	else
 	{
 		m_animatedSprite.setFrameTime(sf::seconds(0.1f));
-	}
-
-	if (m_animatedSpriteBlood.isPlaying())
-	{
-		m_drawBlood = true;
-	}
-	else
-	{
-		m_drawBlood = false;
 	}
 }
 

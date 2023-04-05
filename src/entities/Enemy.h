@@ -39,7 +39,6 @@ namespace lpa
 
 		MovementCmp			m_movCmp;
 
-		//float				m_velocity;
 		uint				m_points;
 		bool				m_following;					
 		float				m_rangeAttack;

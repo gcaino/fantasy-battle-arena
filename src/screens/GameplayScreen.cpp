@@ -232,7 +232,7 @@ namespace lpa
 		std::list<AnimatedSprite> sprites;
 		sprites.push_back(m_player.getAnimatedSprite());
 
-		if (m_player.canDrawBlood())
+		if (m_player.getAnimatedSpriteBlood().isPlaying())
 		{
 			sprites.push_back(m_player.getAnimatedSpriteBlood());
 		}
@@ -244,7 +244,7 @@ namespace lpa
 			if (enemy.isAlive())
 			{
 				sprites.push_back(enemy.getAnimatedSprite());
-				if (enemy.canDrawBlood())
+				if (enemy.getAnimatedSpriteBlood().isPlaying())
 				{
 					sprites.push_back(enemy.getAnimatedSpriteBlood());
 				}
