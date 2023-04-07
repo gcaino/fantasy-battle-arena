@@ -1,0 +1,112 @@
+{
+    "assets": {
+        "textures" : [
+            {
+                "key" : "credits-screen",
+                "path": "assets/textures/credits-screen-1024.png"
+            },
+            {
+                "key" : "menu-screen",
+                "path": "assets/textures/menu-screen.jpg"
+            },
+            {
+                "key" : "hover-play-button",
+                "path": "assets/textures/hover-play-button.png"
+            },
+            {
+                "key" : "hover-credits-button",
+                "path": "assets/textures/hover-credits-button.png"
+            },
+            {
+                "key" : "health-status-bar",
+                "path": "assets/textures/healthStatusBar-1024.png"
+            },
+            {
+                "key" : "current-health",
+                "path": "assets/textures/currentHelath-1024.png"
+            },
+            {
+                "key" : "orcs-killed-bar",
+                "path": "assets/textures/orcs-killed-bar-1024.png"
+            },
+            {
+                "key" : "collision-arena-01",
+                "path": "assets/textures/collision-arena-01-1024.png"
+            },
+            {
+                "key" : "arena-01",
+                "path": "assets/textures/arena-01-1024.png"
+            },
+            {
+                "key" : "axe-mouse-pointer",
+                "path": "assets/textures/axe-mouse-pointer-32.png"
+            },
+            {
+                "key" : "knight-animations",
+                "path": "assets/textures/spritesheets/knight-animations.png"
+            },
+            {
+                "key" : "orc-animations",
+                "path": "assets/textures/spritesheets/orc-animations.png"
+            },
+            {
+                "key" : "orc-animations-pixel-art",
+                "path": "assets/textures/spritesheets/orc-animations-pixel-art.png"
+            },
+            {
+                "key" : "knight-animations-pixel-art",
+                "path": "assets/textures/spritesheets/knight-animations-pixel-art.png"
+            },
+            {
+                "key" : "blood-animations",
+                "path": "assets/textures/spritesheets/blood-effects.png"
+            },
+            {
+                "key" : "red-mountain-background",
+                "path": "assets/textures/red-mountain-background.png"
+            },
+            {
+                "key" : "palace-battleground",
+                "path": "assets/textures/palace-battleground-1024.png"
+            },
+            {
+                "key" : "collision-palace-battleground",
+                "path": "assets/textures/collision-palace-battleground-1024.png"
+            }
+        ],
+        "sounds" : [
+            {
+                "key" : "orc-die-sound",
+                "path": "assets/sounds/orc-die.ogg"
+            },
+            {
+                "key" : "orc-attack-sound",
+                "path": "assets/sounds/orc-attack.ogg"
+            },
+            {
+                "key" : "battle-axe-swing-sound",
+                "path": "assets/sounds/battle-axe-swing.ogg"
+            },
+            {
+                "key" : "wooden-click-sound",
+                "path": "assets/sounds/click-wooden.wav"
+            }
+        ],
+        "musics" : [
+            {
+                "key" : "orc-camp-music",
+                "path": "assets/sounds/orc-camp.ogg"
+            }
+        ],
+        "fonts" : [
+            {
+                "key" : "credits-screen-font",
+                "path": "assets/fonts/ARLRDBD.TTF"
+            },
+            {
+                "key" : "orc-horde-font",
+                "path": "assets/fonts/OrcHordeBB_Reg.ttf"
+            }
+        ]
+    }
+}

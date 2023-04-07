@@ -1,0 +1,224 @@
+{ 
+    "animations" : [
+        {
+            "textureID": "knight-animations",
+            "key": "knight-attack-original",
+            "speed": 1.0,
+            "frames": 14,
+            "originX": 0,
+            "originY": 0,
+            "width": 139,
+            "height": 122
+        },
+        {
+            "textureID": "knight-animations",
+            "key": "knight-die-original",
+            "speed": 1.0,
+            "frames": 14,
+            "originX": 0,
+            "originY": 122,
+            "width": 166,
+            "height": 122
+        },
+        {
+            "textureID": "knight-animations",
+            "key": "knight-hurt-original",
+            "speed": 1.0,
+            "frames": 14,
+            "originX": 0,
+            "originY": 244,
+            "width": 140,
+            "height": 122
+        },
+        {
+            "textureID": "knight-animations",
+            "key": "knight-idle-original",
+            "speed": 1.0,
+            "frames": 14,
+            "originX": 0,
+            "originY": 366,
+            "width": 123,
+            "height": 122
+        },
+        {
+            "textureID": "knight-animations",
+            "key": "knight-walk-original",
+            "speed": 1.0,
+            "frames": 14,
+            "originX": 0,
+            "originY": 488,
+            "width": 127,
+            "height": 122
+        },
+        {
+            "textureID": "orc-animations",
+            "key": "orc-attack-original",
+            "speed": 1.0,
+            "frames": 14,
+            "originX": 0,
+            "originY": 0,
+            "width": 177,
+            "height": 155
+        },
+        {
+            "textureID": "orc-animations",
+            "key": "orc-die-original",
+            "speed": 1.0,
+            "frames": 14,
+            "originX": 0,
+            "originY": 155,
+            "width": 220,
+            "height": 155
+        },
+        {
+            "textureID": "orc-animations",
+            "key": "orc-hurt-original",
+            "speed": 1.0,
+            "frames": 14,
+            "originX": 0,
+            "originY": 310,
+            "width": 153,
+            "height": 155
+        },
+        {
+            "textureID": "orc-animations",
+            "key": "orc-idle-original",
+            "speed": 1.0,
+            "frames": 14,
+            "originX": 0,
+            "originY": 465,
+            "width": 158,
+            "height": 155
+        },
+        {
+            "textureID": "orc-animations",
+            "key": "orc-walk-original",
+            "speed": 1.0,
+            "frames": 14,
+            "originX": 0,
+            "originY": 620,
+            "width": 161,
+            "height": 155
+        },
+        {
+            "textureID": "blood-animations",
+            "key": "red-blood",
+            "speed": 1.0,
+            "frames": 6,
+            "originX": 0,
+            "originY": 0,
+            "width": 128,
+            "height": 128
+        },
+        {
+            "textureID": "blood-animations",
+            "key": "green-blood",
+            "speed": 1.0,
+            "frames": 6,
+            "originX": 0,
+            "originY": 128,
+            "width": 128,
+            "height": 128
+        },
+        {
+            "textureID": "orc-animations-pixel-art",
+            "key": "orc-attack",
+            "speed": 1.0,
+            "frames": 4,
+            "originX": 0,
+            "originY": 0,
+            "width": 96,
+            "height": 96
+        },
+        {
+            "textureID": "orc-animations-pixel-art",
+            "key": "orc-die",
+            "speed": 1.0,
+            "frames": 4,
+            "originX": 0,
+            "originY": 96,
+            "width": 96,
+            "height": 96
+        },
+        {
+            "textureID": "orc-animations-pixel-art",
+            "key": "orc-hurt",
+            "speed": 1.0,
+            "frames": 2,
+            "originX": 0,
+            "originY": 192,
+            "width": 96,
+            "height": 96
+        },
+        {
+            "textureID": "orc-animations-pixel-art",
+            "key": "orc-idle",
+            "speed": 1.0,
+            "frames": 5,
+            "originX": 0,
+            "originY": 288,
+            "width": 96,
+            "height": 96
+        },
+        {
+            "textureID": "orc-animations-pixel-art",
+            "key": "orc-walk",
+            "speed": 1.0,
+            "frames": 7,
+            "originX": 0,
+            "originY": 384,
+            "width": 96,
+            "height": 96
+        },
+        {
+            "textureID": "knight-animations-pixel-art",
+            "key": "knight-attack",
+            "speed": 1.0,
+            "frames": 4,
+            "originX": 0,
+            "originY": 0,
+            "width": 96,
+            "height": 96
+        },
+        {
+            "textureID": "knight-animations-pixel-art",
+            "key": "knight-die",
+            "speed": 1.0,
+            "frames": 4,
+            "originX": 0,
+            "originY": 96,
+            "width": 96,
+            "height": 96
+        },
+        {
+            "textureID": "knight-animations-pixel-art",
+            "key": "knight-hurt",
+            "speed": 1.0,
+            "frames": 2,
+            "originX": 0,
+            "originY": 192,
+            "width": 96,
+            "height": 96
+        },
+        {
+            "textureID": "knight-animations-pixel-art",
+            "key": "knight-idle",
+            "speed": 1.0,
+            "frames": 6,
+            "originX": 0,
+            "originY": 288,
+            "width": 96,
+            "height": 96
+        },
+        {
+            "textureID": "knight-animations-pixel-art",
+            "key": "knight-walk",
+            "speed": 1.0,
+            "frames": 8,
+            "originX": 0,
+            "originY": 384,
+            "width": 96,
+            "height": 96
+        }
+    ]
+}
