@@ -6,8 +6,8 @@
 namespace lpa
 {
 	SpawnManager::SpawnManager(EnemyManager& EnemyManager)
-		: m_spawnPointOne { 0, 768 * 0.97f }
-		, m_spawnPointTwo { 1024 - 100, 768 * 0.97f }
+		: m_spawnPointOne { 0, 768 * 0.75f }
+		, m_spawnPointTwo { 1024 - 100, 768 * 0.75f }
 		, m_spawnPoints   { m_spawnPointOne, m_spawnPointTwo }
 		, m_spawnTime { sf::seconds(5.f) }
 		, m_timeSinceLastSpawn { sf::seconds(0.f) }

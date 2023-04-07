@@ -91,10 +91,10 @@ namespace lpa
 			else if (posPlayer.x < position.x)
 				position.x -= velocity * elapsedTime.asSeconds();
 			
-			//if (posPlayer.y > position.y)
-			//	position.y += velocity * elapsedTime.asSeconds();
-			//else if (posPlayer.y < position.y)
-			//	position.y -= velocity * elapsedTime.asSeconds();
+			if (posPlayer.y > position.y)
+				position.y += velocity * elapsedTime.asSeconds();
+			else if (posPlayer.y < position.y)
+				position.y -= velocity * elapsedTime.asSeconds();
 
 			m_animatedSprite.setPosition(position);
 
@@ -226,8 +226,7 @@ void Enemy::setAttributesAnimations()
 	{
 		m_animatedSprite.setFrameTime(sf::seconds(0.2f));
 	}
-	else if (&currentAnimation == &AnimationManager::getAnimationByKey("orc-attack") ||
-			 &currentAnimation == &AnimationManager::getAnimationByKey("orc-hurt"))
+	else if (&currentAnimation == &AnimationManager::getAnimationByKey("orc-attack"))
 	{
 		m_animatedSprite.setFrameTime(sf::seconds(0.05f));
 	}

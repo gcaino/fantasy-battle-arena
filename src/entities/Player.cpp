@@ -58,13 +58,13 @@ namespace lpa
 
 		m_axeSound.setBuffer(AssetManager<sf::SoundBuffer>::GetAssetByKey("battle-axe-swing-sound"));
 
-		//m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::W, "up");
-		//m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::S, "down");
+		m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::W, "up");
+		m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::S, "down");
 		m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::A, "left");
 		m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::D, "right");
 						
-		//m_keyboardInputCmp.bindActionsToCommands("up",		[this](sf::Time elapsedTime) {m_movCmp.position.y -= m_movCmp.velocity * elapsedTime.asSeconds(); });
-		//m_keyboardInputCmp.bindActionsToCommands("down",	[this](sf::Time elapsedTime) {m_movCmp.position.y += m_movCmp.velocity * elapsedTime.asSeconds(); });
+		m_keyboardInputCmp.bindActionsToCommands("up",		[this](sf::Time elapsedTime) {m_movCmp.position.y -= m_movCmp.velocity * elapsedTime.asSeconds(); });
+		m_keyboardInputCmp.bindActionsToCommands("down",	[this](sf::Time elapsedTime) {m_movCmp.position.y += m_movCmp.velocity * elapsedTime.asSeconds(); });
 		m_keyboardInputCmp.bindActionsToCommands("left",	[this](sf::Time elapsedTime) {m_movCmp.position.x -= m_movCmp.velocity * elapsedTime.asSeconds(); });
 		m_keyboardInputCmp.bindActionsToCommands("right",	[this](sf::Time elapsedTime) {m_movCmp.position.x += m_movCmp.velocity * elapsedTime.asSeconds(); });
 	}
@@ -129,8 +129,8 @@ namespace lpa
 	{
 		// TODO: Game Context
 		m_movCmp.position.x = 1024 * 0.5f;
-		//m_movCmp.position.y = 768 * 0.5f + m_animatedSprite.getGlobalBounds().height;
-		m_movCmp.position.y = 768 * 0.78f + m_animatedSprite.getGlobalBounds().height;
+		m_movCmp.position.y = 768 * 0.5f + m_animatedSprite.getGlobalBounds().height;
+		//m_movCmp.position.y = 768 * 0.78f + m_animatedSprite.getGlobalBounds().height;
 		m_animatedSprite.setPosition(m_movCmp.position);
 	}
 
