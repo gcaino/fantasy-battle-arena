@@ -167,8 +167,8 @@ namespace lpa
 			m_player.update(elapsedTime);
 			m_enemyManager.update(elapsedTime, m_player);
 
-			collisionDetectionPlayerLimitsArena();
-			collisionDetectionEnemiesLimitsArena(elapsedTime);
+			//collisionDetectionPlayerLimitsArena();
+			//collisionDetectionEnemiesLimitsArena(elapsedTime);
 			collisionDetectionPlayerEnemies();
 			collisionDetectionEnemiesPlayer();
 			collisionDetectionEnemyEmemies(elapsedTime);

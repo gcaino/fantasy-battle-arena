@@ -42,6 +42,7 @@ namespace lpa
 		m_currentAnimation = AnimationManager::getAnimationByKey("knight-idle");
 		m_animatedSprite.setAnimation(*m_currentAnimation);
 		m_animatedSprite.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
+		m_animatedSprite.setScale(1.5f, 1.5f);
 
 		m_animatedSpriteBlood.setAnimation(AnimationManager::getAnimationByKey("red-blood"));
 		m_animatedSpriteBlood.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
@@ -57,13 +58,13 @@ namespace lpa
 
 		m_axeSound.setBuffer(AssetManager<sf::SoundBuffer>::GetAssetByKey("battle-axe-swing-sound"));
 
-		m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::W, "up");
-		m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::S, "down");
+		//m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::W, "up");
+		//m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::S, "down");
 		m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::A, "left");
 		m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::D, "right");
 						
-		m_keyboardInputCmp.bindActionsToCommands("up",		[this](sf::Time elapsedTime) {m_movCmp.position.y -= m_movCmp.velocity * elapsedTime.asSeconds(); });
-		m_keyboardInputCmp.bindActionsToCommands("down",	[this](sf::Time elapsedTime) {m_movCmp.position.y += m_movCmp.velocity * elapsedTime.asSeconds(); });
+		//m_keyboardInputCmp.bindActionsToCommands("up",		[this](sf::Time elapsedTime) {m_movCmp.position.y -= m_movCmp.velocity * elapsedTime.asSeconds(); });
+		//m_keyboardInputCmp.bindActionsToCommands("down",	[this](sf::Time elapsedTime) {m_movCmp.position.y += m_movCmp.velocity * elapsedTime.asSeconds(); });
 		m_keyboardInputCmp.bindActionsToCommands("left",	[this](sf::Time elapsedTime) {m_movCmp.position.x -= m_movCmp.velocity * elapsedTime.asSeconds(); });
 		m_keyboardInputCmp.bindActionsToCommands("right",	[this](sf::Time elapsedTime) {m_movCmp.position.x += m_movCmp.velocity * elapsedTime.asSeconds(); });
 	}
@@ -128,7 +129,8 @@ namespace lpa
 	{
 		// TODO: Game Context
 		m_movCmp.position.x = 1024 * 0.5f;
-		m_movCmp.position.y = 768 * 0.5f + m_animatedSprite.getGlobalBounds().height;
+		//m_movCmp.position.y = 768 * 0.5f + m_animatedSprite.getGlobalBounds().height;
+		m_movCmp.position.y = 768 * 0.78f + m_animatedSprite.getGlobalBounds().height;
 		m_animatedSprite.setPosition(m_movCmp.position);
 	}
 
@@ -267,10 +269,9 @@ namespace lpa
 		{
 			m_animatedSprite.setFrameTime(sf::seconds(0.2f));
 		}
-		else if (&currentAnimation == &AnimationManager::getAnimationByKey("knight-attack") ||
-			&currentAnimation == &AnimationManager::getAnimationByKey("knight-hurt"))
+		else if (&currentAnimation == &AnimationManager::getAnimationByKey("knight-attack"))
 		{
-			m_animatedSprite.setFrameTime(sf::seconds(0.05f));
+			m_animatedSprite.setFrameTime(sf::seconds(0.10f));
 		}
 		else
 		{

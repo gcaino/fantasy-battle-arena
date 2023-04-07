@@ -33,6 +33,7 @@ namespace lpa
 		m_currentAnimation = AnimationManager::getAnimationByKey("orc-idle");
 		m_animatedSprite.setAnimation(*m_currentAnimation);
 		m_animatedSprite.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
+		m_animatedSprite.setScale(1.5f, 1.5f);
 
 		m_animatedSpriteBlood.setAnimation(AnimationManager::getAnimationByKey("green-blood"));
 		m_animatedSpriteBlood.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
@@ -90,10 +91,10 @@ namespace lpa
 			else if (posPlayer.x < position.x)
 				position.x -= velocity * elapsedTime.asSeconds();
 			
-			if (posPlayer.y > position.y)
-				position.y += velocity * elapsedTime.asSeconds();
-			else if (posPlayer.y < position.y)
-				position.y -= velocity * elapsedTime.asSeconds();
+			//if (posPlayer.y > position.y)
+			//	position.y += velocity * elapsedTime.asSeconds();
+			//else if (posPlayer.y < position.y)
+			//	position.y -= velocity * elapsedTime.asSeconds();
 
 			m_animatedSprite.setPosition(position);
 
@@ -158,10 +159,11 @@ void Enemy::attack(Player& player)
 	m_timeSinceLastAttack = m_clockAttack.getElapsedTime();
 	if (m_timeSinceLastAttack > m_speedAttack)
 	{
+		m_orcAttackSound.play();
+
 		//std::cout << "Enemy Attack" << std::endl;
 		player.takeDamage(calculateDamage());
 
-		m_orcAttackSound.play();
 		m_currentAnimation = AnimationManager::getAnimationByKey("orc-attack");
 		m_animatedSprite.play(*m_currentAnimation);
 
