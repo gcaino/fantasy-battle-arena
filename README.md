@@ -1,6 +1,6 @@
 <base target="_blank">
 
-# Fantasy Clicker
+# Fantasy Battle Arena
 Nueva versión del juego "_Clicker Orcs_", proyecto desarrollado en 2017, desde cero, en **C++ y SFML**, para el final del trayecto "**Programación Avanzada de VJ**" en [Image Campus](https://imagecampus.edu.ar/).
 
 ## Devlog
@@ -15,5 +15,6 @@ Nueva versión del juego "_Clicker Orcs_", proyecto desarrollado en 2017, desde 
   - Implementación de un gestor único de animaciones.
   - Implementación de un parser de archivos de texto con formato _json_ (utilizando la librería [nlohmann/json](https://github.com/nlohmann/json)), el cúal permite modificar los valores del proyecto sin necesidad de recompilación.
   - Implementación de un componente para gestionar los inputs de teclado. La implementación desacopla la asignación de teclas de las acciones (commands).
+  - Cambio de estilo artístico. Se migró todo el arte a un estilo "pixel-art". Se incorporaron nuevos assets para las animaciones y fondos.
  
 
