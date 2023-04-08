@@ -24,9 +24,6 @@
     <ClCompile Include="src\entities\Arena.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\entities\Character.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\systems\CollisionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -90,6 +87,9 @@
     <ClCompile Include="src\cmp\AttackCmp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\cmp\StatCmp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AnimatedSprite.h">
@@ -99,9 +99,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\entities\Arena.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\entities\Character.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\systems\CollisionManager.h">
@@ -172,6 +169,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cmp\AttackCmp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cmp\StatCmp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

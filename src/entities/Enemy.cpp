@@ -10,6 +10,9 @@ namespace lpa
 {
 	Enemy::Enemy()
 		: m_movCmp{}
+		, m_statCmp{}
+		, m_animatedSprite(sf::seconds(0.1f), true, false)
+		, m_animatedSpriteBlood(sf::seconds(0.1f), true, false)
 		, m_speedAttack(sf::seconds(3.f))
 		, m_points(10)
 		, m_following(true)
@@ -26,6 +29,13 @@ namespace lpa
 	}
 	void Enemy::initialize()
 	{
+		m_statCmp.alive = true;
+		m_statCmp.evasion = 0;
+		m_statCmp.health = 50.f;
+		m_statCmp.maxHealth = m_statCmp.health;
+		m_statCmp.level = 1;
+		m_statCmp.strength = 10;
+
 		m_movCmp.velocity = 20.f;
 		m_movCmp.currentDirection.xAxis = AxisDirection::Right;
 		m_movCmp.prevDirection.xAxis	= AxisDirection::Right;
@@ -51,9 +61,9 @@ namespace lpa
 
 	void Enemy::update(sf::Time elapsedTime, Player& player)
 	{
-		if (!player.isAlive()) return;
+		if (!player.getStatCmp().alive) return;
 
-		if (m_active)
+		if (isActive())
 		{
 			m_movCmp.prevPosition = m_movCmp.position;
 			m_movCmp.setPreviousDirection();
@@ -71,7 +81,7 @@ namespace lpa
 
 	void Enemy::move(sf::Time elapsedTime, const Player& player)
 	{
-		if (!player.isAlive()) return;
+		if (!player.getStatCmp().alive) return;
 
 		if (!m_waiting)
 		{
@@ -174,11 +184,11 @@ void Enemy::attack(Player& player)
 
 void Enemy::takeDamage(unsigned int damage)
 {
-	m_health -= damage;
+	m_statCmp.health -= damage;
 	//std::cout << "Enemy Health: " << m_health << std::endl;
-	if (m_health <= 0)
+	if (m_statCmp.health <= 0)
 	{
-		m_health = 0;
+		m_statCmp.health = 0;
 		return;
 	}
 
@@ -191,21 +201,21 @@ void Enemy::takeDamage(unsigned int damage)
 
 uint Enemy::calculateDamage()
 {
-	return	m_strength;
+	return	m_statCmp.strength;
 }
 
 void Enemy::verifyDeath(sf::Time elapsedTime, Player& player)
 {
-	if (m_health <= 0)
+	if (m_statCmp.health <= 0)
 	{
 		auto& currentAnimation{ m_currentAnimation.value().get() };
-		if (m_active && (&currentAnimation != &AnimationManager::getAnimationByKey("orc-die")))
+		if (isActive() && (&currentAnimation != &AnimationManager::getAnimationByKey("orc-die")))
 		{
 			m_animatedSprite.pause();
 			m_currentAnimation = AnimationManager::getAnimationByKey("orc-die");
 			m_animatedSprite.play(*m_currentAnimation);
 			m_animatedSprite.setFrame(1);
-			m_active = false;
+			deactivate();
 			player.addEnemyKilled();
 			m_orcDieSound.play();
 		}
@@ -213,7 +223,7 @@ void Enemy::verifyDeath(sf::Time elapsedTime, Player& player)
 		m_elapsedDeadTime += elapsedTime;
 		if (m_elapsedDeadTime > m_deadTime)
 		{
-			m_alive = false;
+			m_statCmp.alive = false;
 			//std::cout << "Enemy Died" << std::endl;
 		}
 	}

@@ -118,7 +118,7 @@ namespace lpa
 
 	void GameplayScreen::updateHealthBar(const Player& player)
 	{
-		m_currentHealth.setScale(static_cast<float>(player.getHealth() / player.getMaxHealth()), 1.f);
+		m_currentHealth.setScale(static_cast<float>(player.getStatCmp().health / player.getStatCmp().maxHealth), 1.f);
 	}
 
 	void GameplayScreen::showStartText(sf::Time elapsedTime)
@@ -161,7 +161,7 @@ namespace lpa
 
 		updateMousePointer();
 
-		if (m_player.isAlive())
+		if (m_player.getStatCmp().alive)
 		{
 			//m_player.handlerInputsAttack(m_enemyManager, m_screenManager.get().getRenderWindow());
 			m_player.update(elapsedTime);
@@ -211,7 +211,7 @@ namespace lpa
 
 	void GameplayScreen::checkLossCondition(sf::Time elapsedTime)
 	{
-		if (m_player.getHealth() <= 0)
+		if (m_player.getStatCmp().health <= 0)
 		{
 			m_victory = false;
 			m_defeatText.visible = true;
@@ -241,7 +241,7 @@ namespace lpa
 		for (uint i { 0 }; i < maxEnemyManagerEnemies; i++)
 		{
 			const auto& enemy { m_enemyManager.getEnemyRefByIndex(i) };
-			if (enemy.isAlive())
+			if (enemy.getStatCmp().alive)
 			{
 				sprites.push_back(enemy.getAnimatedSprite());
 				if (enemy.getAnimatedSpriteBlood().isPlaying())

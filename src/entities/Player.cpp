@@ -25,6 +25,9 @@ namespace lpa
 		: m_attackablesEnemies{}
 		, m_keyboardInputCmp{}
 		, m_movCmp{}
+		, m_statCmp{}
+		, m_animatedSprite(sf::seconds(0.1f), true, false)
+		, m_animatedSpriteBlood(sf::seconds(0.1f), true, false)
 		, m_axeSound{}
 		, m_speedAttack{ sf::seconds(0.5f) }
 		, m_attacking{ false }
@@ -35,6 +38,8 @@ namespace lpa
 	}
 	void Player::initialize()
 	{
+		activate();
+
 		m_movCmp.currentDirection.xAxis = AxisDirection::Right;
 		m_movCmp.prevDirection.xAxis	= AxisDirection::Right;
 		m_movCmp.velocity = 100.f;
@@ -48,10 +53,11 @@ namespace lpa
 		m_animatedSpriteBlood.setOrigin(m_animatedSprite.getGlobalBounds().width * 0.5f, m_animatedSprite.getGlobalBounds().height);
 		resetPosition();
 
-		m_health = 300.f;
-		m_maxHealth = m_health;
-		m_alive = true;
-		m_active = true;
+		m_statCmp.health = 300.f;
+		m_statCmp.maxHealth = m_statCmp.health;
+		m_statCmp.alive = true;
+		m_statCmp.strength = 10;
+		
 		m_timeSinceLastAttack = m_clockAttack.restart();
 		m_deadTime = sf::seconds(2.f);
 		m_elapsedDeadTime = sf::seconds(0.f);
@@ -71,7 +77,7 @@ namespace lpa
 
 	void Player::handlerInputsAttack(EnemyManager& EnemyManager, const sf::RenderWindow& window)
 	{
-		if (!m_active) return;
+		if (!isActive()) return;
 		// TODO - Para atacar con una tecla hay que tener en cuenta la dirección donde está pegando,
 		// sino le puede pegar a otros que están en la lista de atacables
 		m_attacking = true;
@@ -87,7 +93,7 @@ namespace lpa
 		for (uint i = 0; i < maxEnemyManagerEnemies; i++)
 		{
 			auto& enemy = EnemyManager.getEnemyRefByIndex(i);
-			if (enemy.isAlive())
+			if (enemy.getStatCmp().alive)
 			{
 				if (enemy.getAnimatedSprite().getGlobalBounds().contains(static_cast<sf::Vector2f>(targetCoords)))
 				{
@@ -111,7 +117,7 @@ namespace lpa
 
 	void Player::update(sf::Time elapsedTime)
 	{
-		if (m_active)
+		if (isActive())
 		{
 			m_movCmp.prevPosition = m_movCmp.position;
 			m_keyboardInputCmp.update(elapsedTime);
@@ -191,18 +197,18 @@ namespace lpa
 
 	uint Player::calculateDamage()
 	{
-		return	m_strength;
+		return	m_statCmp.strength;
 	}
 
 	void Player::takeDamage(uint damage)
 	{
-		m_health -= damage;
-		if (m_health <= 0)
+		m_statCmp.health -= damage;
+		if (m_statCmp.health <= 0)
 		{
-			m_health = 0;
+			m_statCmp.health = 0;
 			return;
 		}
-		std::cout << "Player Health: " << m_health << std::endl;
+		std::cout << "Player Health: " << m_statCmp.health << std::endl;
 
 		m_currentAnimation = AnimationManager::getAnimationByKey("knight-hurt");
 		m_animatedSprite.play(*m_currentAnimation);
@@ -213,22 +219,22 @@ namespace lpa
 
 	void Player::verifyDeath(sf::Time elapsedTime)
 	{
-		if (m_health <= 0)
+		if (m_statCmp.health <= 0)
 		{
 			auto& currentAnimation{ m_currentAnimation.value().get() };
-			if (m_active && (&currentAnimation != &AnimationManager::getAnimationByKey("knight-die")))
+			if (isActive() && (&currentAnimation != &AnimationManager::getAnimationByKey("knight-die")))
 			{
 				m_animatedSprite.pause();
 				m_currentAnimation = AnimationManager::getAnimationByKey("knight-die");
 				m_animatedSprite.play(*m_currentAnimation);
 				m_animatedSprite.setFrame(1);
-				m_active = false;
+				deactivate();
 			}
 
 			m_elapsedDeadTime += elapsedTime;
 			if (m_elapsedDeadTime > m_deadTime)
 			{
-				m_alive = false;
+				m_statCmp.alive = false;
 				std::cout << "Player Died" << std::endl;
 			}
 		}

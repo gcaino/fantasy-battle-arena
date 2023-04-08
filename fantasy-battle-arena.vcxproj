@@ -178,8 +178,8 @@
     <ClCompile Include="src\AnimationManager.cpp" />
     <ClCompile Include="src\cmp\MovementCmp.cpp" />
     <ClCompile Include="src\cmp\SpriteCmp.cpp" />
+    <ClCompile Include="src\cmp\StatCmp.cpp" />
     <ClCompile Include="src\entities\Arena.cpp" />
-    <ClCompile Include="src\entities\Character.cpp" />
     <ClCompile Include="src\JsonUtility.cpp" />
     <ClCompile Include="src\systems\CollisionManager.cpp" />
     <ClCompile Include="src\screens\CreditsScreen.cpp" />
@@ -206,6 +206,7 @@
     <ClInclude Include="src\AnimationManager.h" />
     <ClInclude Include="src\cmp\MovementCmp.h" />
     <ClInclude Include="src\cmp\SpriteCmp.h" />
+    <ClInclude Include="src\cmp\StatCmp.h" />
     <ClInclude Include="src\entities\Entity.h" />
     <ClInclude Include="src\JsonUtility.h" />
     <ClInclude Include="src\pch.h" />
@@ -213,7 +214,6 @@
     <ClInclude Include="src\AnimatedSprite.h" />
     <ClInclude Include="src\Animation.h" />
     <ClInclude Include="src\entities\Arena.h" />
-    <ClInclude Include="src\entities\Character.h" />
     <ClInclude Include="src\systems\CollisionManager.h" />
     <ClInclude Include="src\screens\CreditsScreen.h" />
     <ClInclude Include="src\entities\Enemy.h" />

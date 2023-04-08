@@ -22,7 +22,7 @@ namespace lpa
 	{
 		for (auto& enemy : m_enemies)
 		{
-			if (enemy.isAlive())
+			if (enemy.getStatCmp().alive)
 				enemy.update(elapsedTime, player);
 		}
 	}
@@ -30,7 +30,7 @@ namespace lpa
 	{
 		for (const auto& enemy : m_enemies)
 		{
-			if (enemy.isAlive())
+			if (enemy.getStatCmp().alive)
 				enemy.draw(target, states);
 		}
 	}

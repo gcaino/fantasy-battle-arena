@@ -30,24 +30,8 @@
                 "path": "assets/textures/orcs-killed-bar-1024.png"
             },
             {
-                "key" : "collision-arena-01",
-                "path": "assets/textures/collision-arena-01-1024.png"
-            },
-            {
-                "key" : "arena-01",
-                "path": "assets/textures/arena-01-1024.png"
-            },
-            {
                 "key" : "axe-mouse-pointer",
                 "path": "assets/textures/axe-mouse-pointer-32.png"
-            },
-            {
-                "key" : "knight-animations",
-                "path": "assets/textures/spritesheets/knight-animations.png"
-            },
-            {
-                "key" : "orc-animations",
-                "path": "assets/textures/spritesheets/orc-animations.png"
             },
             {
                 "key" : "orc-animations-pixel-art",

@@ -1,22 +1,31 @@
 #pragma once
 // -----------------------------------------
 #include "pch.h"
-#include "Character.h"
+#include "entities\Entity.h"
 #include "cmp\KeyboardInputCmp.h"
 #include "cmp\MovementCmp.h"
+#include "cmp\StatCmp.h"
+#include "Animation.h"
+#include "AnimatedSprite.h"
 // -----------------------------------------
 namespace lpa
 {
 	class Enemy;
 	class EnemyManager;
 	// -----------------------------------------
-	class Player : public Character
+	class Player : public Entity
 	{
 	public:
 		Player();
 
-		void initialize() override;
-		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+		StatCmp& getStatCmp()				{ return m_statCmp; };
+		const StatCmp& getStatCmp() const	{ return m_statCmp; };
+
+		AnimatedSprite	getAnimatedSprite() const		{ return m_animatedSprite; }
+		AnimatedSprite	getAnimatedSpriteBlood() const	{ return m_animatedSpriteBlood; }
+
+		void initialize();
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 		const MovementCmp& getMovCmp() const { return m_movCmp; };
 
@@ -49,9 +58,17 @@ namespace lpa
 		std::list<Ref<Enemy>>	m_attackablesEnemies;
 		KeyboardInputCmp		m_keyboardInputCmp;
 		MovementCmp				m_movCmp;
+		StatCmp					m_statCmp;
+
+		std::optional<Ref<Animation>>	m_currentAnimation;
+		AnimatedSprite					m_animatedSprite;
+		AnimatedSprite					m_animatedSpriteBlood;
+		Animation						m_bloodAnimation;
 
 		sf::Sound			m_axeSound;
 
+		sf::Time			m_deadTime;
+		sf::Time			m_elapsedDeadTime;
 		sf::Time			m_speedAttack;
 		sf::Time			m_timeSinceLastAttack;
 		sf::Clock			m_clockAttack;

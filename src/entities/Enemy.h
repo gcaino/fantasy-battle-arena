@@ -1,22 +1,30 @@
 #pragma once
 // -----------------------------------------
 #include "pch.h"
-#include "Character.h"
+#include "entities/Entity.h"
+#include "cmp\StatCmp.h"
 #include "cmp\MovementCmp.h"
+#include "AnimatedSprite.h"
 // -----------------------------------------
 namespace lpa
 {
 	class Player;
 	// -------------------------------------
-	class Enemy : public Character
+	class Enemy : public Entity
 	{
 	public:
 		Enemy();
 
-		MovementCmp& getMovCmp() { return m_movCmp; };
+		MovementCmp& getMovCmp()			{ return m_movCmp; };
+		
+		StatCmp&	 getStatCmp()			{ return m_statCmp; };
+		const StatCmp& getStatCmp() const	{ return m_statCmp; };
 
-		void initialize() override;
-		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+		AnimatedSprite	getAnimatedSprite() const		{ return m_animatedSprite; }
+		AnimatedSprite	getAnimatedSpriteBlood() const	{ return m_animatedSpriteBlood; }
+
+		void initialize();
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 		bool isFollowing() const			{ return m_following; }
 		void setFollowing(bool following)	{ m_following = following; }
@@ -38,6 +46,12 @@ namespace lpa
 		void verifyDeath(sf::Time elapsedTime, Player& player);
 
 		MovementCmp			m_movCmp;
+		StatCmp				m_statCmp;
+
+		std::optional<Ref<Animation>>	m_currentAnimation;
+		AnimatedSprite					m_animatedSprite;
+		AnimatedSprite					m_animatedSpriteBlood;
+		Animation						m_bloodAnimation;
 
 		uint				m_points;
 		bool				m_following;					
@@ -46,7 +60,9 @@ namespace lpa
 		sf::Time			m_speedAttack;
 		sf::Time			m_timeSinceLastAttack;
 		sf::Clock			m_clockAttack;
-							
+				
+		sf::Time			m_deadTime;
+		sf::Time			m_elapsedDeadTime;
 		sf::Time			m_timeToFollow;
 		sf::Time			m_timeSinceNotFollowing;
 		sf::Clock			m_clockFollowing;
