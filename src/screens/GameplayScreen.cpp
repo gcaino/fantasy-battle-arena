@@ -7,6 +7,8 @@
 #include "TitleScreen.h"
 #include "CreditsScreen.h"
 #include "AssetManager.h"
+#include "ecs\StatCmp.h"
+#include "ecs\MovementCmp.h"
 // -----------------------------------------
 namespace lpa
 {
@@ -118,7 +120,7 @@ namespace lpa
 
 	void GameplayScreen::updateHealthBar(const Player& player)
 	{
-		m_currentHealth.setScale(static_cast<float>(player.getStatCmp().health / player.getStatCmp().maxHealth), 1.f);
+		m_currentHealth.setScale(static_cast<float>(player.getComponent<StatCmp>().health / player.getComponent<StatCmp>().maxHealth), 1.f);
 	}
 
 	void GameplayScreen::showStartText(sf::Time elapsedTime)
@@ -161,7 +163,7 @@ namespace lpa
 
 		updateMousePointer();
 
-		if (m_player.getStatCmp().alive)
+		if (m_player.getComponent<StatCmp>().alive)
 		{
 			//m_player.handlerInputsAttack(m_enemyManager, m_screenManager.get().getRenderWindow());
 			m_player.update(elapsedTime);
@@ -211,7 +213,7 @@ namespace lpa
 
 	void GameplayScreen::checkLossCondition(sf::Time elapsedTime)
 	{
-		if (m_player.getStatCmp().health <= 0)
+		if (m_player.getComponent<StatCmp>().health <= 0)
 		{
 			m_victory = false;
 			m_defeatText.visible = true;
@@ -241,7 +243,7 @@ namespace lpa
 		for (uint i { 0 }; i < maxEnemyManagerEnemies; i++)
 		{
 			const auto& enemy { m_enemyManager.getEnemyRefByIndex(i) };
-			if (enemy.getStatCmp().alive)
+			if (enemy.getComponent<StatCmp>().alive)
 			{
 				sprites.push_back(enemy.getAnimatedSprite());
 				if (enemy.getAnimatedSpriteBlood().isPlaying())
@@ -314,7 +316,7 @@ namespace lpa
 			{
 				if (CollisionManager::pixelTest(enemy.getAnimatedSprite(), imageArenaCollision))
 				{
-					auto& mov = enemy.getMovCmp();
+					auto& mov = enemy.getComponent<MovementCmp>();
 					if (mov.prevPosition.y > mov.position.y)
 						mov.position = sf::Vector2f(mov.position.x, mov.position.y + (mov.velocity * elapsedTime.asSeconds()));
 					else
@@ -409,7 +411,7 @@ namespace lpa
 						{
 							const auto& window = m_screenManager.get().getRenderWindow();
 							enemy.movePreviousPosition();
-							auto& mov = enemy.getMovCmp();
+							auto& mov = enemy.getComponent<MovementCmp>();
 							if ((mov.position.y + (mov.velocity * elapsedTime.asSeconds())) < window.getSize().y - 30.f)
 							{
 								mov.position = sf::Vector2f(mov.position.x, mov.position.y + (mov.velocity * elapsedTime.asSeconds()));

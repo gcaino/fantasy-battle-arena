@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "EnemyManager.h"
 // -----------------------------------------
-#include "entities\Player.h"
+#include "game\Player.h"
+#include "ecs\StatCmp.h"
 // -----------------------------------------
 namespace lpa
 {
@@ -22,7 +23,7 @@ namespace lpa
 	{
 		for (auto& enemy : m_enemies)
 		{
-			if (enemy.getStatCmp().alive)
+			if (enemy.getComponent<StatCmp>().alive)
 				enemy.update(elapsedTime, player);
 		}
 	}
@@ -30,7 +31,7 @@ namespace lpa
 	{
 		for (const auto& enemy : m_enemies)
 		{
-			if (enemy.getStatCmp().alive)
+			if (enemy.getComponent<StatCmp>().alive)
 				enemy.draw(target, states);
 		}
 	}

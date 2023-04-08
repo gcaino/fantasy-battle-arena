@@ -1,7 +1,7 @@
 #pragma once
 // -----------------------------------
 #include "pch.h"
-#include "cmp\SpriteCmp.h"
+#include "ecs\SpriteCmp.h"
 // -----------------------------------
 namespace lpa
 {

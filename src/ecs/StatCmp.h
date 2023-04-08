@@ -1,16 +1,20 @@
 #pragma once
 // --------------------------------------------------------------------------------
 #include "pch.h"
+#include "ecs\Component.h"
 // --------------------------------------------------------------------------------
 namespace lpa
 {
-	struct StatCmp
+	class StatCmp : public Component
 	{
-		float	health;
-		float	maxHealth;
-		uint	strength;
-		uint	evasion;
-		uint	level;
-		bool	alive;
+	public:
+		StatCmp() = default;
+
+		float	health{};
+		float	maxHealth{};
+		uint	strength{};
+		uint	evasion{};
+		uint	level{};
+		bool	alive{};
 	};
 }

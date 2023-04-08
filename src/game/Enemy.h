@@ -1,24 +1,19 @@
 #pragma once
 // -----------------------------------------
 #include "pch.h"
-#include "entities/Entity.h"
-#include "cmp\StatCmp.h"
-#include "cmp\MovementCmp.h"
+#include "ecs/Entity.h"
 #include "AnimatedSprite.h"
 // -----------------------------------------
 namespace lpa
 {
+	class MovementCmp;
+	class StatCmp;
 	class Player;
 	// -------------------------------------
 	class Enemy : public Entity
 	{
 	public:
 		Enemy();
-
-		MovementCmp& getMovCmp()			{ return m_movCmp; };
-		
-		StatCmp&	 getStatCmp()			{ return m_statCmp; };
-		const StatCmp& getStatCmp() const	{ return m_statCmp; };
 
 		AnimatedSprite	getAnimatedSprite() const		{ return m_animatedSprite; }
 		AnimatedSprite	getAnimatedSpriteBlood() const	{ return m_animatedSpriteBlood; }
@@ -45,8 +40,8 @@ namespace lpa
 		uint calculateDamage();
 		void verifyDeath(sf::Time elapsedTime, Player& player);
 
-		MovementCmp			m_movCmp;
-		StatCmp				m_statCmp;
+		MovementCmp&	m_movCmp;
+		StatCmp&		m_statCmp;
 
 		std::optional<Ref<Animation>>	m_currentAnimation;
 		AnimatedSprite					m_animatedSprite;

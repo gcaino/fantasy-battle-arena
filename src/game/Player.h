@@ -1,10 +1,7 @@
 #pragma once
 // -----------------------------------------
 #include "pch.h"
-#include "entities\Entity.h"
-#include "cmp\KeyboardInputCmp.h"
-#include "cmp\MovementCmp.h"
-#include "cmp\StatCmp.h"
+#include "ecs\Entity.h"
 #include "Animation.h"
 #include "AnimatedSprite.h"
 // -----------------------------------------
@@ -12,22 +9,20 @@ namespace lpa
 {
 	class Enemy;
 	class EnemyManager;
+	class KeyboardInputCmp;
+	class MovementCmp;
+	class StatCmp;
 	// -----------------------------------------
 	class Player : public Entity
 	{
 	public:
 		Player();
 
-		StatCmp& getStatCmp()				{ return m_statCmp; };
-		const StatCmp& getStatCmp() const	{ return m_statCmp; };
-
 		AnimatedSprite	getAnimatedSprite() const		{ return m_animatedSprite; }
 		AnimatedSprite	getAnimatedSpriteBlood() const	{ return m_animatedSpriteBlood; }
 
 		void initialize();
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
-		const MovementCmp& getMovCmp() const { return m_movCmp; };
 
 		bool isAttacking() const { return m_attacking; }
 		void setAttacking(bool attacking) { m_attacking = attacking; }
@@ -56,9 +51,10 @@ namespace lpa
 		void rotateSprite();
 
 		std::list<Ref<Enemy>>	m_attackablesEnemies;
-		KeyboardInputCmp		m_keyboardInputCmp;
-		MovementCmp				m_movCmp;
-		StatCmp					m_statCmp;
+
+		KeyboardInputCmp&	m_inputCmp;
+		MovementCmp&		m_movCmp;
+		StatCmp&			m_statCmp;
 
 		std::optional<Ref<Animation>>	m_currentAnimation;
 		AnimatedSprite					m_animatedSprite;

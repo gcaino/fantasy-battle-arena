@@ -2,6 +2,7 @@
 #include "SpawnManager.h"
 // -----------------------------------------
 #include "systems\EnemyManager.h"
+#include "ecs\MovementCmp.h"
 // -----------------------------------------
 namespace lpa
 {
@@ -33,7 +34,7 @@ namespace lpa
 
 			Enemy& currentEnemy { EnemyManager.getEnemyRefByIndex(indexCurrentEnemy) };
 			currentEnemy.activate();
-			currentEnemy.getMovCmp().position = m_spawnPoints[randomPoint];
+			currentEnemy.getComponent<MovementCmp>().position = m_spawnPoints[randomPoint];
 
 			EnemyManager.increaseIndexCurrentEnemy();
 			EnemyManager.decreaseRemainingEnemies();

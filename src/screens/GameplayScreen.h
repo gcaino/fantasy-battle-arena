@@ -1,8 +1,8 @@
 #pragma once
 // -----------------------------------------
 #include "pch.h"
-#include "entities\Arena.h"
-#include "entities\Player.h"
+#include "game\Arena.h"
+#include "game\Player.h"
 #include "systems\EnemyManager.h"
 #include "systems\SpawnManager.h"
 #include "Screen.h"

@@ -1,10 +1,11 @@
 #pragma once
 // --------------------------------------------------------------------------------
 #include "pch.h"
+#include "ecs\Component.h"
 // --------------------------------------------------------------------------------
 namespace lpa
 {
-	class SpriteCmp : public sf::Drawable
+	class SpriteCmp : public sf::Drawable, public Component
 	{
 	public:
 		SpriteCmp() = default;

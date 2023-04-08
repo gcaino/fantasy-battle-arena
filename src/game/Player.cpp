@@ -6,6 +6,10 @@
 #include "systems\EnemyManager.h"
 #include "AssetManager.h"
 #include "AnimationManager.h"
+
+#include "ecs\KeyboardInputCmp.h"
+#include "ecs\MovementCmp.h"
+#include "ecs\StatCmp.h"
 // -----------------------------------------
 namespace lpa
 {
@@ -23,9 +27,9 @@ namespace lpa
 	// -----------------------------------------
 	Player::Player()
 		: m_attackablesEnemies{}
-		, m_keyboardInputCmp{}
-		, m_movCmp{}
-		, m_statCmp{}
+		, m_inputCmp{ addComponent<KeyboardInputCmp>() }
+		, m_movCmp	{ addComponent<MovementCmp>() }
+		, m_statCmp { addComponent<StatCmp>() }
 		, m_animatedSprite(sf::seconds(0.1f), true, false)
 		, m_animatedSpriteBlood(sf::seconds(0.1f), true, false)
 		, m_axeSound{}
@@ -35,11 +39,10 @@ namespace lpa
 		, m_rangeAttack{}
 		, m_enemiesKilled{}
 	{
+		activate();
 	}
 	void Player::initialize()
 	{
-		activate();
-
 		m_movCmp.currentDirection.xAxis = AxisDirection::Right;
 		m_movCmp.prevDirection.xAxis	= AxisDirection::Right;
 		m_movCmp.velocity = 100.f;
@@ -64,15 +67,15 @@ namespace lpa
 
 		m_axeSound.setBuffer(AssetManager<sf::SoundBuffer>::GetAssetByKey("battle-axe-swing-sound"));
 
-		m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::W, "up");
-		m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::S, "down");
-		m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::A, "left");
-		m_keyboardInputCmp.bindKeyToAction(sf::Keyboard::D, "right");
-						
-		m_keyboardInputCmp.bindActionsToCommands("up",		[this](sf::Time elapsedTime) {m_movCmp.position.y -= m_movCmp.velocity * elapsedTime.asSeconds(); });
-		m_keyboardInputCmp.bindActionsToCommands("down",	[this](sf::Time elapsedTime) {m_movCmp.position.y += m_movCmp.velocity * elapsedTime.asSeconds(); });
-		m_keyboardInputCmp.bindActionsToCommands("left",	[this](sf::Time elapsedTime) {m_movCmp.position.x -= m_movCmp.velocity * elapsedTime.asSeconds(); });
-		m_keyboardInputCmp.bindActionsToCommands("right",	[this](sf::Time elapsedTime) {m_movCmp.position.x += m_movCmp.velocity * elapsedTime.asSeconds(); });
+		m_inputCmp.bindKeyToAction(sf::Keyboard::W, "up");
+		m_inputCmp.bindKeyToAction(sf::Keyboard::S, "down");
+		m_inputCmp.bindKeyToAction(sf::Keyboard::A, "left");
+		m_inputCmp.bindKeyToAction(sf::Keyboard::D, "right");
+		
+		m_inputCmp.bindActionsToCommands("up",	  [this](sf::Time elapsedTime) {m_movCmp.position.y -= m_movCmp.velocity * elapsedTime.asSeconds(); });
+		m_inputCmp.bindActionsToCommands("down",  [this](sf::Time elapsedTime) {m_movCmp.position.y += m_movCmp.velocity * elapsedTime.asSeconds(); });
+		m_inputCmp.bindActionsToCommands("left",  [this](sf::Time elapsedTime) {m_movCmp.position.x -= m_movCmp.velocity * elapsedTime.asSeconds(); });
+		m_inputCmp.bindActionsToCommands("right", [this](sf::Time elapsedTime) {m_movCmp.position.x += m_movCmp.velocity * elapsedTime.asSeconds(); });
 	}
 
 	void Player::handlerInputsAttack(EnemyManager& EnemyManager, const sf::RenderWindow& window)
@@ -93,7 +96,7 @@ namespace lpa
 		for (uint i = 0; i < maxEnemyManagerEnemies; i++)
 		{
 			auto& enemy = EnemyManager.getEnemyRefByIndex(i);
-			if (enemy.getStatCmp().alive)
+			if (enemy.getComponent<StatCmp>().alive)
 			{
 				if (enemy.getAnimatedSprite().getGlobalBounds().contains(static_cast<sf::Vector2f>(targetCoords)))
 				{
@@ -101,7 +104,7 @@ namespace lpa
 					// Verifica si está en la lista de enemigos atacables (se incluyen por estar en rango de ataque)
 					if (isItemAttackablesEnemiesList(enemy))
 					{
-						tempEnemyDictionary.insert(std::make_pair(&enemy, enemy.getMovCmp().position.y));
+						tempEnemyDictionary.insert(std::make_pair(&enemy, enemy.getComponent<MovementCmp>().position.y));
 					}
 				}
 			}
@@ -120,7 +123,7 @@ namespace lpa
 		if (isActive())
 		{
 			m_movCmp.prevPosition = m_movCmp.position;
-			m_keyboardInputCmp.update(elapsedTime);
+			m_inputCmp.update(elapsedTime);
 			move(elapsedTime);
 		}
 

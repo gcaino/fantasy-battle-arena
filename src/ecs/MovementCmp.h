@@ -1,6 +1,7 @@
 #pragma once
 // --------------------------------------------------------------------------------
 #include "pch.h"
+#include "ecs\Component.h"
 // --------------------------------------------------------------------------------
 namespace lpa
 {
@@ -15,7 +16,7 @@ namespace lpa
 		AxisDirection yAxis;
 	};
 
-	class MovementCmp
+	class MovementCmp : public Component
 	{
 	public:
 		MovementCmp();

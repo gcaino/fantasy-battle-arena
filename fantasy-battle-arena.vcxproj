@@ -171,19 +171,20 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\cmp\AttackCmp.cpp" />
-    <ClCompile Include="src\cmp\KeyboardInputCmp.cpp" />
+    <ClCompile Include="src\ecs\AttackCmp.cpp" />
+    <ClCompile Include="src\ecs\KeyboardInputCmp.cpp" />
     <ClCompile Include="src\AnimatedSprite.cpp" />
     <ClCompile Include="src\Animation.cpp" />
     <ClCompile Include="src\AnimationManager.cpp" />
-    <ClCompile Include="src\cmp\MovementCmp.cpp" />
-    <ClCompile Include="src\cmp\SpriteCmp.cpp" />
-    <ClCompile Include="src\cmp\StatCmp.cpp" />
-    <ClCompile Include="src\entities\Arena.cpp" />
+    <ClCompile Include="src\ecs\MovementCmp.cpp" />
+    <ClCompile Include="src\ecs\SpriteCmp.cpp" />
+    <ClCompile Include="src\ecs\StatCmp.cpp" />
+    <ClCompile Include="src\game\Arena.cpp" />
+    <ClCompile Include="src\ecs\Entity.cpp" />
     <ClCompile Include="src\JsonUtility.cpp" />
     <ClCompile Include="src\systems\CollisionManager.cpp" />
     <ClCompile Include="src\screens\CreditsScreen.cpp" />
-    <ClCompile Include="src\entities\Enemy.cpp" />
+    <ClCompile Include="src\game\Enemy.cpp" />
     <ClCompile Include="src\GameEngine.cpp" />
     <ClCompile Include="src\screens\GameplayScreen.cpp" />
     <ClCompile Include="src\systems\InputManager.cpp" />
@@ -192,7 +193,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\entities\Player.cpp" />
+    <ClCompile Include="src\game\Player.cpp" />
     <ClCompile Include="src\screens\Screen.cpp" />
     <ClCompile Include="src\screens\ScreenManager.cpp" />
     <ClCompile Include="src\systems\SpawnManager.cpp" />
@@ -201,26 +202,27 @@
     <ClCompile Include="src\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\cmp\AttackCmp.h" />
-    <ClInclude Include="src\cmp\KeyboardInputCmp.h" />
+    <ClInclude Include="src\ecs\AttackCmp.h" />
+    <ClInclude Include="src\ecs\Component.h" />
+    <ClInclude Include="src\ecs\KeyboardInputCmp.h" />
     <ClInclude Include="src\AnimationManager.h" />
-    <ClInclude Include="src\cmp\MovementCmp.h" />
-    <ClInclude Include="src\cmp\SpriteCmp.h" />
-    <ClInclude Include="src\cmp\StatCmp.h" />
-    <ClInclude Include="src\entities\Entity.h" />
+    <ClInclude Include="src\ecs\MovementCmp.h" />
+    <ClInclude Include="src\ecs\SpriteCmp.h" />
+    <ClInclude Include="src\ecs\StatCmp.h" />
+    <ClInclude Include="src\ecs\Entity.h" />
     <ClInclude Include="src\JsonUtility.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Aliases.h" />
     <ClInclude Include="src\AnimatedSprite.h" />
     <ClInclude Include="src\Animation.h" />
-    <ClInclude Include="src\entities\Arena.h" />
+    <ClInclude Include="src\game\Arena.h" />
     <ClInclude Include="src\systems\CollisionManager.h" />
     <ClInclude Include="src\screens\CreditsScreen.h" />
-    <ClInclude Include="src\entities\Enemy.h" />
+    <ClInclude Include="src\game\Enemy.h" />
     <ClInclude Include="src\GameEngine.h" />
     <ClInclude Include="src\screens\GameplayScreen.h" />
     <ClInclude Include="src\systems\InputManager.h" />
-    <ClInclude Include="src\entities\Player.h" />
+    <ClInclude Include="src\game\Player.h" />
     <ClInclude Include="src\screens\Screen.h" />
     <ClInclude Include="src\screens\ScreenManager.h" />
     <ClInclude Include="src\systems\SpawnManager.h" />

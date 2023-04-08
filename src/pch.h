@@ -18,8 +18,11 @@
 #include <map>
 #include <memory>
 #include <optional>
+#include <ranges>
 #include <stack>
 #include <string>
+#include <typeinfo>
+#include <type_traits>
 #include <vector>
 
 /* External Libraries */

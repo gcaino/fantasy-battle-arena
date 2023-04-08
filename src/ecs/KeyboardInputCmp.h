@@ -1,10 +1,11 @@
 #pragma once
 // --------------------------------------------------------------------------------
 #include "pch.h"
+#include "ecs\Component.h"
 // --------------------------------------------------------------------------------
 namespace lpa
 {
-	class KeyboardInputCmp
+	class KeyboardInputCmp : public Component
 	{
 	public:
 		KeyboardInputCmp() = default;

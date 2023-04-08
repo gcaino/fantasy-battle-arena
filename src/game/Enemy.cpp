@@ -5,12 +5,15 @@
 #include "Player.h"
 #include "AssetManager.h"
 #include "AnimationManager.h"
+
+#include "ecs\StatCmp.h"
+#include "ecs\MovementCmp.h"
 // -----------------------------------------
 namespace lpa
 {
 	Enemy::Enemy()
-		: m_movCmp{}
-		, m_statCmp{}
+		: m_movCmp	{ addComponent<MovementCmp>() }
+		, m_statCmp	{ addComponent<StatCmp>() }
 		, m_animatedSprite(sf::seconds(0.1f), true, false)
 		, m_animatedSpriteBlood(sf::seconds(0.1f), true, false)
 		, m_speedAttack(sf::seconds(3.f))
@@ -61,7 +64,7 @@ namespace lpa
 
 	void Enemy::update(sf::Time elapsedTime, Player& player)
 	{
-		if (!player.getStatCmp().alive) return;
+		if (!player.getComponent<StatCmp>().alive) return;
 
 		if (isActive())
 		{
@@ -81,7 +84,7 @@ namespace lpa
 
 	void Enemy::move(sf::Time elapsedTime, const Player& player)
 	{
-		if (!player.getStatCmp().alive) return;
+		if (!player.getComponent<StatCmp>().alive) return;
 
 		if (!m_waiting)
 		{
@@ -94,7 +97,7 @@ namespace lpa
 
 			auto& position = m_movCmp.position;
 			auto velocity = m_movCmp.velocity;
-			auto posPlayer = player.getMovCmp().position;
+			auto posPlayer = player.getComponent<MovementCmp>().position;
 			
 			if (posPlayer.x > position.x)
 				position.x += velocity * elapsedTime.asSeconds();
